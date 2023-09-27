@@ -119,6 +119,27 @@ update_status ModuleRenderer3D::PreUpdate()
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate()
 {
+
+#pragma region TriangleTest
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glColor4ub(255, 0, 0, 255);
+	glBegin(GL_TRIANGLES);
+	glVertex3d(-0.25, 0, 0);
+	glVertex3d(0.25, 0, 0);
+	glVertex3d(0, 0.5, 0);
+	glEnd();
+
+#pragma endregion
+
+
+
+
 	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;
 }
