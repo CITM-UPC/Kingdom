@@ -6,6 +6,7 @@ Application::Application()
 	input = new ModuleInput(this);
 	camera = new ModuleCamera3D(this);
 	renderer3D = new ModuleRenderer3D(this);
+	ui = new ModuleUI(this);
 	//audio = new ModuleAudio(this, true);
 
 	// The order of calls is very important!
@@ -17,6 +18,7 @@ Application::Application()
 	AddModule(input);
 	AddModule(camera);
 	AddModule(renderer3D);
+	AddModule(ui);
 	//AddModule(audio);
 }
 

@@ -4,10 +4,6 @@
 #include "GL/glew.h"
 #include "SDL2/SDL_opengl.h"
 
-#include "imgui.h"
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_opengl3.h"
-
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 }
@@ -99,25 +95,6 @@ bool ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-
-
-
-#pragma region ImGuiTest
-
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
-
-	// Setup Platform/Renderer backends
-	ImGui_ImplSDL2_InitForOpenGL(App->window->window, context); //Creating jaja dependencies for testing purposes
-	ImGui_ImplOpenGL3_Init();
-
-#pragma endregion
-
-
 	return ret;
 }
 
@@ -135,23 +112,6 @@ update_status ModuleRenderer3D::PreUpdate()
 
 	for(uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
-
-	#pragma region ImGuiTest1.1
-
-	// (Where your code calls SDL_PollEvent())
-
-	SDL_Event e;
-	SDL_PollEvent(&e);
-	ImGui_ImplSDL2_ProcessEvent(&e); // Forward your event to backend
-
-	// (After event loop)
-	// Start the Dear ImGui frame
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame();
-	ImGui::NewFrame();
-	ImGui::ShowDemoWindow(); // Show demo window! :)
-
-	#pragma endregion
 
 	return UPDATE_CONTINUE;
 }
@@ -176,38 +136,7 @@ update_status ModuleRenderer3D::PostUpdate()
 
 	#pragma endregion
 
-	#pragma region ImGuiTest1.2
-
-	// (Where your code calls SDL_PollEvent())
-
-	// Rendering
-	// (Your code clears your framebuffer, renders your other stuff etc.)
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	// (Your code calls SDL_GL_SwapWindow() etc.)
-
-	#pragma endregion
-
-	#pragma region	ImGuiTest2
-
-	/*ImGui::Begin("Window A");
-	ImGui::Text("This is window A");
-	ImGui::End();
-
-	ImGui::Begin("Window B");
-	ImGui::Text("This is window B");
-	ImGui::End();
-
-	ImGui::Begin("Window A");
-	ImGui::Button("Button on window A");
-	ImGui::End();
-
-	ImGui::Begin("Window B");
-	ImGui::Button("Button on window B");
-	ImGui::End();*/
-
-	#pragma endregion
-
+	App->ui->RenderUI();
 
 	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;
@@ -217,14 +146,6 @@ update_status ModuleRenderer3D::PostUpdate()
 bool ModuleRenderer3D::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
-
-	#pragma region ImGuiTest
-
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplSDL2_Shutdown();
-	ImGui::DestroyContext();
-
-	#pragma endregion
 
 	SDL_GL_DeleteContext(context);
 

@@ -2,6 +2,8 @@
 #include "Application.h"
 #include "ModuleInput.h"
 
+#include "imgui.h" //Testing
+#include "imgui_impl_sdl2.h"
 
 ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -112,6 +114,9 @@ update_status ModuleInput::PreUpdate()
 				}
 			}
 		}
+
+		//This here works (sends input to ImGui). Maybe should be in ModuleUI.cpp?
+		ImGui_ImplSDL2_ProcessEvent(&e);
 	}
 
 	if(quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
