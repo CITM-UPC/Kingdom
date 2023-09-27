@@ -17,7 +17,6 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 ModuleUI::~ModuleUI()
 {}
 
-// Called before render is available
 bool ModuleUI::Init()
 {
 	LOG("Creating UI");
@@ -30,50 +29,100 @@ bool ModuleUI::Init()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 
-	// Setup Platform/Renderer backends
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context); //Creating jaja dependencies for testing purposes
-	ImGui_ImplOpenGL3_Init("#version 330");
+	ImGui_ImplOpenGL3_Init();
 
 	return true;
 }
 
-// PreUpdate: clear buffer
 update_status ModuleUI::PreUpdate()
 {
 	//This here does not work. Currently in Input.cpp
 	//ImGui_ImplSDL2_ProcessEvent(&pollevent); 
 
-	// (After event loop)
-	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
+
+	#pragma region	ImGui_MenuBar_Test
+
+	if (dockSpaceEnabled)
+		ImGui::DockSpaceOverViewport();
+
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("New")) {}
+			if (ImGui::MenuItem("Open", "Ctrl+O")) {}
+			if (ImGui::BeginMenu("Open Recent"))
+			{
+				ImGui::MenuItem("Example1.example");
+				ImGui::MenuItem("Example1.example");
+				ImGui::MenuItem("Example1.example");
+				if (ImGui::BeginMenu("More.."))
+				{
+					ImGui::MenuItem("Example2.example");
+					ImGui::MenuItem("Example2.example");
+					ImGui::EndMenu();
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::MenuItem("Save", "Ctrl+S")) {}
+			if (ImGui::MenuItem("Save As..")) {}
+			if (ImGui::MenuItem("Exit")) { return UPDATE_STOP; }
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Edit"))
+		{
+			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+			if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+			ImGui::Separator();
+			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+			if (ImGui::MenuItem("Paste", "CTRL+V")) 
+			{
+				LOG("Pressed Paste Button");
+			}
+			if (ImGui::MenuItem("Toggle DockSpace"))
+			{
+				dockSpaceEnabled = !dockSpaceEnabled;
+			}
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+
+	#pragma endregion
+
+	#pragma region ImGui_Windows_Test
+
 	ImGui::ShowDemoWindow(); // Show demo window! :)
 
-	#pragma region	ImGuiTest2
-
-	/*ImGui::Begin("Window A");
+	ImGui::Begin("Window A");
 	ImGui::Text("This is window A");
+	ImGui::Button("Button on window A");
 	ImGui::End();
 
 	ImGui::Begin("Window B");
 	ImGui::Text("This is window B");
 	ImGui::End();
 
-	ImGui::Begin("Window A");
-	ImGui::Button("Button on window A");
-	ImGui::End();
-
 	ImGui::Begin("Window B");
 	ImGui::Button("Button on window B");
-	ImGui::End();*/
+	ImGui::End();
+
+	ImGui::Begin("Window C");
+	ImGui::Text("This is window C");
+	if (ImGui::Button("Button on window C")) { LOG("Button on window C pressed"); }
+	if (ImGui::Button("Close editor")) { return UPDATE_STOP; }
+	ImGui::End();
 
 	#pragma endregion
 
 	return UPDATE_CONTINUE;
 }
 
-// Called before quitting
 bool ModuleUI::CleanUp()
 {
 	LOG("Destroying UI");
@@ -87,9 +136,6 @@ bool ModuleUI::CleanUp()
 
 void ModuleUI::RenderUI()
 {
-	// Rendering
-	// (Your code clears your framebuffer, renders your other stuff etc.)
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	// (Your code calls SDL_GL_SwapWindow() etc.)
 }

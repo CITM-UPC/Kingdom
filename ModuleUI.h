@@ -14,4 +14,7 @@ public:
 	bool CleanUp();
 
 	void RenderUI();
+
+private:
+	bool dockSpaceEnabled = true;
 };
