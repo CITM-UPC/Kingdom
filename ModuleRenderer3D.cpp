@@ -1,12 +1,8 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
+#include "GL/glew.h"
 #include "vcpkg/installed/x64-windows/include/SDL2/SDL_opengl.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
-#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
-#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -123,6 +119,27 @@ update_status ModuleRenderer3D::PreUpdate()
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate()
 {
+
+#pragma region TriangleTest
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glColor4ub(255, 0, 0, 255);
+	glBegin(GL_TRIANGLES);
+	glVertex3d(-0.25, 0, 0);
+	glVertex3d(0.25, 0, 0);
+	glVertex3d(0, 0.5, 0);
+	glEnd();
+
+#pragma endregion
+
+
+
+
 	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;
 }
