@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
+#include "JSONParser.h"
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -21,6 +22,7 @@ bool ModuleUI::Init()
 {
 	LOG("Creating UI");
 
+	testing(); // Testing JSONParser, does not work
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -103,7 +105,7 @@ update_status ModuleUI::PreUpdate()
 
 	#pragma endregion
 
-	if (about){
+	if (about) {
 		ImGui::Begin("About");
 		// To recode, this sucks
 		ImGui::Text("This Engine of Mine v0.1\nA 3D Game Engine for the Game Engines subject");

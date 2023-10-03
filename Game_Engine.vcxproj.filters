@@ -89,5 +89,8 @@
     <ClInclude Include="ModuleUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="JSONParser.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
