@@ -17,4 +17,5 @@ public:
 
 private:
 	bool dockSpaceEnabled = true;
+	bool about = false;
 };

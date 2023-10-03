@@ -1,4 +1,4 @@
-#include "Globals.h"
+﻿#include "Globals.h"
 #include "Application.h"
 #include "ModuleUI.h"
 #include "GL/glew.h"
@@ -53,6 +53,7 @@ update_status ModuleUI::PreUpdate()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
+			//ImGui::PlotHistogram();
 			if (ImGui::MenuItem("New")) {}
 			if (ImGui::MenuItem("Open", "Ctrl+O")) {}
 			if (ImGui::BeginMenu("Open Recent"))
@@ -90,10 +91,29 @@ update_status ModuleUI::PreUpdate()
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("Help"))
+		{
+			if (ImGui::MenuItem("About..."," ")) {
+				about = !about;
+			}
+			ImGui::EndMenu();
+		}
 		ImGui::EndMainMenuBar();
 	}
 
 	#pragma endregion
+
+	if (about){
+		ImGui::Begin("About");
+		// To recode, this sucks
+		ImGui::Text("This Engine of Mine v0.1\nA 3D Game Engine for the Game Engines subject");
+		ImGui::Text("By Jonathan Cacay & Ethan Martin\n3rd Party Libraries used :");
+		ImGui::Text("LIBRARIES HERE");
+		ImGui::Text("License:\nMIT License\nCopyright(c) 2023 Jonathan Cacay & Ethan Martin");
+		ImGui::Text("Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files(the Software), \nto deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, \nand /or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions : ");
+		ImGui::Text("The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.");
+		ImGui::Text("THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \nIN THE SOFTWARE.");
+	}
 
 	#pragma region ImGui_Windows_Test
 
