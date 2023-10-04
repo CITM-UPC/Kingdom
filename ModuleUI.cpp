@@ -22,7 +22,7 @@ bool ModuleUI::Init()
 {
 	LOG("Creating UI");
 
-	testing(); // Testing JSONParser, does not work
+	Json::Value obj = ReadFile("example.json");
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -46,7 +46,7 @@ update_status ModuleUI::PreUpdate()
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	#pragma region	ImGui_MenuBar_Test
+#pragma region	ImGui_MenuBar_Test
 
 	if (dockSpaceEnabled)
 		ImGui::DockSpaceOverViewport();
@@ -83,7 +83,7 @@ update_status ModuleUI::PreUpdate()
 			ImGui::Separator();
 			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
 			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-			if (ImGui::MenuItem("Paste", "CTRL+V")) 
+			if (ImGui::MenuItem("Paste", "CTRL+V"))
 			{
 				LOG("Pressed Paste Button");
 			}
@@ -95,7 +95,7 @@ update_status ModuleUI::PreUpdate()
 		}
 		if (ImGui::BeginMenu("Help"))
 		{
-			if (ImGui::MenuItem("About..."," ")) {
+			if (ImGui::MenuItem("About...", " ")) {
 				about = !about;
 			}
 			ImGui::EndMenu();
@@ -103,7 +103,7 @@ update_status ModuleUI::PreUpdate()
 		ImGui::EndMainMenuBar();
 	}
 
-	#pragma endregion
+#pragma endregion
 
 	if (about) {
 		ImGui::Begin("About");
@@ -117,7 +117,7 @@ update_status ModuleUI::PreUpdate()
 		ImGui::Text("THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \nIN THE SOFTWARE.");
 	}
 
-	#pragma region ImGui_Windows_Test
+#pragma region ImGui_Windows_Test
 
 	ImGui::ShowDemoWindow(); // Show demo window! :)
 
@@ -140,7 +140,7 @@ update_status ModuleUI::PreUpdate()
 	if (ImGui::Button("Close editor")) { return UPDATE_STOP; }
 	ImGui::End();
 
-	#pragma endregion
+#pragma endregion
 
 	return UPDATE_CONTINUE;
 }

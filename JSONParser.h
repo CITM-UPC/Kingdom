@@ -5,8 +5,8 @@
 
 using namespace std;
 
-void testing() {
-	ifstream file("example.json");
+Json::Value ReadFile(string path) {
+	ifstream file(path);
 
 	Json::Value obj;
 	Json::CharReaderBuilder reader;
@@ -15,16 +15,17 @@ void testing() {
 	bool parsingSuccessful = Json::parseFromStream(reader, file, &obj, &errors);
 
 	if (!parsingSuccessful) {
-		LOG("ERROR PARSING!!!");
-		cout << errors << endl;
-		return;
+		LOG("JSONCPP ERROR : ");
+		LOG("%s", errors);
+		file.close();
+		
 	}
 
-	cout << "JSON DATA: " << obj << endl;
-
-	cout << "Name: " << obj["name"] << endl;
-	cout << "Yeet: " << obj["yeet"] << endl;
-
 	file.close();
+
+	return obj;
 }
 
+void WriteFile(string path) {
+
+}
