@@ -3,21 +3,17 @@
 #include <list>
 #include "Globals.h"
 #include "Module.h"
-#include "ModuleWindow.h"
-#include "ModuleInput.h"
+//#include "ModuleInput.h"
 #include "ModuleCamera3D.h"
 #include "ModuleRenderer3D.h"
-#include "ModuleUI.h"
 //#include "ModuleAudio.h"
 
-class Application
+class GameEngine
 {
 public:
-	ModuleWindow* window;
-	ModuleInput* input;
+	//ModuleInput* input;
 	ModuleCamera3D* camera;
 	ModuleRenderer3D* renderer3D;
-	ModuleUI* ui;
 	//ModuleAudio* audio;
 
 private:
@@ -26,8 +22,8 @@ private:
 
 public:
 
-	Application();
-	~Application();
+	GameEngine();
+	~GameEngine();
 
 	bool Init();
 	update_status Update();
@@ -39,3 +35,4 @@ private:
 	void PrepareUpdate();
 	void FinishUpdate();
 };
+
