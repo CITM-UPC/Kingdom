@@ -1,6 +1,5 @@
 #pragma once
-#include "Color.h"
-#include "glmath.h"
+#include <glm/gtc/type_ptr.hpp>
 
 struct Light
 {
@@ -11,9 +10,10 @@ struct Light
 	void Active(bool active);
 	void Render();
 
-	Color ambient;
-	Color diffuse;
-	vec3 position;
+	glm::vec4 ambient;
+	glm::vec4 diffuse;
+
+	glm::vec3 position;
 
 	int ref;
 	bool on;

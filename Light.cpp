@@ -1,15 +1,14 @@
 #include "Globals.h"
 #include "Light.h"
 #include <gl/GL.h>
-//#include <gl/GLU.h>
 
 Light::Light() : ref(-1), on(false), position(0.0f, 0.0f, 0.0f)
 {}
 
 void Light::Init()
 {
-	glLightfv(ref, GL_AMBIENT, &ambient);
-	glLightfv(ref, GL_DIFFUSE, &diffuse);
+	glLightfv(ref, GL_AMBIENT, glm::value_ptr(ambient));
+	glLightfv(ref, GL_DIFFUSE, glm::value_ptr(diffuse));
 }
 
 void Light::SetPos(float x, float y, float z)
