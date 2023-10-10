@@ -1,6 +1,7 @@
 #pragma once
 
-#include "p2List.h"
+//#include "p2List.h"
+#include <list>
 #include "Globals.h"
 //#include "Timer.h"
 #include "Module.h"
@@ -8,6 +9,7 @@
 #include "ModuleInput.h"
 #include "ModuleCamera3D.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleUI.h"
 //#include "ModuleAudio.h"
 
 class Application
@@ -17,11 +19,12 @@ public:
 	ModuleInput* input;
 	ModuleCamera3D* camera;
 	ModuleRenderer3D* renderer3D;
+	ModuleUI* ui;
 	//ModuleAudio* audio;
 
 private:
 
-	p2List<Module*> list_modules;
+	std::list<Module*> list_modules;
 
 public:
 

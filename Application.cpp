@@ -6,6 +6,7 @@ Application::Application()
 	input = new ModuleInput(this);
 	camera = new ModuleCamera3D(this);
 	renderer3D = new ModuleRenderer3D(this);
+	ui = new ModuleUI(this);
 	//audio = new ModuleAudio(this, true);
 
 	// The order of calls is very important!
@@ -17,18 +18,25 @@ Application::Application()
 	AddModule(input);
 	AddModule(camera);
 	AddModule(renderer3D);
+	AddModule(ui);
 	//AddModule(audio);
 }
 
 Application::~Application()
 {
+	/*
 	p2List_item<Module*>* item = list_modules.getLast();
 
-	while(item != NULL)
+	while (item != NULL)
 	{
 		delete item->data;
 		item = item->prev;
 	}
+	*/
+
+	
+	list_modules.clear();	//If this does not yield the expected results, 
+							//try using list::erase(i) traversing the list in reverse order.
 }
 
 bool Application::Init()
@@ -36,22 +44,16 @@ bool Application::Init()
 	bool ret = true;
 
 	// Call Init() in all modules
-	p2List_item<Module*>* item = list_modules.getFirst();
-
-	while(item != NULL && ret == true)
+	for (auto const& item:list_modules)
 	{
-		ret = item->data->Init();
-		item = item->next;
+		item->Init();
 	}
 
 	// After all Init calls we call Start() in all modules
 	LOG("Application Start --------------");
-	item = list_modules.getFirst();
-
-	while(item != NULL && ret == true)
+	for (auto const& item : list_modules)
 	{
-		ret = item->data->Start();
-		item = item->next;
+		item->Start();
 	}
 	
 	return ret;
@@ -73,29 +75,23 @@ update_status Application::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
 	PrepareUpdate();
-	
-	p2List_item<Module*>* item = list_modules.getFirst();
-	
-	while(item != NULL && ret == UPDATE_CONTINUE)
+
+	for (auto const& item : list_modules)
 	{
-		ret = item->data->PreUpdate();
-		item = item->next;
+		ret = item->PreUpdate();
+		if (ret != UPDATE_CONTINUE) return ret;
 	}
 
-	item = list_modules.getFirst();
-
-	while(item != NULL && ret == UPDATE_CONTINUE)
+	for (auto const& item : list_modules)
 	{
-		ret = item->data->Update();
-		item = item->next;
+		ret = item->Update();
+		if (ret != UPDATE_CONTINUE) return ret;
 	}
 
-	item = list_modules.getFirst();
-
-	while(item != NULL && ret == UPDATE_CONTINUE)
+	for (auto const& item : list_modules)
 	{
-		ret = item->data->PostUpdate();
-		item = item->next;
+		ret = item->PostUpdate();
+		if (ret != UPDATE_CONTINUE) return ret;
 	}
 
 	FinishUpdate();
@@ -105,17 +101,42 @@ update_status Application::Update()
 bool Application::CleanUp()
 {
 	bool ret = true;
+
+	//Original version
+	/*
 	p2List_item<Module*>* item = list_modules.getLast();
+	auto item = list_modules.back();
 
 	while(item != NULL && ret == true)
 	{
 		ret = item->data->CleanUp();
 		item = item->prev;
 	}
+	*/
+
+	//Attempt to translate to STL
+	/*
+	auto item = list_modules.back();
+
+	while(item != NULL && ret == true)
+	{
+		ret = item->CleanUp();
+		item = std::prev(item, 1);
+	}
+	*/
+
+
+	//This seems to work, but I think it is doing it in the normal order, not reverse.
+	for (auto const& item: list_modules)
+	{
+		ret = item->CleanUp();
+		if (ret != true) return ret;
+	}
+
 	return ret;
 }
 
 void Application::AddModule(Module* mod)
 {
-	list_modules.add(mod);
+	list_modules.push_back(mod);
 }
