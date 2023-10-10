@@ -1,11 +1,14 @@
 #include "Globals.h"
-#include "Application.h"
+#include "GameEngine.h"
 #include "ModuleRenderer3D.h"
 #include "GL/glew.h"
 #include "SDL2/SDL_opengl.h"
 
-ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
+ModuleRenderer3D::ModuleRenderer3D(GameEngine* gEngine, bool start_enabled) : Module(gEngine, start_enabled)
 {
+	VSYNC = false;
+	screen_width = 1024;
+	screen_height = 768;
 }
 
 // Destructor
@@ -18,8 +21,14 @@ bool ModuleRenderer3D::Init()
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
 	
+	if (targetWindow == nullptr)
+	{
+		LOG("Target window has not been set. Try initializing the variable with 'SetTargetWindow()'");
+		ret = false;
+	}
+
 	//Create context
-	context = SDL_GL_CreateContext(App->window->window);
+	context = SDL_GL_CreateContext(targetWindow);
 	if(context == NULL)
 	{
 		LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -70,15 +79,6 @@ bool ModuleRenderer3D::Init()
 			ret = false;
 		}
 		
-		GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
-		
-		lights[0].ref = GL_LIGHT0;
-		lights[0].ambient = { 0.25f, 0.25f, 0.25f, 1.0f };
-		lights[0].diffuse = { 0.75f, 0.75f, 0.75f, 1.0f };
-		lights[0].SetPos(0.0f, 0.0f, 2.5f);
-		lights[0].Init();
-		
 		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
 
@@ -87,13 +87,12 @@ bool ModuleRenderer3D::Init()
 		
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
-		lights[0].Active(true);
-		glEnable(GL_LIGHTING);
+		//glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
 	}
 
 	// Projection matrix for
-	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	OnResize(screen_width, screen_height);
 
 	return ret;
 }
@@ -105,13 +104,7 @@ update_status ModuleRenderer3D::PreUpdate()
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(App->camera->GetViewMatrix());
-
-	// light 0 on cam pos
-	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
-
-	for(uint i = 0; i < MAX_LIGHTS; ++i)
-		lights[i].Render();
+	glLoadMatrixf(gEngine->camera->GetViewMatrix());
 
 	return UPDATE_CONTINUE;
 }
@@ -136,9 +129,6 @@ update_status ModuleRenderer3D::PostUpdate()
 
 	#pragma endregion
 
-	App->ui->RenderUI();
-
-	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;
 }
 
@@ -148,6 +138,7 @@ bool ModuleRenderer3D::CleanUp()
 	LOG("Destroying 3D Renderer");
 
 	SDL_GL_DeleteContext(context);
+	delete targetWindow;
 
 	return true;
 }
