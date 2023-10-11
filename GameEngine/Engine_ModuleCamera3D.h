@@ -1,15 +1,15 @@
 #pragma once
-#include "Module.h"
+#include "Engine_Module.h"
 #include <glm/gtc/type_ptr.hpp>
 
-class ModuleCamera3D : public Module
+class Engine_ModuleCamera3D : public Engine_Module
 {
 public:
-	ModuleCamera3D(Application* app, bool start_enabled = true);
-	~ModuleCamera3D();
+	Engine_ModuleCamera3D(GameEngine* gEngine, bool start_enabled = true);
+	~Engine_ModuleCamera3D();
 
 	bool Start();
-	update_status Update();
+	engine_status Update();
 	bool CleanUp();
 
 	void Look(const glm::vec3 &Position, const glm::vec3 &Reference, bool RotateAroundReference = false);

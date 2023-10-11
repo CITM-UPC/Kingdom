@@ -67,6 +67,8 @@ bool ModuleWindow::Init()
 			//Get window surface
 			screen_surface = SDL_GetWindowSurface(window);
 		}
+
+		App->gEngine->renderer3D->SetTargetWindow(window);
 	}
 
 	return ret;

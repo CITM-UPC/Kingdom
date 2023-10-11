@@ -5,20 +5,20 @@
 #include "Module.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
-#include "ModuleCamera3D.h"
-#include "ModuleRenderer3D.h"
+#include "ModuleRenderer.h"
 #include "ModuleUI.h"
-//#include "ModuleAudio.h"
+
+#include "..\GameEngine\GameEngine.h"
 
 class Application
 {
 public:
 	ModuleWindow* window;
 	ModuleInput* input;
-	ModuleCamera3D* camera;
-	ModuleRenderer3D* renderer3D;
+	ModuleRenderer* renderer;
 	ModuleUI* ui;
-	//ModuleAudio* audio;
+
+	GameEngine* gEngine;
 
 private:
 

@@ -2,9 +2,9 @@
 #include <windows.h>
 #include <stdio.h>
 
-#define LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
+#define ENGINE_LOG(format, ...) engineLog(__FILE__, __LINE__, format, __VA_ARGS__);
 
-void log(const char file[], int line, const char* format, ...);
+void engineLog(const char file[], int line, const char* format, ...);
 
 #define CAP(n) ((n <= 0.0f) ? n=0.0f : (n >= 1.0f) ? n=1.0f : n=n)
 
@@ -15,9 +15,9 @@ void log(const char file[], int line, const char* format, ...);
 
 typedef unsigned int uint;
 
-enum update_status
+enum engine_status
 {
-	UPDATE_CONTINUE = 1,
-	UPDATE_STOP,
-	UPDATE_ERROR
+	ENGINE_UPDATE_CONTINUE = 1,
+	ENGINE_UPDATE_STOP,
+	ENGINE_UPDATE_ERROR
 };

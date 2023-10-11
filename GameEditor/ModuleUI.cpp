@@ -8,7 +8,7 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
-#include "JSONParser.h"
+//#include "JSONParser.h"
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -22,7 +22,7 @@ bool ModuleUI::Init()
 {
 	LOG("Creating UI");
 
-	Json::Value obj = ReadFile("example.json");
+	//Json::Value obj = ReadFile("example.json");
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -31,7 +31,7 @@ bool ModuleUI::Init()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 
-	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context); //Creating jaja dependencies for testing purposes
+	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->gEngine->renderer3D->context);
 	ImGui_ImplOpenGL3_Init();
 
 	return true;

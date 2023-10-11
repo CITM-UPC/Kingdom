@@ -1,18 +1,19 @@
 #pragma once
-#include "Module.h"
-#include "Globals.h"
+#include "Engine_Module.h"
+#include "Engine_Globals.h"
 #include "SDL2/SDL.h"
 #include <glm/gtc/type_ptr.hpp>
 
-class ModuleRenderer3D : public Module
+class Engine_ModuleRenderer3D : public Engine_Module
 {
 public:
-	ModuleRenderer3D(GameEngine* gEngine, bool start_enabled = true);
-	~ModuleRenderer3D();
+	Engine_ModuleRenderer3D(GameEngine* gEngine, bool start_enabled = true);
+	~Engine_ModuleRenderer3D();
 
 	bool Init();
-	update_status PreUpdate();
-	update_status PostUpdate();
+	engine_status PreUpdate();
+	engine_status Update();
+	engine_status PostUpdate();
 	bool CleanUp();
 
 	void OnResize(int width, int height);
@@ -25,7 +26,7 @@ public:
 		screen_height = height;
 	}
 	void SetVsync(bool active) { 
-		VSYNC = active; 
+		vsync = active; 
 	}
 
 public:
@@ -37,7 +38,7 @@ public:
 private:
 
 	SDL_Window* targetWindow;
-	bool VSYNC;
+	bool vsync;
 	int screen_width;
 	int screen_height;
 };
