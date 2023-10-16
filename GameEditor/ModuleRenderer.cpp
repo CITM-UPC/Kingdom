@@ -39,6 +39,8 @@ update_status ModuleRenderer::Update()
 // PostUpdate present buffer to screen
 update_status ModuleRenderer::PostUpdate()
 {
+	App->gEngine->renderer3D->DrawGrid(100, 1, true, true, true);
+
 	App->gEngine->renderer3D->PostUpdate();
 	App->ui->RenderUI();
 

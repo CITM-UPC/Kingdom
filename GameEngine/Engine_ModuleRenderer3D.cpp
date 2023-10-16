@@ -69,7 +69,7 @@ bool Engine_ModuleRenderer3D::Init()
 		glClearDepth(1.0f);
 
 		//Initialize clear color
-		glClearColor(0.f, 0.f, 0.f, 1.f);
+		glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 
 		//Check for error
 		error = glGetError();
@@ -121,7 +121,7 @@ engine_status Engine_ModuleRenderer3D::PostUpdate()
 {
 #pragma region TriangleTest
 
-	glMatrixMode(GL_PROJECTION);
+	/*glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
@@ -132,7 +132,7 @@ engine_status Engine_ModuleRenderer3D::PostUpdate()
 	glVertex3d(-0.25, 0, 0);
 	glVertex3d(0.25, 0, 0);
 	glVertex3d(0, 0.5, 0);
-	glEnd();
+	glEnd();*/
 
 #pragma endregion
 
@@ -163,4 +163,28 @@ void Engine_ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyAxis, bool yzAxis)
+{
+	glLineWidth(1.0);
+    glColor3ub(128, 128, 128);
+
+    glBegin(GL_LINES);
+    for (int i = -size; i <= size; i += step) {
+        //XY plane
+        glVertex2i(i, -size);
+        glVertex2i(i,  size);
+        glVertex2i(-size, i);
+        glVertex2i( size, i);
+
+        //XZ plane
+        glVertex3i(i, 0, -size);
+        glVertex3i(i, 0, size);
+        glVertex3i(-size, 0, i);
+        glVertex3i( size, 0, i);
+    }
+    glEnd();
+
+	drawCubeTest();
 }
