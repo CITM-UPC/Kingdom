@@ -1,0 +1,19 @@
+{
+	"inventory" : 
+	[
+		{
+			"amount" : 1,
+			"name" : "Mary Jane Book"
+		},
+		{
+			"amount" : 1,
+			"name" : "Snowpowder"
+		},
+		{
+			"amount" : 1,
+			"name" : "Blue crystal"
+		}
+	],
+	"name" : "It works?",
+	"yeet" : "xdxdxd"
+}

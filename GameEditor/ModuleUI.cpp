@@ -8,7 +8,7 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
-//#include "JSONParser.h"
+#include "JSONParser.h"
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -22,7 +22,19 @@ bool ModuleUI::Init()
 {
 	LOG("Creating UI");
 
-	//Json::Value obj = ReadFile("example.json");
+#pragma region TestingJsonCPP
+	Json::Value obj = GetFile("example.json");
+	cout << "Name: " << obj["name"] << endl;
+	
+	if (obj["name"].compare("Mondongo")) {
+		
+		obj["name"] = "Mondongo";
+	}
+	else {
+		obj["name"] = "It works?";
+	}
+	ofstream("example.json") << obj;
+#pragma endregion
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
