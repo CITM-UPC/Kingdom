@@ -4,11 +4,9 @@ GameEngine::GameEngine()
 {
 	//input = new ModuleInput(this);
 	renderer3D = new Engine_ModuleRenderer3D(this);
-	//audio = new ModuleAudio(this, true);
 
 	//AddModule(input);
 	AddModule(renderer3D);
-	//AddModule(audio);
 }
 
 GameEngine::~GameEngine()
