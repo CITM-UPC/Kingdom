@@ -42,19 +42,6 @@ bool Application::Init()
 	{
 		item->Start();
 	}
-
-	/*glm::vec3 pos = { 0.0f,1.0f,-10.0f };
-	gEngine->camera->Move(pos);
-	pos = { 0.0f,0.0f,0.0f };
-	gEngine->camera->LookAt(pos);*/
-
-	gEngine->camera->Position.x = 3.00f;
-	gEngine->camera->Position.y = -3.0f;
-	gEngine->camera->Position.z = -3.0f;
-
-	glm::vec3 pos = glm::vec3(0, 0, 0);
-
-	gEngine->camera->LookAt(pos);
 	
 	return ret;
 }

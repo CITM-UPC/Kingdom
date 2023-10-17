@@ -176,15 +176,15 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine.cpp" />
-    <ClCompile Include="Engine_ModuleCamera3D.cpp" />
     <ClCompile Include="Engine_ModuleRenderer3D.cpp" />
     <ClCompile Include="Engine_log.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="Engine_Globals.h" />
     <ClInclude Include="Engine_Module.h" />
-    <ClInclude Include="Engine_ModuleCamera3D.h" />
     <ClInclude Include="Engine_ModuleRenderer3D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

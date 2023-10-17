@@ -3,12 +3,10 @@
 GameEngine::GameEngine()
 {
 	//input = new ModuleInput(this);
-	camera = new Engine_ModuleCamera3D(this);
 	renderer3D = new Engine_ModuleRenderer3D(this);
 	//audio = new ModuleAudio(this, true);
 
 	//AddModule(input);
-	AddModule(camera);
 	AddModule(renderer3D);
 	//AddModule(audio);
 }

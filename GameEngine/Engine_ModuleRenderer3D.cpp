@@ -103,16 +103,20 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(gEngine->cam.fov, gEngine->cam.aspectRatio, gEngine->cam.clippingPlaneViewNear, gEngine->cam.clippingPlaneViewFar);
+
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(gEngine->camera->GetViewMatrix());
+	gluLookAt(gEngine->cam.camCenter.x, gEngine->cam.camCenter.y,	gEngine->cam.camCenter.z,
+			  gEngine->cam.lookAtPos.x, gEngine->cam.lookAtPos.y, gEngine->cam.lookAtPos.z,
+			  gEngine->cam.upVector.x , gEngine->cam.upVector.y , gEngine->cam.upVector.z);
 
 	return ENGINE_UPDATE_CONTINUE;
 }
 
 engine_status Engine_ModuleRenderer3D::Update()
 {
-	gEngine->camera->Update();
-
 	return ENGINE_UPDATE_CONTINUE;
 }
 

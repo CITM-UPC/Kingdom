@@ -21,14 +21,17 @@
     <ClCompile Include="GameEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine_ModuleCamera3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Engine_ModuleRenderer3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Engine_log.cpp">
       <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -39,9 +42,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine_Module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine_ModuleCamera3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine_ModuleRenderer3D.h">
