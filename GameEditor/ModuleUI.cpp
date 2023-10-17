@@ -22,7 +22,19 @@ bool ModuleUI::Init()
 {
 	LOG("Creating UI");
 
-	Json::Value obj = ReadFile("example.json");
+	#pragma region TestingJsonCPP
+	/*Json::Value obj = GetFile("example.json");
+	cout << "Name: " << obj["name"] << endl;
+	
+	if (obj["name"].compare("Mondongo")) {
+		
+		obj["name"] = "Mondongo";
+	}
+	else {
+		obj["name"] = "It works?";
+	}
+	ofstream("example.json") << obj;*/
+	#pragma endregion
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -31,7 +43,7 @@ bool ModuleUI::Init()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 
-	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context); //Creating jaja dependencies for testing purposes
+	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->gEngine->renderer3D->context);
 	ImGui_ImplOpenGL3_Init();
 
 	return true;

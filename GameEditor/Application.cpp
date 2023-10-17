@@ -2,12 +2,12 @@
 
 Application::Application()
 {
+	gEngine = new GameEngine();
+
 	window = new ModuleWindow(this);
 	input = new ModuleInput(this);
-	camera = new ModuleCamera3D(this);
-	renderer3D = new ModuleRenderer3D(this);
+	renderer = new ModuleRenderer(this);
 	ui = new ModuleUI(this);
-	//audio = new ModuleAudio(this, true);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -16,25 +16,12 @@ Application::Application()
 	// Main Modules
 	AddModule(window);
 	AddModule(input);
-	AddModule(camera);
-	AddModule(renderer3D);
+	AddModule(renderer);
 	AddModule(ui);
-	//AddModule(audio);
 }
 
 Application::~Application()
 {
-	/*
-	p2List_item<Module*>* item = list_modules.getLast();
-
-	while (item != NULL)
-	{
-		delete item->data;
-		item = item->prev;
-	}
-	*/
-
-	
 	list_modules.clear();	//If this does not yield the expected results, 
 							//try using list::erase(i) traversing the list in reverse order.
 }
@@ -73,25 +60,25 @@ void Application::FinishUpdate()
 // Call PreUpdate, Update and PostUpdate on all modules
 update_status Application::Update()
 {
-	update_status ret = UPDATE_CONTINUE;
+	update_status ret = update_status::UPDATE_CONTINUE;
 	PrepareUpdate();
 
 	for (auto const& item : list_modules)
 	{
 		ret = item->PreUpdate();
-		if (ret != UPDATE_CONTINUE) return ret;
+		if (ret != update_status::UPDATE_CONTINUE) return ret;
 	}
 
 	for (auto const& item : list_modules)
 	{
 		ret = item->Update();
-		if (ret != UPDATE_CONTINUE) return ret;
+		if (ret != update_status::UPDATE_CONTINUE) return ret;
 	}
 
 	for (auto const& item : list_modules)
 	{
 		ret = item->PostUpdate();
-		if (ret != UPDATE_CONTINUE) return ret;
+		if (ret != update_status::UPDATE_CONTINUE) return ret;
 	}
 
 	FinishUpdate();
@@ -102,36 +89,14 @@ bool Application::CleanUp()
 {
 	bool ret = true;
 
-	//Original version
-	/*
-	p2List_item<Module*>* item = list_modules.getLast();
-	auto item = list_modules.back();
-
-	while(item != NULL && ret == true)
-	{
-		ret = item->data->CleanUp();
-		item = item->prev;
-	}
-	*/
-
-	//Attempt to translate to STL
-	/*
-	auto item = list_modules.back();
-
-	while(item != NULL && ret == true)
-	{
-		ret = item->CleanUp();
-		item = std::prev(item, 1);
-	}
-	*/
-
-
 	//This seems to work, but I think it is doing it in the normal order, not reverse.
 	for (auto const& item: list_modules)
 	{
 		ret = item->CleanUp();
 		if (ret != true) return ret;
 	}
+
+	delete gEngine;
 
 	return ret;
 }
