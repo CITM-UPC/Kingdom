@@ -17,7 +17,6 @@ Json::Value GetFile(string path) {
 	if (!parsingSuccessful) {
 		LOG("JSONCPP: ERROR: ");
 		LOG("%s", errors);
-		file.close();
 	}
 
 	file.close();
