@@ -169,24 +169,38 @@ void Engine_ModuleRenderer3D::OnResize(int width, int height)
 	glLoadIdentity();
 }
 
-void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyAxis, bool yzAxis)
+void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyAxis, bool zyAxis)
 {
 	glLineWidth(1.0);
     glColor3ub(128, 128, 128);
 
     glBegin(GL_LINES);
     for (int i = -size; i <= size; i += step) {
-        //XY plane
-        glVertex2i(i, -size);
-        glVertex2i(i,  size);
-        glVertex2i(-size, i);
-        glVertex2i( size, i);
 
-        //XZ plane
-        glVertex3i(i, 0, -size);
-        glVertex3i(i, 0, size);
-        glVertex3i(-size, 0, i);
-        glVertex3i( size, 0, i);
+		if (xzAxis)
+		{
+			//XZ plane
+			glVertex3i(i, 0, -size);
+			glVertex3i(i, 0, size);
+			glVertex3i(-size, 0, i);
+			glVertex3i(size, 0, i);
+		}
+		if (xyAxis)
+		{
+			//XY plane
+			glVertex2i(i, -size);
+			glVertex2i(i, size);
+			glVertex2i(-size, i);
+			glVertex2i(size, i);
+		}
+		if (zyAxis)
+		{
+			//ZY plane
+			glVertex3i(0, i, -size);
+			glVertex3i(0, i, size);
+			glVertex3i(0, -size, i);
+			glVertex3i(0, size, i);
+		}
     }
     glEnd();
 

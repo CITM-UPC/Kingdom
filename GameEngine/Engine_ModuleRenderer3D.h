@@ -20,7 +20,7 @@ public:
 
 	void OnResize(int width, int height);
 
-	void DrawGrid(int size, int step, bool xzAxis = true, bool xyAxis = false, bool yzAxis = false);
+	void DrawGrid(int size, int step, bool xzAxis = true, bool xyAxis = false, bool zyAxis = false);
 
 	void SetTargetWindow(SDL_Window* target) { 
 		targetWindow = target; 
