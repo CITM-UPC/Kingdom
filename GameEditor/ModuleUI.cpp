@@ -22,8 +22,8 @@ bool ModuleUI::Init()
 {
 	LOG("Creating UI");
 
-#pragma region TestingJsonCPP
-	Json::Value obj = GetFile("example.json");
+	#pragma region TestingJsonCPP
+	/*Json::Value obj = GetFile("example.json");
 	cout << "Name: " << obj["name"] << endl;
 	
 	if (obj["name"].compare("Mondongo")) {
@@ -33,8 +33,8 @@ bool ModuleUI::Init()
 	else {
 		obj["name"] = "It works?";
 	}
-	ofstream("example.json") << obj;
-#pragma endregion
+	ofstream("example.json") << obj;*/
+	#pragma endregion
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
