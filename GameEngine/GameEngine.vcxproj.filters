@@ -62,5 +62,8 @@
     <ClInclude Include="Texture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="JSONParser.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
