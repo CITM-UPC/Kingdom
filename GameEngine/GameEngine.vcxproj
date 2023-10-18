@@ -180,12 +180,17 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     <ClCompile Include="Engine_log.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Camera.h" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Texture2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="Engine_Globals.h" />
     <ClInclude Include="Engine_Module.h" />
     <ClInclude Include="Engine_ModuleRenderer3D.h" />
+    <ClInclude Include="Graphic.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Texture2D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
