@@ -27,7 +27,7 @@ bool ModuleUI::Init()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
-	io.Fonts->AddFontFromFileTTF("Fonts/Roboto-Medium.ttf", 14);
+	io.Fonts->AddFontFromFileTTF("Fonts/DroidSans.ttf", 14);
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->gEngine->renderer3D->context);
 	ImGui_ImplOpenGL3_Init();
@@ -100,6 +100,9 @@ update_status ModuleUI::PreUpdate()
 			if (ImGui::MenuItem("Config Window")) {
 				options = !options;
 			}
+			if (ImGui::MenuItem("Camera Debug")) {
+				camDebug = !camDebug;
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Help"))
@@ -123,6 +126,18 @@ update_status ModuleUI::PreUpdate()
 		ImGui::Text("This window is a placeholder.\nFunctionality is WIP");
 		static bool testBool = false;
 		if (ImGui::Checkbox("VSYNC", &testBool)) { LOG("Checkbox Pressed"); };
+		ImGui::End();
+	}
+	if (camDebug)
+	{
+		ImGui::Begin("Cam Debug");
+		ImGui::Text("Cam Center x: %f", App->gEngine->cam.camCenter.x);
+		ImGui::Text("Cam Center y: %f", App->gEngine->cam.camCenter.y);
+		ImGui::Text("Cam Center z: %f", App->gEngine->cam.camCenter.z);
+		ImGui::Separator();
+		ImGui::Text("LookAt Pos x: %f", App->gEngine->cam.lookAtPos.x);
+		ImGui::Text("LookAt Pos y: %f", App->gEngine->cam.lookAtPos.y);
+		ImGui::Text("LookAt Pos z: %f", App->gEngine->cam.lookAtPos.z);
 		ImGui::End();
 	}
 	if (about) {
