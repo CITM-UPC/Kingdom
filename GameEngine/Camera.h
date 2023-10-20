@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/vec3.hpp>
+#include "Transform.h"
 
 struct Camera
 {
@@ -11,7 +12,7 @@ struct Camera
 	double clippingPlaneViewNear;
 	double clippingPlaneViewFar;
 
-	glm::dvec3 camCenter;
-	glm::dvec3 lookAtPos;
-	glm::dvec3 upVector;
+
+	Transform transform;
+	vec3 lookAtPos;
 };

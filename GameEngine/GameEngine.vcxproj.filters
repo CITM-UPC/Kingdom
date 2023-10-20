@@ -16,6 +16,15 @@
     <Filter Include="Tools">
       <UniqueIdentifier>{8681f5ec-1258-4e70-9774-ccbe8d20071e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object Components">
+      <UniqueIdentifier>{155ff6d9-9a1f-49b3-bdec-ed91623fcd0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object Components\Header Files">
+      <UniqueIdentifier>{d12f02a9-fa4e-43b1-89e4-aa4dcba52429}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object Components\Source Files">
+      <UniqueIdentifier>{e058d294-8e22-4fc1-9ba4-a175e1ff79f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine.cpp">
@@ -38,6 +47,9 @@
     </ClCompile>
     <ClCompile Include="Texture2D.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Object Components\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="JSONParser.h">
       <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Object Components\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
