@@ -76,7 +76,7 @@ void ModuleRenderer::DoCameraInput()
 		glm::dvec3 right = rotMatrix * forward;
 		right.y = 0;
 
-		double speed = 0.1;
+		double speed = 0.01;
 
 		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 		{
@@ -125,7 +125,7 @@ void ModuleRenderer::DoCameraInput()
 			App->gEngine->cam.transform.Move(glm::dvec3(0, 0, -1));
 		}
 
-		App->gEngine->cam.camOffset = App->gEngine->cam.camOffset;
+		//double bruh = App->gEngine->cam.camOffset;
 		App->gEngine->cam.UpdateLookAt();
 	}
 }
