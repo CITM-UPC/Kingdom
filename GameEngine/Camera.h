@@ -12,7 +12,9 @@ struct Camera
 	double clippingPlaneViewNear;
 	double clippingPlaneViewFar;
 
+	void UpdateLookAt();
 
 	Transform transform;
 	vec3 lookAtPos;
+	double camOffset;
 };

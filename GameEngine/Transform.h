@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine_Globals.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 class Transform
 {
@@ -20,6 +21,9 @@ public:
 	void Move(vec3 displacement, Space referenceFrame = Space::LOCAL); 
 
 public:
+	glm::mat3x3 EulerToMat(vec3 euler);
+
+public:
 	vec3 position;
 	vec3 rotation;
 	vec3 scale; //not used at the moment
@@ -32,10 +36,8 @@ public:
 	vec3 right;
 	vec3 up;
 
-private:
-	glm::mat3x3 rotMatrix = glm::mat3x3(right.x, up.x, forward.x,
-										right.y, up.y, forward.y,
-										right.z, up.z, forward.z);
+public:
+	glm::mat3x3 rotMatrix;
 
 };
 

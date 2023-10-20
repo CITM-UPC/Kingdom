@@ -142,6 +142,10 @@ update_status ModuleUI::PreUpdate()
 		ImGui::Text("Forward: %f, %f, %f", App->gEngine->cam.transform.forward.x, App->gEngine->cam.transform.forward.y, App->gEngine->cam.transform.forward.z);
 		ImGui::Text("Right: %f, %f, %f", App->gEngine->cam.transform.right.x, App->gEngine->cam.transform.right.y, App->gEngine->cam.transform.right.z);
 		ImGui::Text("Up: %f, %f, %f", App->gEngine->cam.transform.up.x, App->gEngine->cam.transform.up.y, App->gEngine->cam.transform.up.z);
+		ImGui::Separator();
+		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.rotMatrix[0][0], App->gEngine->cam.transform.rotMatrix[0][1], App->gEngine->cam.transform.rotMatrix[0][2]);
+		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.rotMatrix[1][0], App->gEngine->cam.transform.rotMatrix[1][1], App->gEngine->cam.transform.rotMatrix[1][2]);
+		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.rotMatrix[2][0], App->gEngine->cam.transform.rotMatrix[2][1], App->gEngine->cam.transform.rotMatrix[2][2]);
 		ImGui::End();
 	}
 	if (about) {
