@@ -34,6 +34,14 @@ void Transform::Rotate(glm::vec3 axis)
 	/*transformMatrix = glm::rotate(transformMatrix, angle, axis);
 	UpdateValues();*/
 
+	glm::mat3x3 test;
+
+	test[0].x = right.x;	test[0].y = right.y;	test[0].z = right.z;
+	test[1].x = up.x;		test[1].y = up.y;		test[1].z = up.z;
+	test[2].x = forward.x;	test[2].y = forward.y;	test[2].z = forward.z;
+
+	axis = test * axis;
+
 	//axis = rotMatrix * axis;
 
 	glm::mat3x3 rotX = glm::mat3x3(	1,	0,								0,
