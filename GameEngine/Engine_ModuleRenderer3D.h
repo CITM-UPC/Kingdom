@@ -5,6 +5,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GL/glew.h"//testing
+#include <list>
+#include <vector>
+#include "Mesh.h"
 
 class Engine_ModuleRenderer3D : public Engine_Module
 {
@@ -33,11 +36,17 @@ public:
 		vsync = active; 
 	}
 
+	void addFbx(const std::string &filePath) {
+		test = Mesh::loadFromFile(filePath);
+		
+	}
+
 public:
 
 	SDL_GLContext context;
 	glm::mat3x3 NormalMatrix;
 	glm::mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
+	std::vector<Mesh::Ptr> test;
 
 private:
 

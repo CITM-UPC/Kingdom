@@ -1,10 +1,10 @@
 #include "Mesh.h"
 #include <GL/glew.h>
-#include "Engine_Globals.h"
 
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
+
 
 #include <vector>
 #include <array>
@@ -15,7 +15,7 @@ std::vector<Mesh::Ptr> Mesh::loadFromFile(const std::string& path) {
 
     vector<Mesh::Ptr> mesh_ptrs;
 
-    auto scene = aiImportFile(path.c_str(), aiProcess_Triangulate |aiProcess_FlipUVs);
+    auto scene = aiImportFile(path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
     for (size_t m = 0; m < scene->mNumMeshes; ++m) {
         auto mesh = scene->mMeshes[m];
         auto faces = mesh->mFaces;
@@ -48,16 +48,16 @@ std::vector<Mesh::Ptr> Mesh::loadFromFile(const std::string& path) {
     }
 
     aiReleaseImport(scene);
-    
+
     return mesh_ptrs;
 }
 
-Mesh::Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* index_data, unsigned int numIndexs) : 
+Mesh::Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* index_data, unsigned int numIndexs) :
     _format(format),
     _numVerts(numVerts),
     _numIndexs(numIndexs)
 {
-    glGenBuffers(1, &_vertex_buffer_id);
+    glGenBuffers(1, &_vertex_buffer_id); // aquí peta
     glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer_id);
 
     switch (_format) {
@@ -141,6 +141,6 @@ void Mesh::draw() {
 }
 
 Mesh::~Mesh() {
-    if(_vertex_buffer_id) glDeleteBuffers(1, &_vertex_buffer_id);
-    if(_indexs_buffer_id) glDeleteBuffers(1, &_indexs_buffer_id);
+    if (_vertex_buffer_id) glDeleteBuffers(1, &_vertex_buffer_id);
+    if (_indexs_buffer_id) glDeleteBuffers(1, &_indexs_buffer_id);
 }

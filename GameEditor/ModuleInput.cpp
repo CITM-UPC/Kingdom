@@ -113,8 +113,8 @@ update_status ModuleInput::PreUpdate()
 			filePath = e.drop.file;
 
 			if (filePath.substr(filePath.find_last_of(".") + 1) == "fbx") {
-				LOG("fbx file detected");
-				//App->gEngine->renderer3D->LoadFromFbx(filePath);
+				LOG(".fbx file detected");
+				App->gEngine->renderer3D->addFbx(filePath);
 			}
 
 			SDL_free(e.drop.file);  // Free dropped file's memory
