@@ -116,6 +116,9 @@ update_status ModuleInput::PreUpdate()
 				LOG(".fbx file detected");
 				App->gEngine->renderer3D->addFbx(filePath);
 			}
+			if (filePath.substr(filePath.find_last_of(".") + 1) == "png") {
+				LOG(".png file detected");			
+			}
 
 			SDL_free(e.drop.file);  // Free dropped file's memory
 

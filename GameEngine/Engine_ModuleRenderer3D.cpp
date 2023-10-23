@@ -150,8 +150,9 @@ engine_status Engine_ModuleRenderer3D::PostUpdate()
 
 #pragma endregion
 
-	static auto mesh_ptrs = Mesh::loadFromFile("BakerHouse.fbx");
-	for (auto& mesh_ptr : mesh_ptrs) mesh_ptr->draw();
+	//static auto mesh_ptrs = Mesh::loadFromFile("BakerHouse.fbx");
+	if (!test.empty())
+		for (auto& mesh_ptr : test) mesh_ptr->draw();
 
 
 	return ENGINE_UPDATE_CONTINUE;
