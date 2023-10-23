@@ -94,13 +94,29 @@ void ModuleRenderer::DoCameraInput()
 		}
 
 
-		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Rotate(glm::vec3(0,1,0), rotSpeed);
-		}
 		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		{
-			App->gEngine->cam.transform.Rotate(glm::vec3(0, 1, 0), -rotSpeed);
+			App->gEngine->cam.transform.Rotate(glm::vec3(0, rotSpeed, 0));
+		}
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		{
+			App->gEngine->cam.transform.Rotate(glm::vec3(0, -rotSpeed, 0));
+		}
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+		{
+			App->gEngine->cam.transform.Rotate(glm::vec3(rotSpeed, 0, 0));
+		}
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		{
+			App->gEngine->cam.transform.Rotate(glm::vec3(-rotSpeed, 0, 0));
+		}
+		if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
+		{
+			App->gEngine->cam.transform.Rotate(glm::vec3(0, 0, rotSpeed));
+		}
+		if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
+		{
+			App->gEngine->cam.transform.Rotate(glm::vec3(0, 0, -rotSpeed));
 		}
 
 		App->gEngine->cam.UpdateLookAt();

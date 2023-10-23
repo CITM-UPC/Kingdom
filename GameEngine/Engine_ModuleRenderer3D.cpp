@@ -204,5 +204,6 @@ void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyA
     }
     glEnd();
 
-	drawCubeTest();
+	//drawCubeTest();
+	drawAxis();
 }
