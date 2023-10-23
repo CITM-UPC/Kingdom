@@ -38,7 +38,12 @@ bool Engine_ModuleRenderer3D::Init()
 
 	if (ret == true)
 	{
+		// Initialize DevIL
 		ilInit();
+
+		// Initialize glew
+		glewInit();
+		
 		//Use Vsync
 		if (vsync && SDL_GL_SetSwapInterval(1) < 0)
 			ENGINE_LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
@@ -114,14 +119,14 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 	gluLookAt(gEngine->cam.transform.position.x, gEngine->cam.transform.position.y, gEngine->cam.transform.position.z,
 		gEngine->cam.lookAtPos.x, gEngine->cam.lookAtPos.y, gEngine->cam.lookAtPos.z,
 		gEngine->cam.transform.up.x, gEngine->cam.transform.up.y, gEngine->cam.transform.up.z);
-	
-	
+
+
 	return ENGINE_UPDATE_CONTINUE;
 }
 
 engine_status Engine_ModuleRenderer3D::Update()
 {
-	
+
 	return ENGINE_UPDATE_CONTINUE;
 }
 
