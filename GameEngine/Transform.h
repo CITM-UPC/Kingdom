@@ -20,23 +20,19 @@ public:
 	//Moves 'displacement' amount in 'referenceFrame' coordinates.
 	void Move(vec3 displacement, Space referenceFrame = Space::LOCAL); 
 
-public:
-	glm::mat3x3 EulerToMat(vec3 euler);
+	void Rotate(glm::vec3 axis, float angle);
+
+	void UpdateValues();
 
 public:
 	vec3 position;
 	vec3 rotation;
-	vec3 scale; //not used at the moment
-	
-	vec3 localPosition; //not used at the moment
-	vec3 localRotation; //not used at the moment
-	vec3 localScale; //not used at the moment
 
 	vec3 forward;
 	vec3 right;
 	vec3 up;
 
-public:
+	glm::mat4 transformMatrix;
 	glm::mat3x3 rotMatrix;
 
 };

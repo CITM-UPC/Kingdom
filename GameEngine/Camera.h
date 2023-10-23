@@ -5,14 +5,15 @@
 
 struct Camera
 {
+public:
 	Camera();
+	void UpdateLookAt();
 
+public:
 	double fov;
 	double aspectRatio;
 	double clippingPlaneViewNear;
 	double clippingPlaneViewFar;
-
-	void UpdateLookAt();
 
 	Transform transform;
 	vec3 lookAtPos;

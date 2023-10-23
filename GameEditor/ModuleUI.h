@@ -18,7 +18,7 @@ public:
 private:
 	bool dockSpaceEnabled = true;
 	bool options = false;
-	bool camDebug = false;
+	bool camDebug = true;
 	bool about = false;
 	bool demoWindow = false;
 };

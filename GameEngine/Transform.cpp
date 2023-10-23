@@ -9,9 +9,8 @@ Transform::Transform()
 	up = vec3(0, 1, 0);
 	forward = vec3(0, 0, 1);
 
-	rotMatrix = glm::mat3x3(right.x, up.x, forward.x,
-							right.y, up.y, forward.y,
-							right.z, up.z, forward.z);
+	transformMatrix = glm::mat4(1.0); //Identity
+	rotMatrix = glm::mat3(1.0);
 }
 
 Transform::~Transform() {}
@@ -23,28 +22,53 @@ void Transform::MoveTo(vec3 position)
 
 void Transform::Move(vec3 displacement, Space referenceFrame)
 {
-	/*vec3 directorVector = App->gEngine->cam.lookAtPos - App->gEngine->cam.transform.position;
-	forward = glm::normalize(directorVector) * increase;
-
-	glm::mat4x4()*/
-
 	ENGINE_LOG("Move called");
 
-	vec3 resultingVector = rotMatrix * displacement;
+	//vec3 resultingVector = transformMatrix * displacement;
 
-	position += resultingVector;
+	//position += resultingVector;
 }
 
-glm::mat3x3 Transform::EulerToMat(vec3 euler)
+void Transform::Rotate(glm::vec3 axis, float angle)
 {
-	float p = glm::radians(euler.x);  // Rotation around the X-axis (pitch)
-	float y = glm::radians(euler.y);    // Rotation around the Y-axis (yaw)
-	float r = glm::radians(euler.z);   // Rotation around the Z-axis (roll)
+	//transformMatrix = glm::rotate(transformMatrix, angle, axis);
+	//UpdateValues();
 
-	//glm::mat4 rotationMatrix = glm::eulerAngleYXZ(pitch, yaw, roll);
+	glm::mat3x3 rotX = glm::mat3x3(	1,	0,								0,
+									0,	glm::cos(glm::radians(angle)), -glm::sin(glm::radians(angle)),
+									0,	glm::sin(glm::radians(angle)),	glm::cos(glm::radians(angle)));
 
-	glm::mat3x3 resMat = glm::mat3x3(	cos(p) * cos(y),	cos(y) * sin(p) * sin(r) - cos(r) * sin(y),		cos(r) * cos(y) * sin(p) + sin(y) * sin(r),
-										cos(p) * sin(y),	sin(y) * sin(p) * sin(r) + cos(r) * cos(y),		sin(p) * sin(y) * cos(r) - cos(y) * sin(r),
-										-sin(p),			cos(p) * sin(r),								cos(p) * cos(r));
-	return resMat;
+	glm::mat3x3 rotY = glm::mat3x3(	glm::cos(glm::radians(angle)),	0,	glm::sin(glm::radians(angle)),
+									0,								1,	0,
+									-glm::sin(glm::radians(angle)), 0,	glm::cos(glm::radians(angle)));
+
+	glm::mat3x3 rotZ = glm::mat3x3(	glm::cos(glm::radians(angle)), -glm::sin(glm::radians(angle)),	0,
+									glm::sin(glm::radians(angle)),	glm::cos(glm::radians(angle)),	0,
+									0,								0,								1);
+	forward = rotX * forward;
+	up = rotX * up;
+
+
+	forward = rotY * forward;
+	right = rotY * right;
+
+	up = rotZ * up;
+	right = rotZ * right;
+
+
+	//Setting the matrix
+	rotMatrix[0].x = right.x;	rotMatrix[0].y = right.y;	rotMatrix[0].z = right.z;
+	rotMatrix[1].x = forward.x;	rotMatrix[1].y = forward.y;	rotMatrix[1].z = forward.z;
+	rotMatrix[2].x = up.x;		rotMatrix[2].y = up.y;		rotMatrix[2].z = up.z;
+}
+
+void Transform::UpdateValues()
+{
+	rotMatrix[0][0] = transformMatrix[0][0];	rotMatrix[0][1] = transformMatrix[0][1];	rotMatrix[0][2] = transformMatrix[0][2];
+	rotMatrix[1][0] = transformMatrix[1][0];	rotMatrix[1][1] = transformMatrix[1][1];	rotMatrix[1][2] = transformMatrix[1][2];
+	rotMatrix[2][0] = transformMatrix[2][0];	rotMatrix[2][1] = transformMatrix[2][1];	rotMatrix[2][2] = transformMatrix[2][2];
+	
+	forward = rotMatrix * forward;
+	right = rotMatrix * right;
+	//up = rotMatrix * up;
 }
