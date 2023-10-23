@@ -9,8 +9,7 @@ Transform::Transform()
 	up = vec3(0, 1, 0);
 	forward = vec3(0, 0, 1);
 
-	transformMatrix = glm::mat4(1.0); //Identity
-	rotMatrix = glm::mat3(1.0);
+	rotMatrix = glm::mat3(1.0); //Identity
 }
 
 Transform::~Transform() {}

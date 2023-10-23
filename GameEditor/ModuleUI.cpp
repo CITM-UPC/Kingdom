@@ -146,16 +146,11 @@ update_status ModuleUI::PreUpdate()
 		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.rotMatrix[0][0], App->gEngine->cam.transform.rotMatrix[0][1], App->gEngine->cam.transform.rotMatrix[0][2]);
 		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.rotMatrix[1][0], App->gEngine->cam.transform.rotMatrix[1][1], App->gEngine->cam.transform.rotMatrix[1][2]);
 		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.rotMatrix[2][0], App->gEngine->cam.transform.rotMatrix[2][1], App->gEngine->cam.transform.rotMatrix[2][2]);
-		ImGui::Separator();
-		ImGui::Text("TMat: %f, %f, %f, %f", App->gEngine->cam.transform.transformMatrix[0][0], App->gEngine->cam.transform.transformMatrix[0][1], App->gEngine->cam.transform.transformMatrix[0][2], App->gEngine->cam.transform.transformMatrix[0][3]);
-		ImGui::Text("TMat: %f, %f, %f, %f", App->gEngine->cam.transform.transformMatrix[1][0], App->gEngine->cam.transform.transformMatrix[1][1], App->gEngine->cam.transform.transformMatrix[1][2], App->gEngine->cam.transform.transformMatrix[1][3]);
-		ImGui::Text("TMat: %f, %f, %f, %f", App->gEngine->cam.transform.transformMatrix[2][0], App->gEngine->cam.transform.transformMatrix[2][1], App->gEngine->cam.transform.transformMatrix[2][2], App->gEngine->cam.transform.transformMatrix[2][3]);
-		ImGui::Text("TMat: %f, %f, %f, %f", App->gEngine->cam.transform.transformMatrix[3][0], App->gEngine->cam.transform.transformMatrix[3][1], App->gEngine->cam.transform.transformMatrix[3][2], App->gEngine->cam.transform.transformMatrix[3][3]);
 		ImGui::End();
 	}
 	if (about) {
 		ImGui::Begin("About");
-		// To recode, this sucks
+		// To recode, this sucks //Maybe load it from a JSON then?
 		ImGui::Text("This Engine of Mine v0.1\nA 3D Game Engine for the Game Engines subject");
 		ImGui::Text("By Jonathan Cacay & Ethan Martin\n3rd Party Libraries used :");
 		ImGui::Text("LIBRARIES HERE");

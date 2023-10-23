@@ -31,7 +31,6 @@ public:
 	vec3 right;
 	vec3 up;
 
-	glm::mat4 transformMatrix;
 	glm::mat3x3 rotMatrix;
 
 };
