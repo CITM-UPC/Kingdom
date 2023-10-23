@@ -43,7 +43,7 @@ bool Engine_ModuleRenderer3D::Init()
 
 		// Initialize glew
 		glewInit();
-		
+
 		//Use Vsync
 		if (vsync && SDL_GL_SetSwapInterval(1) < 0)
 			ENGINE_LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
@@ -151,8 +151,11 @@ engine_status Engine_ModuleRenderer3D::PostUpdate()
 #pragma endregion
 
 	//static auto mesh_ptrs = Mesh::loadFromFile("BakerHouse.fbx");
-	if (!test.empty())
-		for (auto& mesh_ptr : test) mesh_ptr->draw();
+
+	if (!meshList.empty())
+		for (auto& vector : meshList)
+			for (auto& mesh_ptr : vector)
+				mesh_ptr->draw();
 
 
 	return ENGINE_UPDATE_CONTINUE;

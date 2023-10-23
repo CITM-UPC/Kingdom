@@ -37,8 +37,8 @@ public:
 	}
 
 	void addFbx(const std::string &filePath) {
-		test = Mesh::loadFromFile(filePath);
-		
+		static auto mesh_obtained = Mesh::loadFromFile(filePath);
+		meshList.push_back(mesh_obtained);
 	}
 
 public:
@@ -46,7 +46,8 @@ public:
 	SDL_GLContext context;
 	glm::mat3x3 NormalMatrix;
 	glm::mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
-	std::vector<Mesh::Ptr> test;
+	std::vector<std::vector<Mesh::Ptr>> meshList;
+	
 
 private:
 
