@@ -20,9 +20,8 @@ public:
 	//Moves 'displacement' amount in 'referenceFrame' coordinates.
 	void Move(vec3 displacement, Space referenceFrame = Space::LOCAL); 
 
+	//Rotates the object along the given axis in 'referenceFrame' coordinates. Reference frame pending to implement.
 	void Rotate(glm::vec3 axis);
-
-	void UpdateValues();
 
 public:
 	vec3 position;

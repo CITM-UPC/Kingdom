@@ -31,19 +31,17 @@ void Transform::Move(vec3 displacement, Space referenceFrame)
 
 void Transform::Rotate(glm::vec3 axis)
 {
-	/*transformMatrix = glm::rotate(transformMatrix, angle, axis);
-	UpdateValues();*/
+	//Translate the axis to the local refernce frame to apply the rotation
+	glm::mat3x3 referenceFrame;
 
-	glm::mat3x3 test;
+	referenceFrame[0].x = right.x;		referenceFrame[0].y = right.y;		referenceFrame[0].z = right.z;
+	referenceFrame[1].x = up.x;			referenceFrame[1].y = up.y;			referenceFrame[1].z = up.z;
+	referenceFrame[2].x = forward.x;	referenceFrame[2].y = forward.y;	referenceFrame[2].z = forward.z;
 
-	test[0].x = right.x;	test[0].y = right.y;	test[0].z = right.z;
-	test[1].x = up.x;		test[1].y = up.y;		test[1].z = up.z;
-	test[2].x = forward.x;	test[2].y = forward.y;	test[2].z = forward.z;
+	axis = referenceFrame * axis;
 
-	axis = test * axis;
 
-	//axis = rotMatrix * axis;
-
+	//Generate the rotation matrix that corresponds to the rotation
 	glm::mat3x3 rotX = glm::mat3x3(	1,	0,								0,
 									0,	glm::cos(glm::radians(axis.x)), -glm::sin(glm::radians(axis.x)),
 									0,	glm::sin(glm::radians(axis.x)),	glm::cos(glm::radians(axis.x)));
@@ -56,31 +54,10 @@ void Transform::Rotate(glm::vec3 axis)
 									glm::sin(glm::radians(axis.z)),	 glm::cos(glm::radians(axis.z)), 0,
 									0,								 0,								 1);
 
-
 	rotMatrix = rotZ * rotY * rotX;
 
+	//Apply the generated rotation matrix to the existing director vectors
 	forward = rotMatrix * forward;
 	right = rotMatrix * right;
 	up = rotMatrix * up;
-
-	//Setting the matrix
-
-	/*rotMatrix[0].x = right.x;	rotMatrix[0].y = right.y;	rotMatrix[0].z = right.z;
-	rotMatrix[1].x = up.x;		rotMatrix[1].y = up.y;		rotMatrix[1].z = up.z;
-	rotMatrix[2].x = forward.x;	rotMatrix[2].y = forward.y;	rotMatrix[2].z = forward.z;*/
-}
-
-void Transform::UpdateValues()
-{
-	/*
-
-	rotMatrix[0][0] = transformMatrix[0][0];	rotMatrix[0][1] = transformMatrix[0][1];	rotMatrix[0][2] = transformMatrix[0][2];
-	rotMatrix[1][0] = transformMatrix[1][0];	rotMatrix[1][1] = transformMatrix[1][1];	rotMatrix[1][2] = transformMatrix[1][2];
-	rotMatrix[2][0] = transformMatrix[2][0];	rotMatrix[2][1] = transformMatrix[2][1];	rotMatrix[2][2] = transformMatrix[2][2];
-	
-	forward = rotMatrix * forward;
-	right = rotMatrix * right;
-
-	*/
-	//up = rotMatrix * up;
 }
