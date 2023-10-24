@@ -62,63 +62,52 @@ bool ModuleRenderer::CleanUp()
 
 void ModuleRenderer::DoCameraInput()
 {
-	if (App->input->GetMouseButton(3))
+	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT))
 	{
-		double speed = 0.1;
-		double rotSpeed = 1.0;
-
-
-		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Move(glm::dvec3(0, 0, speed));
-		}
-		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Move(glm::dvec3(0, 0, -speed));
-		}
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Move(glm::dvec3(speed, 0, 0));
-		}
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Move(glm::dvec3(-speed, 0, 0));
-		}
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Move(glm::dvec3(0, speed, 0));
-		}
-		if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Move(glm::dvec3(0, -speed, 0));
-		}
-
-
-		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Rotate(glm::vec3(0, rotSpeed, 0));
-		}
-		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Rotate(glm::vec3(0, -rotSpeed, 0));
-		}
-		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Rotate(glm::vec3(rotSpeed, 0, 0));
-		}
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Rotate(glm::vec3(-rotSpeed, 0, 0));
-		}
-		if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Rotate(glm::vec3(0, 0, rotSpeed));
-		}
-		if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
-		{
-			App->gEngine->cam.transform.Rotate(glm::vec3(0, 0, -rotSpeed));
-		}
+		keysInput();
+		mouseInput();
 
 		App->gEngine->cam.UpdateLookAt();
 	}
+}
+
+void ModuleRenderer::keysInput()
+{
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN) { camSpeed = 0.2; }
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) { camSpeed = 0.1; }
+
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+	{
+		App->gEngine->cam.transform.Move(glm::dvec3(0, 0, camSpeed));
+	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+	{
+		App->gEngine->cam.transform.Move(glm::dvec3(0, 0, -camSpeed));
+	}
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+	{
+		App->gEngine->cam.transform.Move(glm::dvec3(camSpeed, 0, 0));
+	}
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	{
+		App->gEngine->cam.transform.Move(glm::dvec3(-camSpeed, 0, 0));
+	}
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
+	{
+		App->gEngine->cam.transform.Move(glm::dvec3(0, camSpeed, 0), Transform::Space::GLOBAL);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT)
+	{
+		App->gEngine->cam.transform.Move(glm::dvec3(0, -camSpeed, 0), Transform::Space::GLOBAL);
+	}
+}
+void ModuleRenderer::mouseInput()
+{
+	float sensitivity = 0.1;
+
+	int dx = App->input->GetMouseXMotion();
+	int dy = -App->input->GetMouseYMotion();
+
+	App->gEngine->cam.transform.Rotate(glm::vec3(0, dx * sensitivity, 0), Transform::Space::GLOBAL);
+	App->gEngine->cam.transform.Rotate(glm::vec3(dy * sensitivity, 0, 0));
 }
