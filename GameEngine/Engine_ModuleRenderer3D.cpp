@@ -102,6 +102,8 @@ bool Engine_ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(screen_width, screen_height);
 
+	addFbx("Assets/BakerHouse.fbx");
+
 	return ret;
 }
 

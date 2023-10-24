@@ -39,7 +39,10 @@ std::vector<Mesh::Ptr> Mesh::loadFromFile(const std::string& path) {
         auto material = scene->mMaterials[mesh->mMaterialIndex];
         aiString aiPath;
         material->GetTexture(aiTextureType_DIFFUSE, 0, &aiPath);
-        string texPath = aiScene::GetShortFilename(aiPath.C_Str());
+
+        size_t slash_pos = path.rfind('/');
+        string folder_path = (slash_pos != string::npos) ? path.substr(0, slash_pos+1) : "./";
+        string texPath = folder_path + aiScene::GetShortFilename(aiPath.C_Str());
 
         auto mesh_ptr = make_shared<Mesh>(Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size());
         mesh_ptr->texture = make_shared<Texture2D>(texPath);
