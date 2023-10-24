@@ -130,7 +130,7 @@ update_status ModuleUI::PreUpdate()
 	}
 	if (camDebug)
 	{
-		ImGui::Begin("Cam Debug");
+		ImGui::Begin("Cam Debug", &camDebug);
 		ImGui::Text("Camera Position x: %f", App->gEngine->cam.transform.position.x);
 		ImGui::Text("Camera Position y: %f", App->gEngine->cam.transform.position.y);
 		ImGui::Text("Camera Position z: %f", App->gEngine->cam.transform.position.z);
@@ -143,14 +143,14 @@ update_status ModuleUI::PreUpdate()
 		ImGui::Text("Right: %f, %f, %f", App->gEngine->cam.transform.right.x, App->gEngine->cam.transform.right.y, App->gEngine->cam.transform.right.z);
 		ImGui::Text("Up: %f, %f, %f", App->gEngine->cam.transform.up.x, App->gEngine->cam.transform.up.y, App->gEngine->cam.transform.up.z);
 		ImGui::Separator();
-		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.rotMatrix[0][0], App->gEngine->cam.transform.rotMatrix[0][1], App->gEngine->cam.transform.rotMatrix[0][2]);
-		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.rotMatrix[1][0], App->gEngine->cam.transform.rotMatrix[1][1], App->gEngine->cam.transform.rotMatrix[1][2]);
-		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.rotMatrix[2][0], App->gEngine->cam.transform.rotMatrix[2][1], App->gEngine->cam.transform.rotMatrix[2][2]);
+		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[0][0], App->gEngine->cam.transform.referenceFrameMat[0][1], App->gEngine->cam.transform.referenceFrameMat[0][2]);
+		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[1][0], App->gEngine->cam.transform.referenceFrameMat[1][1], App->gEngine->cam.transform.referenceFrameMat[1][2]);
+		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[2][0], App->gEngine->cam.transform.referenceFrameMat[2][1], App->gEngine->cam.transform.referenceFrameMat[2][2]);
 		ImGui::End();
 	}
 	if (about) {
 		ImGui::Begin("About");
-		// To recode, this sucks
+		// To recode, this sucks //Maybe load it from a JSON then?
 		ImGui::Text("This Engine of Mine v0.1\nA 3D Game Engine for the Game Engines subject");
 		ImGui::Text("By Jonathan Cacay & Ethan Martin\n3rd Party Libraries used :");
 		ImGui::Text("LIBRARIES HERE");

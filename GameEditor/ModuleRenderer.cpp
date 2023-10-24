@@ -64,68 +64,61 @@ void ModuleRenderer::DoCameraInput()
 {
 	if (App->input->GetMouseButton(3))
 	{
-		double increase = 0.1;
+		double speed = 0.1;
+		double rotSpeed = 1.0;
 
-		glm::dvec3 directorVector = App->gEngine->cam.lookAtPos - App->gEngine->cam.transform.position;
-		glm::dvec3 forward = glm::normalize(directorVector) * increase;
-		
-		glm::dmat3x3 rotMatrix = glm::dmat3x3(	0,	0,	1,
-												0,	1,	0,
-												-1,	0,	0);
-
-		glm::dvec3 right = rotMatrix * forward;
-		right.y = 0;
-
-		double speed = 0.01;
 
 		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 		{
-			//App->gEngine->cam.lookAtPos += forward;
-			//App->gEngine->cam.transform.position += forward;
-			App->gEngine->cam.transform.Move(glm::dvec3(0, 0, -speed));
+			App->gEngine->cam.transform.Move(glm::dvec3(0, 0, speed));
 		}
 		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 		{
-			//App->gEngine->cam.lookAtPos -= forward;
-			//App->gEngine->cam.transform.position -= forward;
-			App->gEngine->cam.transform.Move(glm::dvec3(0, 0, speed));
-		}
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-		{
-			//App->gEngine->cam.lookAtPos += right;
-			//App->gEngine->cam.transform.position += right;
-			App->gEngine->cam.transform.Move(glm::dvec3(speed, 0, 0));
+			App->gEngine->cam.transform.Move(glm::dvec3(0, 0, -speed));
 		}
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
-			//App->gEngine->cam.lookAtPos -= right;
-			//App->gEngine->cam.transform.position -= right;
+			App->gEngine->cam.transform.Move(glm::dvec3(speed, 0, 0));
+		}
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		{
 			App->gEngine->cam.transform.Move(glm::dvec3(-speed, 0, 0));
 		}
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
 		{
-			//App->gEngine->cam.lookAtPos += glm::dvec3(0, increase, 0);
-			//App->gEngine->cam.transform.position += glm::dvec3(0, increase, 0);
 			App->gEngine->cam.transform.Move(glm::dvec3(0, speed, 0));
 		}
 		if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT)
 		{
-			//App->gEngine->cam.lookAtPos -= glm::dvec3(0, increase, 0);
-			//App->gEngine->cam.transform.position -= glm::dvec3(0, increase, 0);
 			App->gEngine->cam.transform.Move(glm::dvec3(0, -speed, 0));
 		}
 
 
-		if (App->input->GetKey(SDL_SCANCODE_U) == KEY_REPEAT)
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		{
-			App->gEngine->cam.transform.Move(glm::dvec3(0, 0, 1));
+			App->gEngine->cam.transform.Rotate(glm::vec3(0, rotSpeed, 0));
 		}
-		if (App->input->GetKey(SDL_SCANCODE_J) == KEY_REPEAT)
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 		{
-			App->gEngine->cam.transform.Move(glm::dvec3(0, 0, -1));
+			App->gEngine->cam.transform.Rotate(glm::vec3(0, -rotSpeed, 0));
+		}
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+		{
+			App->gEngine->cam.transform.Rotate(glm::vec3(rotSpeed, 0, 0));
+		}
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		{
+			App->gEngine->cam.transform.Rotate(glm::vec3(-rotSpeed, 0, 0));
+		}
+		if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
+		{
+			App->gEngine->cam.transform.Rotate(glm::vec3(0, 0, rotSpeed));
+		}
+		if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
+		{
+			App->gEngine->cam.transform.Rotate(glm::vec3(0, 0, -rotSpeed));
 		}
 
-		//double bruh = App->gEngine->cam.camOffset;
 		App->gEngine->cam.UpdateLookAt();
 	}
 }

@@ -4,40 +4,37 @@
 
 class Transform
 {
+public:
 	enum class Space
 	{
 		LOCAL,
 		GLOBAL,
 	};
 
-public:
 	Transform();
 	~Transform();
 
-	//Moves to 'position' in the world space.
-	void MoveTo(vec3 position);	
+	//Moves the object to 'position'.
+	void MoveTo(vec3 position, Space referenceFrame = Space::GLOBAL);
 
-	//Moves 'displacement' amount in 'referenceFrame' coordinates.
+	//Moves the object in 'displacement' increments.
 	void Move(vec3 displacement, Space referenceFrame = Space::LOCAL); 
 
-public:
-	glm::mat3x3 EulerToMat(vec3 euler);
+	//Rotates the object for its rotation to be the one given by 'axis'.
+	void RotateTo(vec3f axis);
+
+	//Rotates the object in 'axis' increments.
+	void Rotate(vec3f axis, Space referenceFrame = Space::LOCAL);
 
 public:
 	vec3 position;
 	vec3 rotation;
-	vec3 scale; //not used at the moment
-	
-	vec3 localPosition; //not used at the moment
-	vec3 localRotation; //not used at the moment
-	vec3 localScale; //not used at the moment
 
 	vec3 forward;
 	vec3 right;
 	vec3 up;
 
-public:
-	glm::mat3x3 rotMatrix;
+	glm::mat3x3 referenceFrameMat;
 
 };
 

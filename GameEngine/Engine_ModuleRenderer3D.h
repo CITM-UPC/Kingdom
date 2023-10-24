@@ -97,4 +97,22 @@ private:
 		drawQuadFaceTriangles(b, a, e, f);
 		glEnd();
 	}
+	void drawAxis()
+	{
+		glLineWidth(4.0);
+		glBegin(GL_LINES);
+		//Red
+		glColor3ub(255, 0, 0);
+		glVertex3d(0, 0, 0);
+		glVertex3d(0.8, 0, 0);
+		//Green
+		glColor3ub(0, 255, 0);
+		glVertex3d(0, 0, 0);
+		glVertex3d(0, 0.8, 0);
+		//Blue
+		glColor3ub(0, 0, 255);
+		glVertex3d(0, 0, 0);
+		glVertex3d(0, 0, 0.8);
+		glEnd();
+	}
 };
