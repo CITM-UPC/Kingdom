@@ -76,11 +76,11 @@ void ModuleRenderer::DoCameraInput()
 		{
 			App->gEngine->cam.transform.Move(glm::dvec3(0, 0, -speed));
 		}
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
 			App->gEngine->cam.transform.Move(glm::dvec3(speed, 0, 0));
 		}
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 		{
 			App->gEngine->cam.transform.Move(glm::dvec3(-speed, 0, 0));
 		}

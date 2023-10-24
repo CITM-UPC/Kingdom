@@ -4,24 +4,27 @@
 
 class Transform
 {
+public:
 	enum class Space
 	{
 		LOCAL,
 		GLOBAL,
 	};
 
-public:
 	Transform();
 	~Transform();
 
-	//Moves to 'position' in the world space.
-	void MoveTo(vec3 position);	
+	//Moves the object to 'position'.
+	void MoveTo(vec3 position, Space referenceFrame = Space::GLOBAL);
 
-	//Moves 'displacement' amount in 'referenceFrame' coordinates.
+	//Moves the object in 'displacement' increments.
 	void Move(vec3 displacement, Space referenceFrame = Space::LOCAL); 
 
-	//Rotates the object along the given axis in 'referenceFrame' coordinates. Reference frame pending to implement.
-	void Rotate(glm::vec3 axis);
+	//Rotates the object for its rotation to be the one given by 'axis'.
+	void RotateTo(vec3f axis);
+
+	//Rotates the object in 'axis' increments.
+	void Rotate(vec3f axis, Space referenceFrame = Space::LOCAL);
 
 public:
 	vec3 position;
@@ -31,7 +34,7 @@ public:
 	vec3 right;
 	vec3 up;
 
-	glm::mat3x3 rotMatrix;
+	glm::mat3x3 referenceFrameMat;
 
 };
 
