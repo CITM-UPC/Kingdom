@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include <memory>
 #include <string>
@@ -24,15 +25,15 @@ private:
 
 	unsigned int _indexs_buffer_id;
 	const unsigned int _numIndexs;
-	
+
 public:
-	typedef std::shared_ptr<Mesh> Ptr;
+	using Ptr = std::shared_ptr<Mesh>;
 
 	static std::vector<Ptr> loadFromFile(const std::string& path);
-	
+
 	Texture2D::Ptr texture;
 
-	Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* indexs_data=nullptr, unsigned int numIndexs=0);
+	Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* indexs_data = nullptr, unsigned int numIndexs = 0);
 	Mesh(Mesh&& b) noexcept;
 	void draw();
 	~Mesh();

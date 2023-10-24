@@ -1,8 +1,10 @@
 #include "GameEngine.h"
 #include "Engine_Globals.h"
 #include "Engine_ModuleRenderer3D.h"
-#include "GL/glew.h"
+#include <GL/glew.h>
 #include "SDL2/SDL_opengl.h"
+#include <IL/il.h>
+#include <iostream>
 
 Engine_ModuleRenderer3D::Engine_ModuleRenderer3D(GameEngine* gEngine, bool start_enabled) : Engine_Module(gEngine, start_enabled)
 {
@@ -37,6 +39,12 @@ bool Engine_ModuleRenderer3D::Init()
 
 	if (ret == true)
 	{
+		// Initialize DevIL
+		ilInit();
+
+		// Initialize glew
+		glewInit();
+
 		//Use Vsync
 		if (vsync && SDL_GL_SetSwapInterval(1) < 0)
 			ENGINE_LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
@@ -94,6 +102,8 @@ bool Engine_ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(screen_width, screen_height);
 
+	addFbx("Assets/BakerHouse.fbx");
+
 	return ret;
 }
 
@@ -108,15 +118,18 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 	gluPerspective(gEngine->cam.fov, gEngine->cam.aspectRatio, gEngine->cam.clippingPlaneViewNear, gEngine->cam.clippingPlaneViewFar);
 
 	glMatrixMode(GL_MODELVIEW);
-	gluLookAt(gEngine->cam.transform.position.x, gEngine->cam.transform.position.y,	gEngine->cam.transform.position.z,
-			  gEngine->cam.lookAtPos.x, gEngine->cam.lookAtPos.y, gEngine->cam.lookAtPos.z,
-			  gEngine->cam.transform.up.x , gEngine->cam.transform.up.y , gEngine->cam.transform.up.z);
+	glLoadIdentity();
+	gluLookAt(gEngine->cam.transform.position.x, gEngine->cam.transform.position.y, gEngine->cam.transform.position.z,
+		gEngine->cam.lookAtPos.x, gEngine->cam.lookAtPos.y, gEngine->cam.lookAtPos.z,
+		gEngine->cam.transform.up.x, gEngine->cam.transform.up.y, gEngine->cam.transform.up.z);
+
 
 	return ENGINE_UPDATE_CONTINUE;
 }
 
 engine_status Engine_ModuleRenderer3D::Update()
 {
+
 	return ENGINE_UPDATE_CONTINUE;
 }
 
@@ -140,6 +153,15 @@ engine_status Engine_ModuleRenderer3D::PostUpdate()
 
 #pragma endregion
 
+	for (const auto& vector : meshList) {
+		for (const auto& mesh_ptr : vector) {
+			mesh_ptr->draw();
+		}
+	}
+
+	GLenum error = glGetError();
+	assert(error == GL_NO_ERROR);
+
 	return ENGINE_UPDATE_CONTINUE;
 }
 
@@ -154,7 +176,6 @@ bool Engine_ModuleRenderer3D::CleanUp()
 
 	return true;
 }
-
 
 void Engine_ModuleRenderer3D::OnResize(int width, int height)
 {
@@ -172,10 +193,10 @@ void Engine_ModuleRenderer3D::OnResize(int width, int height)
 void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyAxis, bool zyAxis)
 {
 	glLineWidth(1.0);
-    glColor3ub(128, 128, 128);
+	glColor3ub(128, 128, 128);
 
-    glBegin(GL_LINES);
-    for (int i = -size; i <= size; i += step) {
+	glBegin(GL_LINES);
+	for (int i = -size; i <= size; i += step) {
 
 		if (xzAxis)
 		{
@@ -201,9 +222,11 @@ void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyA
 			glVertex3i(0, -size, i);
 			glVertex3i(0, size, i);
 		}
-    }
-    glEnd();
+	}
+	glEnd();
 
 	//drawCubeTest();
+
 	drawAxis();
+
 }
