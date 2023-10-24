@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include "SDL2/SDL_opengl.h"
 #include <IL/il.h>
+#include <iostream>
 
 Engine_ModuleRenderer3D::Engine_ModuleRenderer3D(GameEngine* gEngine, bool start_enabled) : Engine_Module(gEngine, start_enabled)
 {
@@ -150,13 +151,14 @@ engine_status Engine_ModuleRenderer3D::PostUpdate()
 
 #pragma endregion
 
-	//static auto mesh_ptrs = Mesh::loadFromFile("BakerHouse.fbx");
+	for (const auto& vector : meshList) {
+		for (const auto& mesh_ptr : vector) {
+			mesh_ptr->draw();
+		}
+	}
 
-	if (!meshList.empty())
-		for (auto& vector : meshList)
-			for (auto& mesh_ptr : vector)
-				mesh_ptr->draw();
-
+	GLenum error = glGetError();
+	assert(error == GL_NO_ERROR);
 
 	return ENGINE_UPDATE_CONTINUE;
 }
@@ -172,7 +174,6 @@ bool Engine_ModuleRenderer3D::CleanUp()
 
 	return true;
 }
-
 
 void Engine_ModuleRenderer3D::OnResize(int width, int height)
 {
@@ -222,5 +223,5 @@ void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyA
 	}
 	glEnd();
 
-	drawCubeTest();
+	//drawCubeTest();
 }

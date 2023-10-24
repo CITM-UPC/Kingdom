@@ -107,15 +107,17 @@ update_status ModuleInput::PreUpdate()
 		case SDL_QUIT:
 			quit = true;
 			break;
+
 		case SDL_DROPFILE:
 
-			// Check if the dropped file has the .fbx extension
 			filePath = e.drop.file;
 
+			// Check if the dropped file has the .fbx extension
 			if (filePath.substr(filePath.find_last_of(".") + 1) == "fbx") {
 				LOG(".fbx file detected");
 				App->gEngine->renderer3D->addFbx(filePath);
 			}
+			// Check if the dropped file has the .png extension
 			if (filePath.substr(filePath.find_last_of(".") + 1) == "png") {
 				LOG(".png file detected");			
 			}
