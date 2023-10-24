@@ -1,17 +1,21 @@
 #pragma once
 
 #include <glm/vec3.hpp>
+#include "Transform.h"
 
 struct Camera
 {
+public:
 	Camera();
+	void UpdateLookAt();
 
+public:
 	double fov;
 	double aspectRatio;
 	double clippingPlaneViewNear;
 	double clippingPlaneViewFar;
 
-	glm::dvec3 camCenter;
-	glm::dvec3 lookAtPos;
-	glm::dvec3 upVector;
+	Transform transform;
+	vec3 lookAtPos;
+	double camOffset;
 };

@@ -130,19 +130,27 @@ update_status ModuleUI::PreUpdate()
 	}
 	if (camDebug)
 	{
-		ImGui::Begin("Cam Debug");
-		ImGui::Text("Cam Center x: %f", App->gEngine->cam.camCenter.x);
-		ImGui::Text("Cam Center y: %f", App->gEngine->cam.camCenter.y);
-		ImGui::Text("Cam Center z: %f", App->gEngine->cam.camCenter.z);
+		ImGui::Begin("Cam Debug", &camDebug);
+		ImGui::Text("Camera Position x: %f", App->gEngine->cam.transform.position.x);
+		ImGui::Text("Camera Position y: %f", App->gEngine->cam.transform.position.y);
+		ImGui::Text("Camera Position z: %f", App->gEngine->cam.transform.position.z);
 		ImGui::Separator();
 		ImGui::Text("LookAt Pos x: %f", App->gEngine->cam.lookAtPos.x);
 		ImGui::Text("LookAt Pos y: %f", App->gEngine->cam.lookAtPos.y);
 		ImGui::Text("LookAt Pos z: %f", App->gEngine->cam.lookAtPos.z);
+		ImGui::Separator();
+		ImGui::Text("Forward: %f, %f, %f", App->gEngine->cam.transform.forward.x, App->gEngine->cam.transform.forward.y, App->gEngine->cam.transform.forward.z);
+		ImGui::Text("Right: %f, %f, %f", App->gEngine->cam.transform.right.x, App->gEngine->cam.transform.right.y, App->gEngine->cam.transform.right.z);
+		ImGui::Text("Up: %f, %f, %f", App->gEngine->cam.transform.up.x, App->gEngine->cam.transform.up.y, App->gEngine->cam.transform.up.z);
+		ImGui::Separator();
+		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[0][0], App->gEngine->cam.transform.referenceFrameMat[0][1], App->gEngine->cam.transform.referenceFrameMat[0][2]);
+		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[1][0], App->gEngine->cam.transform.referenceFrameMat[1][1], App->gEngine->cam.transform.referenceFrameMat[1][2]);
+		ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[2][0], App->gEngine->cam.transform.referenceFrameMat[2][1], App->gEngine->cam.transform.referenceFrameMat[2][2]);
 		ImGui::End();
 	}
 	if (about) {
 		ImGui::Begin("About");
-		// To recode, this sucks
+		// To recode, this sucks //Maybe load it from a JSON then?
 		ImGui::Text("This Engine of Mine v0.1\nA 3D Game Engine for the Game Engines subject");
 		ImGui::Text("By Jonathan Cacay & Ethan Martin\n3rd Party Libraries used :");
 		ImGui::Text("LIBRARIES HERE");
@@ -175,6 +183,16 @@ update_status ModuleUI::PreUpdate()
 	if (ImGui::Button("Button on window C")) { LOG("Button on window C pressed"); }
 	if (ImGui::Button("Close editor")) { return UPDATE_STOP; }
 	ImGui::End();
+
+	/*ImGui::Begin("Inspector");
+	ImGui::Text("First inspector test");
+	ImGui::SliderFloat3("Position", (float*)&App->gEngine->cam.transform.position, 0, 1);
+	ImGui::DragFloat("x", (float*)&App->gEngine->cam.transform.position.x);
+	ImGui::SameLine();
+	ImGui::DragFloat("y", (float*)&App->gEngine->cam.transform.position.y);
+	ImGui::SameLine();
+	ImGui::DragFloat("z", (float*)&App->gEngine->cam.transform.position.z);
+	ImGui::End();*/
 
 	#pragma endregion
 

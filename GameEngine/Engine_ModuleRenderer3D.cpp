@@ -108,9 +108,9 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 	gluPerspective(gEngine->cam.fov, gEngine->cam.aspectRatio, gEngine->cam.clippingPlaneViewNear, gEngine->cam.clippingPlaneViewFar);
 
 	glMatrixMode(GL_MODELVIEW);
-	gluLookAt(gEngine->cam.camCenter.x, gEngine->cam.camCenter.y,	gEngine->cam.camCenter.z,
+	gluLookAt(gEngine->cam.transform.position.x, gEngine->cam.transform.position.y,	gEngine->cam.transform.position.z,
 			  gEngine->cam.lookAtPos.x, gEngine->cam.lookAtPos.y, gEngine->cam.lookAtPos.z,
-			  gEngine->cam.upVector.x , gEngine->cam.upVector.y , gEngine->cam.upVector.z);
+			  gEngine->cam.transform.up.x , gEngine->cam.transform.up.y , gEngine->cam.transform.up.z);
 
 	return ENGINE_UPDATE_CONTINUE;
 }
@@ -204,5 +204,6 @@ void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyA
     }
     glEnd();
 
-	drawCubeTest();
+	//drawCubeTest();
+	drawAxis();
 }
