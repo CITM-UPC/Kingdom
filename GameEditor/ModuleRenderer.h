@@ -18,6 +18,7 @@ public:
 	void DoCameraInput();
 	void keysInput();
 	void mouseInput();
+	void mouseCamOrbit();
 
 private:
 

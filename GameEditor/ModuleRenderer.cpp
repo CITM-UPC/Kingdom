@@ -69,6 +69,10 @@ void ModuleRenderer::DoCameraInput()
 
 		App->gEngine->cam.UpdateLookAt();
 	}
+	if (App->input->GetKey(SDL_SCANCODE_LALT) && App->input->GetMouseButton(SDL_BUTTON_LEFT))
+	{
+		mouseCamOrbit();
+	}
 }
 
 void ModuleRenderer::keysInput()
@@ -110,4 +114,16 @@ void ModuleRenderer::mouseInput()
 
 	App->gEngine->cam.transform.Rotate(glm::vec3(0, dx * sensitivity, 0), Transform::Space::GLOBAL);
 	App->gEngine->cam.transform.Rotate(glm::vec3(dy * sensitivity, 0, 0));
+}
+
+void ModuleRenderer::mouseCamOrbit()
+{
+	float sensitivity = 0.1;
+
+	int dx = App->input->GetMouseXMotion();
+	int dy = -App->input->GetMouseYMotion();
+
+	App->gEngine->cam.transform.Move(vec3(dx * sensitivity, 0, 0));
+	App->gEngine->cam.transform.Rotate(vec3(0, dx * sensitivity * 20, 0), Transform::Space::GLOBAL);
+	//App->gEngine->cam.transform.Move(vec3(0, dy * sensitivity, 0));
 }
