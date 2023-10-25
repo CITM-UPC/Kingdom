@@ -17,6 +17,23 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 ModuleUI::~ModuleUI()
 {}
 
+void OsOpenInShell(const char* path)
+{
+#ifdef _WIN32
+	// Note: executable path must use backslashes!
+	::ShellExecuteA(NULL, "open", path, NULL, NULL, SW_SHOWDEFAULT);
+#else
+#if __APPLE__
+	const char* open_executable = "open";
+#else
+	const char* open_executable = "xdg-open";
+#endif
+	char command[256];
+	snprintf(command, 256, "%s \"%s\"", open_executable, path);
+	system(command);
+#endif
+}
+
 bool ModuleUI::Init()
 {
 	LOG("Creating UI");
@@ -44,7 +61,7 @@ update_status ModuleUI::PreUpdate()
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	#pragma region	ImGui_MenuBar_Test
+#pragma region	ImGui_MenuBar_Test
 
 	if (dockSpaceEnabled)
 	{
@@ -57,72 +74,78 @@ update_status ModuleUI::PreUpdate()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			//ImGui::PlotHistogram();
-			if (ImGui::MenuItem("New", "Not implemented")) {}
-			if (ImGui::MenuItem("Open", "Not implemented")) {}
-			if (ImGui::BeginMenu("Open Recent", "Not implemented"))
-			{
-				ImGui::MenuItem("Example1.example");
-				ImGui::MenuItem("Example1.example");
-				ImGui::MenuItem("Example1.example");
-				if (ImGui::BeginMenu("More.."))
-				{
-					ImGui::MenuItem("Example2.example");
-					ImGui::MenuItem("Example2.example");
-					ImGui::EndMenu();
-				}
-				ImGui::EndMenu();
-			}
+			if (ImGui::MenuItem("New Scene", "Not implemented")) {}
+			if (ImGui::MenuItem("Open Scene", "Not implemented")) {}
+			ImGui::Separator();
 			if (ImGui::MenuItem("Save", "Not implemented")) {}
-			if (ImGui::MenuItem("Save As..", "Not implemented")) {}
-			if (ImGui::MenuItem("Exit")) { return UPDATE_STOP; }
+			if (ImGui::MenuItem("Save As...", "Not implemented")) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("New Project", "Not implemented")) {}
+			if (ImGui::MenuItem("Open Project", "Not implemented")) {}
+			if (ImGui::MenuItem("Save Project", "Not implemented")) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Exit", "Alt+F4")) { return UPDATE_STOP; }
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit"))
 		{
-			if (ImGui::MenuItem("Undo", "Not implemented")) {}
-			if (ImGui::MenuItem("Redo", "Not implemented", false, false)) {}  // Disabled item
+			if (ImGui::MenuItem("Undo", "Ctrl+Z")) {}
+			if (ImGui::MenuItem("Redo", "Ctrl+Y", false, false)) {}  // Disabled item
 			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", "Not implemented")) {}
-			if (ImGui::MenuItem("Copy", "Not implemented")) {}
-			if (ImGui::MenuItem("Paste", "Not implemented"))
+			if (ImGui::MenuItem("Select All", "Not implemented")) {}
+			if (ImGui::MenuItem("Deselect All", "Not implemented")) {}
+			if (ImGui::MenuItem("Select Children", "Not implemented"))
 			{
 				LOG("Pressed Paste Button");
 			}
-			if (ImGui::MenuItem("Toggle DockSpace"))
-			{
-				dockSpaceEnabled = !dockSpaceEnabled;
-			}
+			if (ImGui::MenuItem("Invert Children", "Not implemented")) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Duplicate", "Not implemented")) {}
+			if (ImGui::MenuItem("Delete", "Not implemented")) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Play", "Not implemented")) {}
+			if (ImGui::MenuItem("Pause", "Not implemented")) {}
+			if (ImGui::MenuItem("Step", "Not implemented")) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Settings", "Not implemented")) {}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Options"))
 		{
-			if (ImGui::MenuItem("Config Window")) {
-				options = !options;
+			if (ImGui::MenuItem("Config Window")) options = true;
+			if (ImGui::MenuItem("Camera Debug")) camDebug = true;
+			if (ImGui::MenuItem("Toggle DockSpace")) dockSpaceEnabled = !dockSpaceEnabled;
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("GameObjects")) {
+			if (ImGui::BeginMenu("Create...")) {
+				if (ImGui::MenuItem("Create Empty", "Not implemented")) {}
+				if (ImGui::MenuItem("Plane", "Not implemented")) {}
+				if (ImGui::MenuItem("Cube", "Not implemented")) {}
+				if (ImGui::MenuItem("Sphere", "Not implemented")) {}
+				if (ImGui::MenuItem("Cylinder", "Not implemented")) {}
+				if (ImGui::MenuItem("Cone", "Not implemented")) {}
+				if (ImGui::MenuItem("Torus", "Not implemented")) {}
+				ImGui::EndMenu();
 			}
-			if (ImGui::MenuItem("Camera Debug")) {
-				camDebug = !camDebug;
-			}
+			if (ImGui::MenuItem("Draw Mode")) {}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Help"))
 		{
-			if (ImGui::MenuItem("Show Demo Window", " ")) {
-				demoWindow = !demoWindow;
-			}
-			if (ImGui::MenuItem("About...", " ")) {
-				about = !about;
-			}
+			if (ImGui::MenuItem("About")) about = true;
+			if (ImGui::MenuItem("Show Demo Window")) demoWindow = true;
+			ImGui::Separator();
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
 	}
 
-	#pragma endregion
+#pragma endregion
 
 	if (options)
 	{
-		ImGui::Begin("Options Window");
+		ImGui::Begin("Options Window", &options);
 		ImGui::Text("This window is a placeholder.\nFunctionality is WIP");
 		static bool testBool = false;
 		if (ImGui::Checkbox("VSYNC", &testBool)) { LOG("Checkbox Pressed"); };
@@ -149,21 +172,29 @@ update_status ModuleUI::PreUpdate()
 		ImGui::End();
 	}
 	if (about) {
-		ImGui::Begin("About");
-		// To recode, this sucks //Maybe load it from a JSON then?
-		ImGui::Text("This Engine of Mine v0.1\nA 3D Game Engine for the Game Engines subject");
-		ImGui::Text("By Jonathan Cacay & Ethan Martin\n3rd Party Libraries used :");
-		ImGui::Text("LIBRARIES HERE");
-		ImGui::Text("License:\nMIT License\nCopyright(c) 2023 Jonathan Cacay & Ethan Martin");
-		ImGui::Text("Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files(the Software), \nto deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, \nand /or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions : ");
-		ImGui::Text("The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.");
-		ImGui::Text("THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \nIN THE SOFTWARE.");
+		ImGui::Begin("About...", &about, ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Text("Kingdom v0.5\nA 3D Game Engine for the Game Engines subject.");
+		ImGui::Text("By Jonathan Cacay & Ethan Martin.");
+		ImGui::Separator();
+		ImGui::Text("3rd Party Libraries used :");
+		ImGui::Bullet(); if (ImGui::Button("Assimp 5.2.5")) { OsOpenInShell("https://assimp-docs.readthedocs.io/"); }
+		ImGui::Bullet(); if (ImGui::Button("DevIL 1.8.0#11")) { OsOpenInShell("https://openil.sourceforge.net/"); }
+		ImGui::Bullet(); if (ImGui::Button("GLEW 2.2.0#3")) { OsOpenInShell("https://glew.sourceforge.net/"); }
+		ImGui::Bullet(); if (ImGui::Button("GLM 2023-06-08")) { OsOpenInShell("https://glm.g-truc.net/0.9.5/index.html"); }
+		ImGui::Bullet(); if (ImGui::Button("ImGUI 1.89.9")) { OsOpenInShell("https://imgui-test.readthedocs.io/"); }
+		ImGui::Bullet(); if (ImGui::Button("jsoncpp 1.9.5")) { OsOpenInShell("https://open-source-parsers.github.io/jsoncpp-docs/doxygen/index.html"); }
+		ImGui::Bullet(); if (ImGui::Button("OpenGL 2022-12-04#3")) { OsOpenInShell("https://www.opengl.org/"); }
+		ImGui::Bullet(); if (ImGui::Button("SDL2 2.28.3")) { OsOpenInShell("https://wiki.libsdl.org/"); }
+		ImGui::Separator();
+		if (ImGui::CollapsingHeader("License")) {
+			ImGui::TextWrapped("MIT License \nCopyright(c) 2023 Jonathan Cacay & Ethan Martin \nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, the Software, to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and / sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: \nThe above copyright noticeand this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.");
+		}
 		ImGui::End();
-	}
-	if (demoWindow)
-		ImGui::ShowDemoWindow(); // Show demo window! :)
 
-	#pragma region ImGui_Windows_Test
+	}
+	if (demoWindow) ImGui::ShowDemoWindow(); // Show demo window! :)
+
+#pragma region ImGui_Windows_Test
 
 	ImGui::Begin("Window A");
 	ImGui::Text("This is window A");
@@ -194,7 +225,7 @@ update_status ModuleUI::PreUpdate()
 	ImGui::DragFloat("z", (float*)&App->gEngine->cam.transform.position.z);
 	ImGui::End();*/
 
-	#pragma endregion
+#pragma endregion
 
 	return UPDATE_CONTINUE;
 }
