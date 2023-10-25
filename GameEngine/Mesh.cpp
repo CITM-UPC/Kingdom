@@ -41,6 +41,7 @@ std::vector<Mesh::Ptr> Mesh::loadFromFile(const std::string& path) {
         material->GetTexture(aiTextureType_DIFFUSE, 0, &aiPath);
 
         size_t slash_pos = path.rfind('/');
+        if (slash_pos == string::npos) slash_pos = path.rfind('\\');
         string folder_path = (slash_pos != string::npos) ? path.substr(0, slash_pos+1) : "./";
         string texPath = folder_path + aiScene::GetShortFilename(aiPath.C_Str());
 
