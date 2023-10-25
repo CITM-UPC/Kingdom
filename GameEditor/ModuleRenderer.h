@@ -16,9 +16,10 @@ public:
 	bool CleanUp();
 
 	void DoCameraInput();
-	void keysInput();
-	void mouseInput();
+	void keysInputFPS();
+	void mouseInputFPS();
 	void mouseCamOrbit();
+	void DoZoom();
 
 private:
 
