@@ -15,10 +15,13 @@ public:
 
 	void RenderUI();
 
+	void LogConsoleTest();
+
 private:
 	bool dockSpaceEnabled = true;
 	bool options = false;
 	bool camDebug = false;
 	bool about = false;
 	bool demoWindow = false;
+	bool logWindow = false;
 };

@@ -145,7 +145,7 @@ void ModuleRenderer::mouseCameraPan()
 	int dx = App->input->GetMouseXMotion();
 	int dy = App->input->GetMouseYMotion();
 
-	float panSpeed = 0.2f;
+	float panSpeed = 0.01f;
 
 	App->gEngine->cam.transform.Move(vec3(dx * panSpeed, 0, 0));
 	App->gEngine->cam.transform.Move(vec3(0, dy * panSpeed, 0));
