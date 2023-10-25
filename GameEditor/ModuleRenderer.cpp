@@ -71,9 +71,16 @@ void ModuleRenderer::DoCameraInput()
 
 		App->gEngine->cam.UpdateLookAt();
 	}
-	if (App->input->GetKey(SDL_SCANCODE_LALT) && App->input->GetMouseButton(SDL_BUTTON_LEFT))
+	if (App->input->GetKey(SDL_SCANCODE_LALT))
 	{
-		mouseCamOrbit();
+		if (App->input->GetMouseButton(SDL_BUTTON_LEFT))
+		{
+			mouseCamOrbit();
+		}
+		if (App->input->GetMouseButton(SDL_BUTTON_MIDDLE))
+		{
+			mouseCameraPan();
+		}
 	}
 }
 
@@ -132,6 +139,18 @@ void ModuleRenderer::mouseCamOrbit()
 
 	vec3 finalPos = App->gEngine->cam.transform.position - (App->gEngine->cam.transform.forward * App->gEngine->cam.camOffset);
 	App->gEngine->cam.transform.MoveTo(finalPos);
+}
+void ModuleRenderer::mouseCameraPan()
+{
+	int dx = App->input->GetMouseXMotion();
+	int dy = App->input->GetMouseYMotion();
+
+	float panSpeed = 0.2f;
+
+	App->gEngine->cam.transform.Move(vec3(dx * panSpeed, 0, 0));
+	App->gEngine->cam.transform.Move(vec3(0, dy * panSpeed, 0));
+
+	App->gEngine->cam.UpdateLookAt();
 }
 void ModuleRenderer::DoZoom()
 {

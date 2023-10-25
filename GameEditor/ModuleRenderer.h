@@ -19,6 +19,7 @@ public:
 	void keysInputFPS();
 	void mouseInputFPS();
 	void mouseCamOrbit();
+	void mouseCameraPan();
 	void DoZoom();
 
 private:
