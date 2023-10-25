@@ -183,6 +183,7 @@ void Engine_ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	gEngine->cam.aspectRatio = (float)width / (float)height;
 	ProjectionMatrix = glm::perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
 	glLoadMatrixf(glm::value_ptr(ProjectionMatrix));
 
