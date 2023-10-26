@@ -18,6 +18,8 @@ public:
 	struct V3T2 { vec3f v; vec2f t; };
 
 private:
+
+	std::string meshName;
 	const enum Formats _format;
 
 	unsigned int _vertex_buffer_id;
@@ -32,11 +34,18 @@ public:
 	static std::vector<Ptr> loadFromFile(const std::string& path);
 
 	Texture2D::Ptr texture;
-
+	
 	Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* indexs_data = nullptr, unsigned int numIndexs = 0);
 	Mesh(Mesh&& b) noexcept;
 	void draw();
 	~Mesh();
+
+	std::string getName();
+	void setName(std::string name);
+
+	const unsigned int getNumVerts();
+
+	const unsigned int getNumIndexs();
 
 private:
 	Mesh(const Mesh& cpy);

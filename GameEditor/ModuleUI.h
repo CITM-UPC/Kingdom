@@ -18,6 +18,8 @@ public:
 	void LogConsoleTest();
 
 private:
+
+
 	bool dockSpaceEnabled = true;
 	bool options = false;
 	bool camDebug = false;

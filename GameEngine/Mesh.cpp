@@ -52,7 +52,7 @@ std::vector<Mesh::Ptr> Mesh::loadFromFile(const std::string& path) {
     }
 
     aiReleaseImport(scene);
-
+    
     return mesh_ptrs;
 }
 
@@ -87,7 +87,6 @@ Mesh::Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const
         _indexs_buffer_id = 0;
     }
 }
-
 
 Mesh::Mesh(Mesh&& b) noexcept :
     _format(b._format),
@@ -147,4 +146,20 @@ void Mesh::draw() {
 Mesh::~Mesh() {
     if (_vertex_buffer_id) glDeleteBuffers(1, &_vertex_buffer_id);
     if (_indexs_buffer_id) glDeleteBuffers(1, &_indexs_buffer_id);
+}
+
+void Mesh::setName(std::string name) {
+    meshName = name;
+}
+
+std::string Mesh::getName() {
+    return meshName;
+}
+
+const unsigned int Mesh::getNumVerts() {
+    return _numVerts;
+}
+
+const unsigned int Mesh::getNumIndexs() {
+    return _numIndexs;
 }

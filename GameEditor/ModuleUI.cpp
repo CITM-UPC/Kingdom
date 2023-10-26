@@ -141,11 +141,11 @@ update_status ModuleUI::PreUpdate()
 
 	ImGui::Begin("Hierarchy");
 	for (const auto& vector : App->gEngine->renderer3D->meshList) {
-		for (const auto& mesh_ptr : vector) {
-			if (ImGui::MenuItem("Test")) {
-				// select the mesh
-			}
+		
+		if (ImGui::MenuItem(vector.data()->get()->getName().c_str())) {
+			// select the mesh
 		}
+
 	}
 	ImGui::EndMenu();
 

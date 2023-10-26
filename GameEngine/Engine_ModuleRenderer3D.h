@@ -25,20 +25,66 @@ public:
 
 	void DrawGrid(int size, int step, bool xzAxis = true, bool xyAxis = false, bool zyAxis = false);
 
-	void SetTargetWindow(SDL_Window* target) { 
-		targetWindow = target; 
+	void SetTargetWindow(SDL_Window* target) {
+		targetWindow = target;
 	}
-	void SetScreenSize(int width, int height) { 
-		screen_width = width; 
+	void SetScreenSize(int width, int height) {
+		screen_width = width;
 		screen_height = height;
 	}
-	void SetVsync(bool active) { 
-		vsync = active; 
+	void SetVsync(bool active) {
+		vsync = active;
 	}
 
-	void addFbx(const std::string &filePath) {
+	void addFbx(const std::string& filePath) {
 		auto mesh_obtained = Mesh::loadFromFile(filePath);
+
+		std::string meshName = filePath;
+		deleteSubstring(meshName, ".fbx");
+		eraseBeforeDelimiter(meshName);
+		int currentCopies = checkNameAvailability(meshName);
+		if (currentCopies > 0) {
+			meshName.append("(");
+			std::string copiesToString = std::to_string(currentCopies);
+			meshName.append(copiesToString);
+			meshName.append(")");
+		}
+
+		mesh_obtained.data()->get()->setName(meshName);
 		meshList.push_back(mesh_obtained);
+	}
+
+	void deleteSubstring(std::string& mainString, const std::string& substringToDelete) {
+		size_t pos = mainString.find(substringToDelete);
+
+		// Iterate until all occurrences are removed
+		while (pos != std::string::npos) {
+			mainString.erase(pos, substringToDelete.length());
+			pos = mainString.find(substringToDelete, pos);
+		}
+	}
+
+	void eraseBeforeDelimiter(std::string& str) {
+		size_t found = str.find_last_of("\\/");
+		if (found != std::string::npos) {
+			str.erase(0, found + 1);
+		}
+	}
+
+	void detectAndIncrement(std::string mainString, const std::string& substring, int& counter) {
+		if (mainString.find(substring) != std::string::npos) {
+			counter++;
+		}
+	}
+
+	int checkNameAvailability(std::string name) {
+		int count = 0;
+
+		for (const auto& vector : meshList) {
+			detectAndIncrement(vector.data()->get()->getName(), name, count);
+		}
+
+		return count;
 	}
 
 public:
@@ -47,7 +93,6 @@ public:
 	glm::mat3x3 NormalMatrix;
 	glm::mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 	std::list<std::vector<Mesh::Ptr>> meshList;
-	
 
 private:
 
