@@ -30,12 +30,16 @@ private:
 	const unsigned int _numIndexs;
 
 public:
+	Mesh() : _format(Formats::F_V3), _numVerts(0), _numIndexs(0) {
+		
+	}
+
 	using Ptr = std::shared_ptr<Mesh>;
 
 	static std::vector<Ptr> loadFromFile(const std::string& path);
 
 	Texture2D::Ptr texture;
-	
+
 	Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* indexs_data = nullptr, unsigned int numIndexs = 0);
 	Mesh(Mesh&& b) noexcept;
 	void draw();
