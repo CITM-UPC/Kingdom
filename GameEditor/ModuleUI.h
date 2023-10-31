@@ -16,6 +16,9 @@ public:
 	void RenderUI();
 
 private:
+
+	update_status MainMenuBar();
+
 	void HierarchyWindow();
 	void InspectorWindow();
 	void LogConsoleTestWindow();

@@ -70,77 +70,10 @@ update_status ModuleUI::PreUpdate()
 		ImGui::DockSpaceOverViewport(0, dock_flags);
 	}
 
-	if (ImGui::BeginMainMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("New Scene", "Not implemented")) {}
-			if (ImGui::MenuItem("Open Scene", "Not implemented")) {}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Save", "Not implemented")) {}
-			if (ImGui::MenuItem("Save As...", "Not implemented")) {}
-			ImGui::Separator();
-			if (ImGui::MenuItem("New Project", "Not implemented")) {}
-			if (ImGui::MenuItem("Open Project", "Not implemented")) {}
-			if (ImGui::MenuItem("Save Project", "Not implemented")) {}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Exit", "Alt+F4")) { return UPDATE_STOP; }
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Edit"))
-		{
-			if (ImGui::MenuItem("Undo", "Ctrl+Z")) {}
-			if (ImGui::MenuItem("Redo", "Ctrl+Y", false, false)) {}  // Disabled item
-			ImGui::Separator();
-			if (ImGui::MenuItem("Select All", "Not implemented")) {}
-			if (ImGui::MenuItem("Deselect All", "Not implemented")) {}
-			if (ImGui::MenuItem("Select Children", "Not implemented")) {}
-			if (ImGui::MenuItem("Invert Children", "Not implemented")) {}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Duplicate", "Not implemented")) {}
-			if (ImGui::MenuItem("Delete", "Not implemented")) {}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Play", "Not implemented")) {}
-			if (ImGui::MenuItem("Pause", "Not implemented")) {}
-			if (ImGui::MenuItem("Step", "Not implemented")) {}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Settings", "Not implemented")) {}
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Options"))
-		{
-			if (ImGui::MenuItem("Config Window")) options = true;
-			if (ImGui::MenuItem("Camera Debug")) camDebug = true;
-			if (ImGui::MenuItem("Toggle DockSpace")) dockSpaceEnabled = !dockSpaceEnabled;
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("GameObjects")) {
-			if (ImGui::BeginMenu("Create...")) {
-				if (ImGui::MenuItem("Create Empty", "Not implemented")) {}
-				if (ImGui::MenuItem("Plane", "Not implemented")) {}
-				if (ImGui::MenuItem("Cube", "Not implemented")) {}
-				if (ImGui::MenuItem("Sphere", "Not implemented")) {}
-				if (ImGui::MenuItem("Cylinder", "Not implemented")) {}
-				if (ImGui::MenuItem("Cone", "Not implemented")) {}
-				if (ImGui::MenuItem("Torus", "Not implemented")) {}
-				ImGui::EndMenu();
-			}
-			if (ImGui::MenuItem("Draw Mode")) {}
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Help"))
-		{
-			if (ImGui::MenuItem("About")) about = true;
-			ImGui::Separator();
-			if (ImGui::MenuItem("Hierarchy")) hierarchy = true;
-			if (ImGui::MenuItem("Inspector")) inspector = true;
-			if (ImGui::MenuItem("Log Window")) logWindow = true;
-			ImGui::EndMenu();
-		}
-		ImGui::EndMainMenuBar();
-	}
+	MainMenuBar();
 
 #pragma endregion
+
 
 	if (hierarchy)	HierarchyWindow();
 	if (inspector)	InspectorWindow();
@@ -182,6 +115,92 @@ void ModuleUI::RenderUI()
 {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+update_status ModuleUI::MainMenuBar()
+{
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("New Scene", "Not implemented")) {}
+			if (ImGui::MenuItem("Open Scene", "Not implemented")) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Save", "Not implemented")) {}
+			if (ImGui::MenuItem("Save As...", "Not implemented")) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("New Project", "Not implemented")) {}
+			if (ImGui::MenuItem("Open Project", "Not implemented")) {}
+			if (ImGui::MenuItem("Save Project", "Not implemented")) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Exit", "Alt+F4")) { return UPDATE_STOP; }
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Edit"))
+		{
+			if (ImGui::MenuItem("Undo", "Ctrl+Z")) {}
+			if (ImGui::MenuItem("Redo", "Ctrl+Y", false, false)) {}  // Disabled item
+			ImGui::Separator();
+			if (ImGui::MenuItem("Select All", "Not implemented")) {}
+			if (ImGui::MenuItem("Deselect All", "Not implemented")) {}
+			if (ImGui::MenuItem("Select Children", "Not implemented")) {}
+			if (ImGui::MenuItem("Invert Children", "Not implemented")) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Duplicate", "Not implemented")) {}
+			if (ImGui::MenuItem("Delete", "Not implemented")) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Play", "Not implemented")) {}
+			if (ImGui::MenuItem("Pause", "Not implemented")) {}
+			if (ImGui::MenuItem("Step", "Not implemented")) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Settings", "Not implemented")) {}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Options"))
+		{
+			if (ImGui::MenuItem("Config Window")) options = true;
+			if (ImGui::MenuItem("Camera Debug")) camDebug = true;
+
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Window")) {
+			if (ImGui::BeginMenu("Menus")) {
+				ImGui::MenuItem("Hierarchy", "", &hierarchy);
+				ImGui::MenuItem("Inspector", "", &inspector);
+				ImGui::MenuItem("Log", "", &logWindow);
+				ImGui::EndMenu();
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Toggle DockSpace", "", &dockSpaceEnabled)) dockSpaceEnabled = !dockSpaceEnabled;
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("GameObjects")) {
+			if (ImGui::BeginMenu("Create...")) {
+				if (ImGui::MenuItem("Create Empty", "Not implemented")) {}
+				if (ImGui::MenuItem("Plane", "Not implemented")) {}
+				if (ImGui::MenuItem("Cube", "Not implemented")) {}
+				if (ImGui::MenuItem("Sphere", "Not implemented")) {}
+				if (ImGui::MenuItem("Cylinder", "Not implemented")) {}
+				if (ImGui::MenuItem("Cone", "Not implemented")) {}
+				if (ImGui::MenuItem("Torus", "Not implemented")) {}
+				ImGui::EndMenu();
+			}
+			if (ImGui::MenuItem("Draw Mode")) {}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Help"))
+		{
+			if (ImGui::MenuItem("About")) about = true;
+			ImGui::Separator();
+			if (ImGui::MenuItem("Hierarchy")) hierarchy = true;
+			if (ImGui::MenuItem("Inspector")) inspector = true;
+			if (ImGui::MenuItem("Log Window")) logWindow = true;
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+
+	return UPDATE_CONTINUE;
 }
 
 void ModuleUI::HierarchyWindow()
@@ -389,8 +408,8 @@ void ModuleUI::CamDebugWindow()
 void ModuleUI::AboutWindow()
 {
 	ImGui::Begin("About...", &about, ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Kingdom v0.5\nA 3D Game Engine for the Game Engines subject.");
-	ImGui::Text("By Jonathan Cacay & Ethan Martin.");
+	ImGui::Text("Kingdom v0.5\nA 3D Game Engine for the Game Engines subject.\nBy Jonathan Cacay & Ethan Martin.");
+	if (ImGui::Button("Repository Link")) { OsOpenInShell("https://github.com/CITM-UPC/Kingdom"); }
 	ImGui::Separator();
 	ImGui::Text("3rd Party Libraries used :");
 	ImGui::Bullet(); if (ImGui::Button("Assimp 5.2.5")) { OsOpenInShell("https://assimp-docs.readthedocs.io/"); }
