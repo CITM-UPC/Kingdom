@@ -1,7 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-
+#include <string>
 
 class ModuleUI : public Module
 {
@@ -31,7 +31,6 @@ private:
 
 	bool dockSpaceEnabled = true;
 
-
 	bool hierarchy = true;
 	bool inspector = true;
 	bool logWindow = true;
@@ -39,4 +38,6 @@ private:
 	bool options = false;
 	bool camDebug = false;
 	bool about = false;
+
+	std::string aboutContent;
 };

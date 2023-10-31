@@ -8,6 +8,9 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
+#include <iostream>
+#include <fstream>
+#include <string>
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -49,6 +52,18 @@ bool ModuleUI::Init()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->gEngine->renderer3D->context);
 	ImGui_ImplOpenGL3_Init();
 
+	std::ifstream file("../LICENSE"); // Open the file
+	std::string line;
+	if (file.is_open()) { // Check if the file is open
+		while (std::getline(file, line)) { // Read the file line by line
+			aboutContent += line + "\n"; // Append each line to the string
+		}
+		file.close(); // Close the file
+	}
+	else {
+		LOG("Unable to open LICENSE file.");
+	}
+
 	return true;
 }
 
@@ -61,19 +76,12 @@ update_status ModuleUI::PreUpdate()
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-#pragma region	ImGui_MenuBar_Test
-
 	if (dockSpaceEnabled)
 	{
 		ImGuiDockNodeFlags dock_flags = 0;
 		dock_flags |= ImGuiDockNodeFlags_PassthruCentralNode;
 		ImGui::DockSpaceOverViewport(0, dock_flags);
 	}
-
-	MainMenuBar();
-
-#pragma endregion
-
 
 	if (hierarchy)	HierarchyWindow();
 	if (inspector)	InspectorWindow();
@@ -95,9 +103,9 @@ update_status ModuleUI::PreUpdate()
 	ImGui::DragFloat("z", (float*)&App->gEngine->cam.transform.position.z);
 	ImGui::End();*/
 
-#pragma endregion
+#pragma endregion3
 
-	return UPDATE_CONTINUE;
+	return MainMenuBar();
 }
 
 bool ModuleUI::CleanUp()
@@ -192,9 +200,7 @@ update_status ModuleUI::MainMenuBar()
 		{
 			if (ImGui::MenuItem("About")) about = true;
 			ImGui::Separator();
-			if (ImGui::MenuItem("Hierarchy")) hierarchy = true;
-			if (ImGui::MenuItem("Inspector")) inspector = true;
-			if (ImGui::MenuItem("Log Window")) logWindow = true;
+			if (ImGui::MenuItem("Check releases...")) { OsOpenInShell("https://github.com/CITM-UPC/Kingdom/releases"); }
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
@@ -407,9 +413,10 @@ void ModuleUI::CamDebugWindow()
 }
 void ModuleUI::AboutWindow()
 {
+
 	ImGui::Begin("About...", &about, ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Kingdom v0.5\nA 3D Game Engine for the Game Engines subject.\nBy Jonathan Cacay & Ethan Martin.");
-	if (ImGui::Button("Repository Link")) { OsOpenInShell("https://github.com/CITM-UPC/Kingdom"); }
+	if (ImGui::Button("Repository Link")) { OsOpenInShell("https://github.com/CITM-UPC/Kingdom/"); }
 	ImGui::Separator();
 	ImGui::Text("3rd Party Libraries used :");
 	ImGui::Bullet(); if (ImGui::Button("Assimp 5.2.5")) { OsOpenInShell("https://assimp-docs.readthedocs.io/"); }
@@ -421,8 +428,6 @@ void ModuleUI::AboutWindow()
 	ImGui::Bullet(); if (ImGui::Button("OpenGL 2022-12-04#3")) { OsOpenInShell("https://www.opengl.org/"); }
 	ImGui::Bullet(); if (ImGui::Button("SDL2 2.28.3")) { OsOpenInShell("https://wiki.libsdl.org/"); }
 	ImGui::Separator();
-	if (ImGui::CollapsingHeader("License")) {
-		ImGui::TextWrapped("MIT License \nCopyright(c) 2023 Jonathan Cacay & Ethan Martin \nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, the Software, to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and / sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: \nThe above copyright noticeand this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.");
-	}
+	if (ImGui::CollapsingHeader("License")) { ImGui::Text(aboutContent.c_str()); }
 	ImGui::End();
 }
