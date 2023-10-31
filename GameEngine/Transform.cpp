@@ -2,6 +2,8 @@
 
 Transform::Transform()
 {
+	type = TRANSFORM;
+
 	position = vec3(0, 0, 0);
 	rotation = vec3(0, 0, 0);
 
@@ -102,4 +104,12 @@ void Transform::Rotate(vec3f axis, Space referenceFrame)
 	forward = rotMatrix * forward;
 	right = rotMatrix * right;
 	up = rotMatrix * up;
+}
+
+void Transform::Update()
+{
+}
+
+void Transform::DrawInspector()
+{
 }

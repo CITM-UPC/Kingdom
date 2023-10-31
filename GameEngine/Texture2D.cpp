@@ -8,6 +8,8 @@ using namespace std;
 
 Texture2D::Texture2D(const std::string& path) {
 
+    type = TEXTURE2D;
+
     //load image data using devil
     auto img = ilGenImage();
     ilBindImage(img);
@@ -33,11 +35,20 @@ Texture2D::Texture2D(const std::string& path) {
 }
 
 Texture2D::Texture2D(Texture2D&& tex) noexcept : _id(tex._id) {
+    type = TEXTURE2D;
     tex._id = 0;
 }
 
 Texture2D::~Texture2D() {
     if(_id) glDeleteTextures(1, &_id);
+}
+
+void Texture2D::Update()
+{
+}
+
+void Texture2D::DrawInspector()
+{
 }
 
 void Texture2D::bind() const {

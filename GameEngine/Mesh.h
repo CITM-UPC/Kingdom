@@ -4,12 +4,13 @@
 #include <memory>
 #include <string>
 
+#include "Component.h"
 #include "Engine_Globals.h"
 #include "Graphic.h"
 #include "Texture2D.h"
 
 
-class Mesh : public Graphic
+class Mesh : public Graphic, public Component
 {
 public:
 	enum Formats { F_V3, F_V3C4, F_V3T2 };
@@ -46,6 +47,9 @@ public:
 	const unsigned int getNumVerts();
 
 	const unsigned int getNumIndexs();
+
+	void Update() override;
+	void DrawInspector() override;
 
 private:
 	Mesh(const Mesh& cpy);

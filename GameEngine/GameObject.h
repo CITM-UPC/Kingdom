@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "Component.h"
 
@@ -10,7 +11,7 @@ private:
 
 	std::string name;
 	bool isActive;
-	std::vector<Component> components;
+	std::vector<std::unique_ptr<Component>> components;
 
 public:
 
@@ -22,7 +23,7 @@ public:
 
 	void SetActive(bool isActive);
 
-	Component* GetComponent(Component::Type component);
+	Component* GetComponent(Component::Type componentType);
 	void AddComponent(Component::Type component);
 	void RemoveComponent(Component::Type component);
 

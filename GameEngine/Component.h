@@ -15,6 +15,7 @@ public:
 		TEXTURE2D,
 	};
 
+	Type type;
 	bool isActive;
 	std::shared_ptr<GameObject> gameObject;
 

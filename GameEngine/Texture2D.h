@@ -1,8 +1,9 @@
 #pragma once
+#include "Component.h"
 #include <string>
 #include <memory>
 
-class Texture2D
+class Texture2D : public Component
 {
 
 private:
@@ -14,6 +15,9 @@ public:
 	Texture2D(Texture2D&& tex) noexcept;
 	void bind() const;
 	~Texture2D();
+
+	void Update() override;
+	void DrawInspector() override;
 
 private:
 	Texture2D(const Texture2D&);

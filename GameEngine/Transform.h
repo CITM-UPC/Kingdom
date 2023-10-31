@@ -1,8 +1,9 @@
 #pragma once
+#include "Component.h"
 #include "Engine_Globals.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-class Transform
+class Transform : public Component
 {
 public:
 	enum class Space
@@ -25,6 +26,9 @@ public:
 
 	//Rotates the object in 'axis' increments.
 	void Rotate(vec3f axis, Space referenceFrame = Space::LOCAL);
+
+	void Update() override;
+	void DrawInspector() override;
 
 public:
 	vec3 position;
