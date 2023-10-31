@@ -8,7 +8,7 @@ using namespace std;
 
 Texture2D::Texture2D(const std::string& path) {
 
-    type = TEXTURE2D;
+    type = Component::Type::TEXTURE2D;
 
     //load image data using devil
     auto img = ilGenImage();
@@ -35,7 +35,7 @@ Texture2D::Texture2D(const std::string& path) {
 }
 
 Texture2D::Texture2D(Texture2D&& tex) noexcept : _id(tex._id) {
-    type = TEXTURE2D;
+    type = Component::Type::TEXTURE2D;
     tex._id = 0;
 }
 

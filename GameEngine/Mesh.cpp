@@ -61,7 +61,7 @@ Mesh::Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const
     _numVerts(numVerts),
     _numIndexs(numIndexs)
 {
-    type = MESH;
+    type = Component::Type::MESH;
 
     glGenBuffers(1, &_vertex_buffer_id); // aquí peta
     glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer_id);
@@ -98,7 +98,7 @@ Mesh::Mesh(Mesh&& b) noexcept :
     _numIndexs(b._numIndexs),
     texture(b.texture)
 {
-    type = MESH;
+    type = Component::Type::MESH;
     b._vertex_buffer_id = 0;
     b._indexs_buffer_id = 0;
 

@@ -2,7 +2,7 @@
 
 Transform::Transform()
 {
-	type = TRANSFORM;
+	type = Component::Type::TRANSFORM;
 
 	position = vec3(0, 0, 0);
 	rotation = vec3(0, 0, 0);

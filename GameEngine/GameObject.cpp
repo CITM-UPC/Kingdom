@@ -46,13 +46,13 @@ void GameObject::AddComponent(Component::Type component)
 
 	switch (component)
 	{
-	case Component::TRANSFORM:
+	case Component::Type::TRANSFORM:
 		ptr = std::make_unique<Transform>();
 		break;
-	case Component::MESH:
+	case Component::Type::MESH:
 		ptr = std::make_unique<Mesh>();
 		break;
-	case Component::TEXTURE2D:
+	case Component::Type::TEXTURE2D:
 		ptr = std::make_unique<Texture2D>();
 		break;
 	default:

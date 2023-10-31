@@ -1,6 +1,5 @@
 #pragma once
 #include <memory>
-#include "GameObject.h"
 
 class GameObject;
 
@@ -8,11 +7,11 @@ class Component
 {
 public:
 
-	enum Type
+	enum class Type
 	{
 		TRANSFORM,
 		MESH,
-		TEXTURE2D,
+		TEXTURE2D
 	};
 
 	Type type;
