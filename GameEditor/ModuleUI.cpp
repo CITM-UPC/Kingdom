@@ -10,6 +10,7 @@
 #include "imgui_impl_opengl3.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -83,6 +84,7 @@ update_status ModuleUI::PreUpdate()
 		ImGui::DockSpaceOverViewport(0, dock_flags);
 	}
 
+	if (FPSgraph)   FPSGraphWindow();
 	if (hierarchy)	HierarchyWindow();
 	if (inspector)	InspectorWindow();
 	if (logWindow)	LogConsoleTestWindow();
@@ -175,6 +177,7 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::BeginMenu("Menus")) {
 				ImGui::MenuItem("Hierarchy", "", &hierarchy);
 				ImGui::MenuItem("Inspector", "", &inspector);
+				ImGui::MenuItem("FPS Graph", "", &FPSgraph);
 				ImGui::MenuItem("Log", "", &logWindow);
 				ImGui::EndMenu();
 			}
@@ -209,6 +212,21 @@ update_status ModuleUI::MainMenuBar()
 	return UPDATE_CONTINUE;
 }
 
+void ModuleUI::FPSGraphWindow()
+{
+	ImGui::Begin("FPS Graph", &FPSgraph);
+	
+	std::stringstream sStream;
+	sStream << "Average FPS: " << App->fpsHistory[App->fpsHistory.size() - 1];
+	string title = sStream.str();
+	ImGui::Text("FPS lines graph");
+	ImGui::PlotLines("", &App->fpsHistory[0], App->fpsHistory.size(), 0, title.c_str(), 1.0f, 100.0f, { 325, 100 });
+	ImGui::Separator();
+	ImGui::Text("FPS histogram");
+	ImGui::PlotHistogram("", &App->fpsHistory[0], App->fpsHistory.size(), 0, title.c_str(), 1.0f, 100.0f, { 325, 100 });
+	ImGui::End();
+}
+
 void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
@@ -221,6 +239,7 @@ void ModuleUI::HierarchyWindow()
 	}
 	ImGui::EndMenu();
 }
+
 void ModuleUI::InspectorWindow()
 {
 	ImGui::Begin("Inspector", &inspector);
@@ -230,6 +249,7 @@ void ModuleUI::InspectorWindow()
 	//}
 	ImGui::EndMenu();
 }
+
 void ModuleUI::LogConsoleTestWindow()
 {
 	struct ExampleAppLog
@@ -391,6 +411,7 @@ void ModuleUI::OptionsWindow()
 	if (ImGui::Checkbox("VSYNC", &testBool)) { LOG("Checkbox Pressed"); };
 	ImGui::End();
 }
+
 void ModuleUI::CamDebugWindow()
 {
 	ImGui::Begin("Cam Debug", &camDebug);
@@ -411,6 +432,7 @@ void ModuleUI::CamDebugWindow()
 	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[2][0], App->gEngine->cam.transform.referenceFrameMat[2][1], App->gEngine->cam.transform.referenceFrameMat[2][2]);
 	ImGui::End();
 }
+
 void ModuleUI::AboutWindow()
 {
 

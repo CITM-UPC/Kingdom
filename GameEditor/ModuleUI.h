@@ -19,6 +19,7 @@ private:
 
 	update_status MainMenuBar();
 
+	void FPSGraphWindow();
 	void HierarchyWindow();
 	void InspectorWindow();
 	void LogConsoleTestWindow();
@@ -34,7 +35,7 @@ private:
 	bool hierarchy = true;
 	bool inspector = true;
 	bool logWindow = true;
-
+	bool FPSgraph = false;
 	bool options = false;
 	bool camDebug = false;
 	bool about = false;

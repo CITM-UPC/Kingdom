@@ -1,5 +1,8 @@
 #pragma once
 
+#include <chrono>
+#include <thread>
+#include <vector>
 #include <list>
 #include "Globals.h"
 #include "Module.h"
@@ -9,6 +12,12 @@
 #include "ModuleUI.h"
 
 #include "..\GameEngine\GameEngine.h"
+
+using namespace std;
+using namespace chrono;
+
+static const unsigned int targetFPS = 60;
+static const auto frameDurationTime = 1.0s / targetFPS;
 
 class Application
 {
@@ -23,6 +32,7 @@ public:
 private:
 
 	std::list<Module*> list_modules;
+	
 
 public:
 
@@ -32,6 +42,8 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
+
+	vector<float> fpsHistory;
 
 private:
 

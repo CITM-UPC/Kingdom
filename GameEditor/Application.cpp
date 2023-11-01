@@ -46,10 +46,10 @@ bool Application::Init()
 	return ret;
 }
 
-
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
+	
 }
 
 // ---------------------------------------------
@@ -61,6 +61,9 @@ void Application::FinishUpdate()
 update_status Application::Update()
 {
 	update_status ret = update_status::UPDATE_CONTINUE;
+
+	const auto frameStart = std::chrono::steady_clock::now();
+
 	PrepareUpdate();
 
 	for (auto const& item : list_modules)
@@ -82,6 +85,23 @@ update_status Application::Update()
 	}
 
 	FinishUpdate();
+
+	const auto frameEnd = std::chrono::steady_clock::now();
+	const auto frameDuration = frameEnd - frameStart;
+	
+	if (frameDuration < frameDurationTime)
+		this_thread::sleep_for(frameDurationTime - frameDuration);
+
+	const auto frameEndAfterSleep = std::chrono::steady_clock::now();
+	const auto frameDurationAfterSleep = frameEndAfterSleep - frameStart;
+
+	float lastFPS = 1.0f / (frameDurationAfterSleep.count() * 0.000000001f);
+
+	fpsHistory.push_back(lastFPS);
+
+	// Replace oldest data in the history
+	if (fpsHistory.size() > 100) fpsHistory.erase(fpsHistory.begin());
+	
 	return ret;
 }
 
