@@ -214,11 +214,13 @@ update_status ModuleUI::MainMenuBar()
 
 void ModuleUI::FPSGraphWindow()
 {
-	ImGui::Begin("FPS Graph", &FPSgraph);
+	static ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize;
+	ImGui::Begin("FPS Graph", &FPSgraph, flags);
 	
 	std::stringstream sStream;
 	sStream << "Average FPS: " << App->fpsHistory[App->fpsHistory.size() - 1];
 	string title = sStream.str();
+
 	ImGui::Text("FPS lines graph");
 	ImGui::PlotLines("", &App->fpsHistory[0], App->fpsHistory.size(), 0, title.c_str(), 1.0f, 100.0f, { 325, 100 });
 	ImGui::Separator();
@@ -239,7 +241,7 @@ void ModuleUI::HierarchyWindow()
 	}
 	ImGui::EndMenu();
 }
-
+ 
 void ModuleUI::InspectorWindow()
 {
 	ImGui::Begin("Inspector", &inspector);
