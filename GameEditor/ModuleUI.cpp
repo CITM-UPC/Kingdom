@@ -176,7 +176,7 @@ update_status ModuleUI::MainMenuBar()
 		}
 		if (ImGui::BeginMenu("GameObjects")) {
 			if (ImGui::BeginMenu("Create...")) {
-				if (ImGui::MenuItem("Create Empty", "Not implemented")) {}
+				if (ImGui::MenuItem("Create Empty")) { App->gEngine->renderer3D->addGameObject(); }
 				if (ImGui::MenuItem("Plane", "Not implemented")) {}
 				if (ImGui::MenuItem("Cube", "Not implemented")) {}
 				if (ImGui::MenuItem("Sphere", "Not implemented")) {}
@@ -206,9 +206,9 @@ update_status ModuleUI::MainMenuBar()
 void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
-	for (const auto& vector : App->gEngine->renderer3D->meshList) {
+	for (const auto& vector : App->gEngine->renderer3D->gameObjectList) {
 
-		if (ImGui::MenuItem(vector.data()->get()->getName().c_str())) {
+		if (ImGui::MenuItem(vector.name.c_str())) {
 			// select the mesh
 		}
 

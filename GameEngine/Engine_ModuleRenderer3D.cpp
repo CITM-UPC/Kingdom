@@ -102,7 +102,7 @@ bool Engine_ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(screen_width, screen_height);
 
-	addFbx("Assets/BakerHouse.fbx");
+	addGameObject("Assets/BakerHouse.fbx");
 
 	return ret;
 }
@@ -153,10 +153,8 @@ engine_status Engine_ModuleRenderer3D::PostUpdate()
 
 #pragma endregion
 
-	for (const auto& vector : meshList) {
-		for (const auto& mesh_ptr : vector) {
-			mesh_ptr->draw();
-		}
+	for (auto& vector : gameObjectList) {
+		vector.UpdateComponents();
 	}
 
 	GLenum error = glGetError();

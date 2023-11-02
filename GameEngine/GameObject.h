@@ -28,8 +28,6 @@ public:
 
 	static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);
 
-private:
-
 	void UpdateComponents();
 };
 
