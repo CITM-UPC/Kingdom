@@ -15,7 +15,7 @@ public:
 	};
 
 	Type type;
-	bool isActive;
+	bool isActive = true;
 	std::shared_ptr<GameObject> gameObject;
 
 public:

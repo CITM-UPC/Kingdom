@@ -5,13 +5,16 @@
 #include <memory>
 
 #include "Component.h"
+#include "Transform.h"
+#include "Mesh.h"
+#include "Texture2D.h"
 
 class GameObject
 {
 public:
 
 	std::string name;
-	bool isActive;
+	bool isActive = true;
 
 private:
 
@@ -24,6 +27,7 @@ public:
 
 	Component* GetComponent(Component::Type componentType);
 	void AddComponent(Component::Type component);
+	void AddComponent(Mesh component);
 	void RemoveComponent(Component::Type component);
 
 	static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);

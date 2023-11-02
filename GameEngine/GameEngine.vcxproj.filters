@@ -89,5 +89,8 @@
     <ClInclude Include="Component.h">
       <Filter>Object Components\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MeshLoader.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

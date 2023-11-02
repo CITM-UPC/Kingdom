@@ -8,6 +8,7 @@
 #include <list>
 #include <vector>
 #include "Mesh.h"
+#include "MeshLoader.h"
 #include "GameObject.h"
 
 class Engine_ModuleRenderer3D : public Engine_Module
@@ -51,15 +52,17 @@ public:
 		}
 
 		currentObject.name = meshName;
+		gameObjectList.push_back(currentObject);
 	}
-	void addGameObject(const std::string& filePath) {
-		auto mesh_obtained = Mesh::loadFromFile(filePath);
+	/*void addGameObject(const std::string& filePath) {
 
-		for (const auto& mesh : mesh_obtained)
+		auto mesh_vector = MeshLoader::loadFromFile(filePath);
+
+		for (const auto& mesh : mesh_vector)
 		{
 			GameObject currentObject;
 			currentObject.AddComponent(Component::Type::MESH);
-			Mesh* meshToAdd = (Mesh*)currentObject.GetComponent(Component::Type::MESH);
+			Mesh* meshToAdd = dynamic_cast<Mesh*>(currentObject.GetComponent(Component::Type::MESH));
 			meshToAdd->meshInfo = mesh;
 
 			std::string meshName = filePath;
@@ -76,7 +79,7 @@ public:
 			currentObject.name = meshName;
 			gameObjectList.push_back(currentObject);
 		}
-	}
+	}*/
 
 	void deleteSubstring(std::string& mainString, const std::string& substringToDelete) {
 		size_t pos = mainString.find(substringToDelete);

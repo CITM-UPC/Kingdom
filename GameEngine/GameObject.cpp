@@ -1,12 +1,8 @@
 #include "GameObject.h"
 
-#include "Transform.h"
-#include "Mesh.h"
-#include "Texture2D.h"
-
 GameObject::GameObject()
 {
-	AddComponent(Component::Type::TRANSFORM);
+	//AddComponent(Component::Type::TRANSFORM);
 }
 
 GameObject::~GameObject()
@@ -45,6 +41,13 @@ void GameObject::AddComponent(Component::Type component)
 		ENGINE_LOG("Cant add component to components list in GameObject");
 		break;
 	}
+
+	components.push_back(std::move(ptr));
+}
+
+void GameObject::AddComponent(Mesh component)
+{
+	std::unique_ptr<Component> ptr = std::make_unique<Mesh>(component);
 
 	components.push_back(std::move(ptr));
 }

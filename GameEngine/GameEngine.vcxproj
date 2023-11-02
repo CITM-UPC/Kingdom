@@ -195,6 +195,7 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     <ClInclude Include="Graphic.h" />
     <ClInclude Include="JSONParser.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>
