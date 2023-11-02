@@ -109,7 +109,3 @@ void Transform::Rotate(vec3f axis, Space referenceFrame)
 void Transform::Update()
 {
 }
-
-void Transform::DrawInspector()
-{
-}

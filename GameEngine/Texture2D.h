@@ -19,7 +19,6 @@ public:
 	~Texture2D();
 
 	void Update() override;
-	void DrawInspector() override;
 
 private:
 	Texture2D(const Texture2D&);

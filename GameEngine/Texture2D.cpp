@@ -47,10 +47,6 @@ void Texture2D::Update()
 {
 }
 
-void Texture2D::DrawInspector()
-{
-}
-
 void Texture2D::bind() const {
     glBindTexture(GL_TEXTURE_2D, _id);
 }

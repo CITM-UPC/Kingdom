@@ -21,5 +21,4 @@ public:
 public:
 
 	virtual void Update() = 0;
-	virtual void DrawInspector() = 0;
 };

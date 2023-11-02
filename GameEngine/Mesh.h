@@ -53,7 +53,6 @@ public:
 	const unsigned int getNumIndexs();
 
 	void Update() override;
-	void DrawInspector() override;
 
 private:
 	Mesh(const Mesh& cpy);

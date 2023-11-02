@@ -28,7 +28,6 @@ public:
 	void Rotate(vec3f axis, Space referenceFrame = Space::LOCAL);
 
 	void Update() override;
-	void DrawInspector() override;
 
 public:
 	vec3 position;

@@ -169,8 +169,5 @@ const unsigned int Mesh::getNumIndexs() {
 
 void Mesh::Update()
 {
-}
-
-void Mesh::DrawInspector()
-{
+    draw();
 }
