@@ -8,6 +8,7 @@
 #include <list>
 #include <vector>
 #include "Mesh.h"
+#include "GameObject.h"
 
 class Engine_ModuleRenderer3D : public Engine_Module
 {
@@ -93,6 +94,7 @@ public:
 	glm::mat3x3 NormalMatrix;
 	glm::mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 	std::list<std::vector<Mesh::Ptr>> meshList;
+	std::list<GameObject> gameObjectList;
 
 private:
 

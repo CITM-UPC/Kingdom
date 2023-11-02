@@ -6,25 +6,11 @@
 
 GameObject::GameObject()
 {
+	AddComponent(Component::Type::TRANSFORM);
 }
 
 GameObject::~GameObject()
 {
-}
-
-void GameObject::SetName(std::string name)
-{
-	this->name = name;
-}
-
-std::string GameObject::GetName()
-{
-	return this->name;
-}
-
-void GameObject::SetActive(bool isActive)
-{
-	this->isActive = isActive;
 }
 
 Component* GameObject::GetComponent(Component::Type componentType)
@@ -65,13 +51,39 @@ void GameObject::AddComponent(Component::Type component)
 
 void GameObject::RemoveComponent(Component::Type component)
 {
+	for (auto& comp : components)
+	{
+		if (comp->type == component)
+		{
+			components.erase(std::remove(components.begin(),components.end(), comp));
+			break;
+		}
+	}
 }
+//void GameObject::RemoveComponent(Component::Type component)
+//{
+//	components.erase(std::remove_if(components.begin(), components.end(),
+//		[component](const std::unique_ptr<Component>& comp) {
+//			return comp->type == component;
+//		}), components.end());
+//}
 
-GameObject GameObject::Find(std::string name)
+GameObject* GameObject::Find(std::string name, std::list<GameObject> gameObjectList)
 {
-	return GameObject();
+	for (auto& go : gameObjectList)
+	{
+		if (go.name == name)
+		{
+			return &go;
+		}
+	}
+	return nullptr;
 }
 
 void GameObject::UpdateComponents()
 {
+	for (auto& comp : components)
+	{
+		comp->Update();
+	}
 }
