@@ -16,9 +16,10 @@ public:
 
 	Type type;
 	bool isActive = true;
-	std::shared_ptr<GameObject> gameObject;
-
+	GameObject* gameObject;
+	
 public:
 
 	virtual void Update() = 0;
+
 };

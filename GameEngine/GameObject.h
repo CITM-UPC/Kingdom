@@ -18,7 +18,7 @@ public:
 
 private:
 
-	std::vector<std::unique_ptr<Component>> components;
+	std::list<Component*> components;
 
 public:
 

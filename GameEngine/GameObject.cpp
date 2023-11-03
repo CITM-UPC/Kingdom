@@ -1,6 +1,7 @@
 #include "GameObject.h"
+#include <memory>
 
-GameObject::GameObject()
+GameObject::GameObject() : components()
 {
 	//AddComponent(Component::Type::TRANSFORM);
 }
@@ -15,7 +16,7 @@ Component* GameObject::GetComponent(Component::Type componentType)
 	{
 		if (comp->type == componentType)
 		{
-			return comp.get();
+			return comp;
 		}
 	}
 
@@ -24,8 +25,8 @@ Component* GameObject::GetComponent(Component::Type componentType)
 
 void GameObject::AddComponent(Component::Type component)
 {
-	std::unique_ptr<Component> ptr = nullptr;
-
+	std::unique_ptr<Component> ptr;
+	
 	switch (component)
 	{
 	case Component::Type::TRANSFORM:
@@ -42,14 +43,14 @@ void GameObject::AddComponent(Component::Type component)
 		break;
 	}
 
-	components.push_back(std::move(ptr));
+	components.push_back(ptr.get());
 }
 
 void GameObject::AddComponent(Mesh component)
 {
 	std::unique_ptr<Component> ptr = std::make_unique<Mesh>(component);
 
-	components.push_back(std::move(ptr));
+	components.push_back(ptr.get());
 }
 
 void GameObject::RemoveComponent(Component::Type component)
