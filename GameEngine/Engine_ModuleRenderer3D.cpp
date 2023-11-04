@@ -14,8 +14,7 @@ Engine_ModuleRenderer3D::Engine_ModuleRenderer3D(GameEngine* gEngine, bool start
 }
 
 // Destructor
-Engine_ModuleRenderer3D::~Engine_ModuleRenderer3D()
-{}
+Engine_ModuleRenderer3D::~Engine_ModuleRenderer3D() = default;
 
 // Called before render is available
 bool Engine_ModuleRenderer3D::Init()
@@ -23,7 +22,7 @@ bool Engine_ModuleRenderer3D::Init()
 	ENGINE_LOG("Creating 3D Renderer context");
 	bool ret = true;
 
-	if (targetWindow == NULL)
+	if (targetWindow == nullptr)
 	{
 		ENGINE_LOG("Target window has not been set. Try initializing the variable with 'SetTargetWindow()'");
 		ret = false;
@@ -31,7 +30,7 @@ bool Engine_ModuleRenderer3D::Init()
 
 	//Create context
 	context = SDL_GL_CreateContext(targetWindow);
-	if (context == NULL)
+	if (context == nullptr)
 	{
 		ENGINE_LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
 		ret = false;

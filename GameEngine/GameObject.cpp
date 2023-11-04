@@ -1,14 +1,13 @@
 #include "GameObject.h"
 #include <memory>
 
-GameObject::GameObject() : components()
+GameObject::GameObject()
 {
-	//AddComponent(Component::Type::TRANSFORM);
+	AddComponent(Component::Type::TRANSFORM);
+	//components.push_back(std::make_unique<Transform>().release());
 }
 
-GameObject::~GameObject()
-{
-}
+GameObject::~GameObject() = default;
 
 Component* GameObject::GetComponent(Component::Type componentType)
 {
@@ -43,7 +42,7 @@ void GameObject::AddComponent(Component::Type component)
 		break;
 	}
 
-	components.push_back(ptr.get());
+	components.push_back(ptr.release());
 }
 
 void GameObject::AddComponent(Mesh component)
