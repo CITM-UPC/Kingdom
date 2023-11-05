@@ -63,7 +63,6 @@ public:
 		{
 			GameObject currentObject;
 			currentObject.AddComponent(mesh);
-			//Mesh* meshToAdd = dynamic_cast<Mesh*>(currentObject.GetComponent(Component::Type::MESH));
 
 			std::string meshName = filePath;
 			deleteSubstring(meshName, ".fbx");

@@ -25,7 +25,8 @@ public:
 	GameObject();
 	~GameObject();
 
-	std::vector<std::shared_ptr<Component>> GetComponents(Component::Type componentType);
+	std::shared_ptr<Component> GetComponent(Component::Type componentType);
+	std::vector<std::shared_ptr<Component>> GetComponents();
 	void AddComponent(Component::Type component);
 	void AddComponent(std::shared_ptr<Mesh> component);
 	void RemoveComponent(Component::Type component);

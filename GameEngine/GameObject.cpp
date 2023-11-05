@@ -4,13 +4,24 @@
 GameObject::GameObject()
 {
 	components.push_back(std::make_shared<Transform>());
-	//AddComponent(Component::Type::TRANSFORM);
-	//components.push_back(std::make_unique<Transform>().release());
 }
 
 GameObject::~GameObject() = default;
 
-std::vector<std::shared_ptr<Component>> GameObject::GetComponents(Component::Type componentType)
+std::shared_ptr<Component> GameObject::GetComponent(Component::Type componentType)
+{
+	for (auto& comp : components)
+	{
+		if (comp->getType() == componentType)
+		{
+			return comp;
+		}
+	}
+
+	return nullptr;
+}
+
+std::vector<std::shared_ptr<Component>> GameObject::GetComponents()
 {
 	return components;
 }
