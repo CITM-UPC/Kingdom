@@ -65,6 +65,8 @@ bool ModuleUI::Init()
 		LOG("Unable to open LICENSE file.");
 	}
 
+	
+
 	return true;
 }
 
@@ -72,6 +74,7 @@ update_status ModuleUI::PreUpdate()
 {
 	//This here does not work. Currently in Input.cpp
 	//ImGui_ImplSDL2_ProcessEvent(&pollevent); 
+	GetHardwareInformation();
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
@@ -91,7 +94,8 @@ update_status ModuleUI::PreUpdate()
 
 	if (options)	OptionsWindow();
 	if (camDebug)	CamDebugWindow();
-	if (about)		AboutWindow();
+	if (about)      AboutWindow();
+	if (hardware)   HardwareWindow();
 
 #pragma region ImGui_Windows_Test
 
@@ -106,7 +110,7 @@ update_status ModuleUI::PreUpdate()
 	ImGui::End();*/
 
 #pragma endregion3
-
+	
 	return MainMenuBar();
 }
 
@@ -178,6 +182,7 @@ update_status ModuleUI::MainMenuBar()
 				ImGui::MenuItem("Hierarchy", "", &hierarchy);
 				ImGui::MenuItem("Inspector", "", &inspector);
 				ImGui::MenuItem("FPS Graph", "", &FPSgraph);
+				ImGui::MenuItem("Hardware Information", "", &hardware);
 				ImGui::MenuItem("Log", "", &logWindow);
 				ImGui::EndMenu();
 			}
@@ -216,7 +221,7 @@ void ModuleUI::FPSGraphWindow()
 {
 	static ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize;
 	ImGui::Begin("FPS Graph", &FPSgraph, flags);
-	
+
 	std::stringstream sStream;
 	sStream << "Average FPS: " << App->fpsHistory[App->fpsHistory.size() - 1];
 	string title = sStream.str();
@@ -241,7 +246,7 @@ void ModuleUI::HierarchyWindow()
 	}
 	ImGui::EndMenu();
 }
- 
+
 void ModuleUI::InspectorWindow()
 {
 	ImGui::Begin("Inspector", &inspector);
@@ -454,4 +459,57 @@ void ModuleUI::AboutWindow()
 	ImGui::Separator();
 	if (ImGui::CollapsingHeader("License")) { ImGui::Text(aboutContent.c_str()); }
 	ImGui::End();
+}
+
+void ModuleUI::HardwareWindow()
+{
+	ImGui::Begin("Hardware information", &hardware, ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Text("GPU Information:");
+	std::string textToShow = "GPU: " + info.Gpu;
+	ImGui::Text(textToShow.c_str());
+
+	textToShow = "Vendor: " + info.GpuVendor; 
+	ImGui::Text(textToShow.c_str());
+
+	textToShow = "Driver: " + info.GpuDriver;
+	ImGui::Text(textToShow.c_str());
+
+	ImGui::Separator();
+
+	ImGui::Text("VRAM Information:");
+	textToShow = "Budget: " + std::to_string(info.vram_mb_budget) + " mb";
+	ImGui::Text(textToShow.c_str());
+
+	textToShow = "Usage: " + std::to_string(info.vram_mb_usage) + " mb";
+	ImGui::Text(textToShow.c_str());
+
+	textToShow = "Available: " + std::to_string(info.vram_mb_available) + " mb";
+	ImGui::Text(textToShow.c_str());
+
+	ImGui::End();
+}
+
+void ModuleUI::GetHardwareInformation()
+{
+	SDL_GetVersion(&info.version);
+
+	info.GpuVendor.assign((const char*)glGetString(GL_VENDOR));
+	info.Gpu.assign((const char*)glGetString(GL_RENDERER));
+	info.GpuDriver.assign((const char*)glGetString(GL_VERSION));
+
+	GLint vmem_budget = 0;
+	GLint vmem_available = 0;
+	GLint vmem_usage = 0;
+
+	glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &vmem_budget);
+	glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &vmem_available);
+
+	vmem_usage = vmem_budget - vmem_available;
+
+	info.vram_mb_budget = float(vmem_budget) / 1024.0f;
+	info.vram_mb_usage = float(vmem_usage) / 1024.f;
+	info.vram_mb_available = float(vmem_available) / 1024.f;
+
+	info.cpu_count = SDL_GetCPUCount();
+	info.l1_cachekb = SDL_GetCPUCacheLineSize();
 }
