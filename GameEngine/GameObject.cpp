@@ -25,10 +25,10 @@ void GameObject::AddComponent(Component::Type component)
 		ptr = std::make_shared<Transform>();
 		break;
 	case Component::Type::MESH:
-		ptr = std::make_unique<Mesh>();
+		ptr = std::make_shared<Mesh>();
 		break;
 	case Component::Type::TEXTURE2D:
-		ptr = std::make_unique<Texture2D>();
+		ptr = std::make_shared<Texture2D>();
 		break;
 	default:
 		ENGINE_LOG("Cant add component to components list in GameObject");
@@ -54,13 +54,6 @@ void GameObject::RemoveComponent(Component::Type component)
 		}
 	}
 }
-//void GameObject::RemoveComponent(Component::Type component)
-//{
-//	components.erase(std::remove_if(components.begin(), components.end(),
-//		[component](const std::unique_ptr<Component>& comp) {
-//			return comp->type == component;
-//		}), components.end());
-//}
 
 GameObject* GameObject::Find(std::string name, std::list<GameObject> gameObjectList)
 {
