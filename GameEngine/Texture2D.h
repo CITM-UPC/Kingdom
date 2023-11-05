@@ -5,7 +5,6 @@
 
 class Texture2D : public Component
 {
-
 private:
 	unsigned int _id;
 
@@ -27,6 +26,4 @@ public:
 private:
 	Texture2D(const Texture2D&);
 	Texture2D operator=(const Texture2D&);
-
 };
-

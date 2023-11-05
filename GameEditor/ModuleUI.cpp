@@ -65,15 +65,13 @@ bool ModuleUI::Init()
 		LOG("Unable to open LICENSE file.");
 	}
 
-	
-
 	return true;
 }
 
 update_status ModuleUI::PreUpdate()
 {
 	//This here does not work. Currently in Input.cpp
-	//ImGui_ImplSDL2_ProcessEvent(&pollevent); 
+	//ImGui_ImplSDL2_ProcessEvent(&pollevent);
 	GetHardwareInformation();
 
 	ImGui_ImplOpenGL3_NewFrame();
@@ -110,7 +108,7 @@ update_status ModuleUI::PreUpdate()
 	ImGui::End();*/
 
 #pragma endregion3
-	
+
 	return MainMenuBar();
 }
 
@@ -238,11 +236,9 @@ void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
 	for (auto& gameObject : App->gEngine->renderer3D->gameObjectList) {
-
 		if (ImGui::MenuItem(gameObject.name.c_str())) {
 			// select the mesh
 		}
-
 	}
 	ImGui::EndMenu();
 }
@@ -442,7 +438,6 @@ void ModuleUI::CamDebugWindow()
 
 void ModuleUI::AboutWindow()
 {
-
 	ImGui::Begin("About...", &about, ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Kingdom v0.5\nA 3D Game Engine for the Game Engines subject.\nBy Jonathan Cacay & Ethan Martin.");
 	if (ImGui::Button("Repository Link")) { OsOpenInShell("https://github.com/CITM-UPC/Kingdom/"); }
@@ -468,7 +463,7 @@ void ModuleUI::HardwareWindow()
 	std::string textToShow = "GPU: " + info.Gpu;
 	ImGui::Text(textToShow.c_str());
 
-	textToShow = "Vendor: " + info.GpuVendor; 
+	textToShow = "Vendor: " + info.GpuVendor;
 	ImGui::Text(textToShow.c_str());
 
 	textToShow = "Driver: " + info.GpuDriver;

@@ -4,7 +4,7 @@ class Application;
 
 class Module
 {
-private :
+private:
 	bool enabled;
 
 public:
@@ -16,9 +16,9 @@ public:
 	virtual ~Module()
 	{}
 
-	virtual bool Init() 
+	virtual bool Init()
 	{
-		return true; 
+		return true;
 	}
 
 	virtual bool Start()
@@ -41,8 +41,8 @@ public:
 		return UPDATE_CONTINUE;
 	}
 
-	virtual bool CleanUp() 
-	{ 
-		return true; 
+	virtual bool CleanUp()
+	{
+		return true;
 	}
 };

@@ -119,7 +119,7 @@ update_status ModuleInput::PreUpdate()
 			}
 			// Check if the dropped file has the .png extension
 			if (filePath.substr(filePath.find_last_of(".") + 1) == "png") {
-				LOG(".png file detected");			
+				LOG(".png file detected");
 			}
 
 			SDL_free(e.drop.file);  // Free dropped file's memory

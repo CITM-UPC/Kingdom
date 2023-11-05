@@ -22,7 +22,7 @@ Application::Application()
 
 Application::~Application()
 {
-	list_modules.clear();	//If this does not yield the expected results, 
+	list_modules.clear();	//If this does not yield the expected results,
 							//try using list::erase(i) traversing the list in reverse order.
 }
 
@@ -31,7 +31,7 @@ bool Application::Init()
 	bool ret = true;
 
 	// Call Init() in all modules
-	for (auto const& item:list_modules)
+	for (auto const& item : list_modules)
 	{
 		item->Init();
 	}
@@ -42,14 +42,13 @@ bool Application::Init()
 	{
 		item->Start();
 	}
-	
+
 	return ret;
 }
 
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
-	
 }
 
 // ---------------------------------------------
@@ -88,7 +87,7 @@ update_status Application::Update()
 
 	const auto frameEnd = std::chrono::steady_clock::now();
 	const auto frameDuration = frameEnd - frameStart;
-	
+
 	if (frameDuration < frameDurationTime)
 		this_thread::sleep_for(frameDurationTime - frameDuration);
 
@@ -101,7 +100,7 @@ update_status Application::Update()
 
 	// Replace oldest data in the history
 	if (fpsHistory.size() > 100) fpsHistory.erase(fpsHistory.begin());
-	
+
 	return ret;
 }
 
@@ -110,7 +109,7 @@ bool Application::CleanUp()
 	bool ret = true;
 
 	//This seems to work, but I think it is doing it in the normal order, not reverse.
-	for (auto const& item: list_modules)
+	for (auto const& item : list_modules)
 	{
 		ret = item->CleanUp();
 		if (ret != true) return ret;

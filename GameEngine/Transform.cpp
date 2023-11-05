@@ -2,7 +2,6 @@
 
 Transform::Transform()
 {
-
 	position = vec3(0, 0, 0);
 	rotation = vec3(0, 0, 0);
 
@@ -47,17 +46,17 @@ void Transform::RotateTo(vec3f axis)
 	forward = vec3(0, 0, 1);
 
 	//Generate the rotation matrix that corresponds to the rotation
-	glm::mat3x3 rotX = glm::mat3x3(	1,	0,								0,
-									0,	glm::cos(glm::radians(axis.x)),	-glm::sin(glm::radians(axis.x)),
-									0,	glm::sin(glm::radians(axis.x)),	glm::cos(glm::radians(axis.x)));
+	glm::mat3x3 rotX = glm::mat3x3(1, 0, 0,
+		0, glm::cos(glm::radians(axis.x)), -glm::sin(glm::radians(axis.x)),
+		0, glm::sin(glm::radians(axis.x)), glm::cos(glm::radians(axis.x)));
 
-	glm::mat3x3 rotY = glm::mat3x3(	glm::cos(glm::radians(axis.y)),	0, glm::sin(glm::radians(axis.y)),
-									0,								1, 0,
-								   -glm::sin(glm::radians(axis.y)),	0, glm::cos(glm::radians(axis.y)));
+	glm::mat3x3 rotY = glm::mat3x3(glm::cos(glm::radians(axis.y)), 0, glm::sin(glm::radians(axis.y)),
+		0, 1, 0,
+		-glm::sin(glm::radians(axis.y)), 0, glm::cos(glm::radians(axis.y)));
 
-	glm::mat3x3 rotZ = glm::mat3x3(	glm::cos(glm::radians(axis.z)),	-glm::sin(glm::radians(axis.z)),	0,
-									glm::sin(glm::radians(axis.z)),	glm::cos(glm::radians(axis.z)),		0,
-									0,								0,									1);
+	glm::mat3x3 rotZ = glm::mat3x3(glm::cos(glm::radians(axis.z)), -glm::sin(glm::radians(axis.z)), 0,
+		glm::sin(glm::radians(axis.z)), glm::cos(glm::radians(axis.z)), 0,
+		0, 0, 1);
 
 	glm::mat3x3 rotMatrix = rotZ * rotY * rotX;
 
@@ -83,19 +82,18 @@ void Transform::Rotate(vec3f axis, Space referenceFrame)
 	if (referenceFrame == Space::LOCAL)
 		vecInRefFrame = referenceFrameMat * axis;
 
-
 	//Generate the rotation matrix that corresponds to the rotation
-	glm::mat3x3 rotX = glm::mat3x3(	1,	0,											0,
-									0,	glm::cos(glm::radians(vecInRefFrame.x)),	-glm::sin(glm::radians(vecInRefFrame.x)),
-									0,	glm::sin(glm::radians(vecInRefFrame.x)),	glm::cos(glm::radians(vecInRefFrame.x)));
+	glm::mat3x3 rotX = glm::mat3x3(1, 0, 0,
+		0, glm::cos(glm::radians(vecInRefFrame.x)), -glm::sin(glm::radians(vecInRefFrame.x)),
+		0, glm::sin(glm::radians(vecInRefFrame.x)), glm::cos(glm::radians(vecInRefFrame.x)));
 
-	glm::mat3x3 rotY = glm::mat3x3(	glm::cos(glm::radians(vecInRefFrame.y)),	0, glm::sin(glm::radians(vecInRefFrame.y)),
-									0,											1, 0,
-								   -glm::sin(glm::radians(vecInRefFrame.y)),	0, glm::cos(glm::radians(vecInRefFrame.y)));
+	glm::mat3x3 rotY = glm::mat3x3(glm::cos(glm::radians(vecInRefFrame.y)), 0, glm::sin(glm::radians(vecInRefFrame.y)),
+		0, 1, 0,
+		-glm::sin(glm::radians(vecInRefFrame.y)), 0, glm::cos(glm::radians(vecInRefFrame.y)));
 
-	glm::mat3x3 rotZ = glm::mat3x3(	glm::cos(glm::radians(vecInRefFrame.z)),	-glm::sin(glm::radians(vecInRefFrame.z)),	0,
-									glm::sin(glm::radians(vecInRefFrame.z)),	glm::cos(glm::radians(vecInRefFrame.z)),	0,
-									0,											0,											1);
+	glm::mat3x3 rotZ = glm::mat3x3(glm::cos(glm::radians(vecInRefFrame.z)), -glm::sin(glm::radians(vecInRefFrame.z)), 0,
+		glm::sin(glm::radians(vecInRefFrame.z)), glm::cos(glm::radians(vecInRefFrame.z)), 0,
+		0, 0, 1);
 
 	glm::mat3x3 rotMatrix = rotZ * rotY * rotX;
 

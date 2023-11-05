@@ -32,7 +32,6 @@ public:
 private:
 
 	std::list<Module*> list_modules;
-	
 
 public:
 

@@ -19,7 +19,7 @@ public:
 	void MoveTo(vec3 position, Space referenceFrame = Space::GLOBAL);
 
 	//Moves the object in 'displacement' increments.
-	void Move(vec3 displacement, Space referenceFrame = Space::LOCAL); 
+	void Move(vec3 displacement, Space referenceFrame = Space::LOCAL);
 
 	//Rotates the object for its rotation to be the one given by 'axis'.
 	void RotateTo(vec3f axis);
@@ -42,6 +42,4 @@ public:
 	vec3 up;
 
 	glm::mat3x3 referenceFrameMat;
-
 };
-

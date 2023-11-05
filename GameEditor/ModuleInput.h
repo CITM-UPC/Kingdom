@@ -16,7 +16,7 @@ enum KEY_STATE
 class ModuleInput : public Module
 {
 public:
-	
+
 	ModuleInput(Application* app, bool start_enabled = true);
 	~ModuleInput();
 

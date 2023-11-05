@@ -25,7 +25,6 @@ Json::Value GetFile(string path) {
 	return obj;
 }
 
-
 // Access data by calling the function into a Json::Value variable
 // Json::Value obj = GetFile("name_of_file");
 // obj["name_attribute"].asInt();

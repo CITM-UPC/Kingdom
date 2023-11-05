@@ -62,5 +62,4 @@ private:
 
 	// Hardware information
 	HardwareInformation info;
-
 };

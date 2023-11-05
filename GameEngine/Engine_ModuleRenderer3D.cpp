@@ -122,7 +122,6 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 		gEngine->cam.lookAtPos.x, gEngine->cam.lookAtPos.y, gEngine->cam.lookAtPos.z,
 		gEngine->cam.transform.up.x, gEngine->cam.transform.up.y, gEngine->cam.transform.up.z);
 
-
 	return ENGINE_UPDATE_CONTINUE;
 }
 
@@ -194,7 +193,6 @@ void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyA
 
 	glBegin(GL_LINES);
 	for (int i = -size; i <= size; i += step) {
-
 		if (xzAxis)
 		{
 			//XZ plane
@@ -225,5 +223,4 @@ void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyA
 	//drawCubeTest();
 
 	drawAxis();
-
 }

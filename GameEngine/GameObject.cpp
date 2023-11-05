@@ -29,7 +29,7 @@ std::vector<std::shared_ptr<Component>> GameObject::GetComponents()
 void GameObject::AddComponent(Component::Type component)
 {
 	std::shared_ptr<Component> ptr;
-	
+
 	switch (component)
 	{
 	case Component::Type::TRANSFORM:
@@ -60,7 +60,7 @@ void GameObject::RemoveComponent(Component::Type component)
 	{
 		if (comp->getType() == component)
 		{
-			components.erase(std::remove(components.begin(),components.end(), comp));
+			components.erase(std::remove(components.begin(), components.end(), comp));
 			break;
 		}
 	}

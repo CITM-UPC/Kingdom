@@ -56,7 +56,6 @@ public:
 	}
 
 	void addGameObject(const std::string& filePath) {
-
 		auto mesh_vector = MeshLoader::loadFromFile(filePath);
 
 		for (const auto& mesh : mesh_vector)
@@ -137,7 +136,6 @@ private:
 		glVertex3fv(&a.x);
 	}
 	void drawCubeTest() {
-
 		glm::vec3 a = glm::vec3(-1, -1, 1);
 		glm::vec3 b = glm::vec3(1, -1, 1);
 		glm::vec3 c = glm::vec3(1, 1, 1);
