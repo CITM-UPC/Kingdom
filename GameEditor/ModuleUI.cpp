@@ -8,6 +8,10 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -49,6 +53,20 @@ bool ModuleUI::Init()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->gEngine->renderer3D->context);
 	ImGui_ImplOpenGL3_Init();
 
+	std::ifstream file("../LICENSE"); // Open the file
+	std::string line;
+	if (file.is_open()) { // Check if the file is open
+		while (std::getline(file, line)) { // Read the file line by line
+			aboutContent += line + "\n"; // Append each line to the string
+		}
+		file.close(); // Close the file
+	}
+	else {
+		LOG("Unable to open LICENSE file.");
+	}
+
+	
+
 	return true;
 }
 
@@ -56,12 +74,11 @@ update_status ModuleUI::PreUpdate()
 {
 	//This here does not work. Currently in Input.cpp
 	//ImGui_ImplSDL2_ProcessEvent(&pollevent); 
+	GetHardwareInformation();
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
-
-#pragma region	ImGui_MenuBar_Test
 
 	if (dockSpaceEnabled)
 	{
@@ -70,18 +87,15 @@ update_status ModuleUI::PreUpdate()
 		ImGui::DockSpaceOverViewport(0, dock_flags);
 	}
 
-	MainMenuBar();
-
-#pragma endregion
-
-
+	if (FPSgraph)   FPSGraphWindow();
 	if (hierarchy)	HierarchyWindow();
 	if (inspector)	InspectorWindow();
 	if (logWindow)	LogConsoleTestWindow();
 
 	if (options)	OptionsWindow();
 	if (camDebug)	CamDebugWindow();
-	if (about)		AboutWindow();
+	if (about)      AboutWindow();
+	if (hardware)   HardwareWindow();
 
 #pragma region ImGui_Windows_Test
 
@@ -95,9 +109,9 @@ update_status ModuleUI::PreUpdate()
 	ImGui::DragFloat("z", (float*)&App->gEngine->cam.transform.position.z);
 	ImGui::End();*/
 
-#pragma endregion
-
-	return UPDATE_CONTINUE;
+#pragma endregion3
+	
+	return MainMenuBar();
 }
 
 bool ModuleUI::CleanUp()
@@ -167,6 +181,8 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::BeginMenu("Menus")) {
 				ImGui::MenuItem("Hierarchy", "", &hierarchy);
 				ImGui::MenuItem("Inspector", "", &inspector);
+				ImGui::MenuItem("FPS Graph", "", &FPSgraph);
+				ImGui::MenuItem("Hardware Information", "", &hardware);
 				ImGui::MenuItem("Log", "", &logWindow);
 				ImGui::EndMenu();
 			}
@@ -192,15 +208,30 @@ update_status ModuleUI::MainMenuBar()
 		{
 			if (ImGui::MenuItem("About")) about = true;
 			ImGui::Separator();
-			if (ImGui::MenuItem("Hierarchy")) hierarchy = true;
-			if (ImGui::MenuItem("Inspector")) inspector = true;
-			if (ImGui::MenuItem("Log Window")) logWindow = true;
+			if (ImGui::MenuItem("Check releases...")) { OsOpenInShell("https://github.com/CITM-UPC/Kingdom/releases"); }
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
 	}
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleUI::FPSGraphWindow()
+{
+	static ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize;
+	ImGui::Begin("FPS Graph", &FPSgraph, flags);
+
+	std::stringstream sStream;
+	sStream << "Average FPS: " << App->fpsHistory[App->fpsHistory.size() - 1];
+	string title = sStream.str();
+
+	ImGui::Text("FPS lines graph");
+	ImGui::PlotLines("", &App->fpsHistory[0], App->fpsHistory.size(), 0, title.c_str(), 1.0f, 100.0f, { 325, 100 });
+	ImGui::Separator();
+	ImGui::Text("FPS histogram");
+	ImGui::PlotHistogram("", &App->fpsHistory[0], App->fpsHistory.size(), 0, title.c_str(), 1.0f, 100.0f, { 325, 100 });
+	ImGui::End();
 }
 
 void ModuleUI::HierarchyWindow()
@@ -215,6 +246,7 @@ void ModuleUI::HierarchyWindow()
 	}
 	ImGui::EndMenu();
 }
+
 void ModuleUI::InspectorWindow()
 {
 	ImGui::Begin("Inspector", &inspector);
@@ -224,6 +256,7 @@ void ModuleUI::InspectorWindow()
 	//}
 	ImGui::EndMenu();
 }
+
 void ModuleUI::LogConsoleTestWindow()
 {
 	struct ExampleAppLog
@@ -385,6 +418,7 @@ void ModuleUI::OptionsWindow()
 	if (ImGui::Checkbox("VSYNC", &testBool)) { LOG("Checkbox Pressed"); };
 	ImGui::End();
 }
+
 void ModuleUI::CamDebugWindow()
 {
 	ImGui::Begin("Cam Debug", &camDebug);
@@ -405,11 +439,13 @@ void ModuleUI::CamDebugWindow()
 	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[2][0], App->gEngine->cam.transform.referenceFrameMat[2][1], App->gEngine->cam.transform.referenceFrameMat[2][2]);
 	ImGui::End();
 }
+
 void ModuleUI::AboutWindow()
 {
+
 	ImGui::Begin("About...", &about, ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Kingdom v0.5\nA 3D Game Engine for the Game Engines subject.\nBy Jonathan Cacay & Ethan Martin.");
-	if (ImGui::Button("Repository Link")) { OsOpenInShell("https://github.com/CITM-UPC/Kingdom"); }
+	if (ImGui::Button("Repository Link")) { OsOpenInShell("https://github.com/CITM-UPC/Kingdom/"); }
 	ImGui::Separator();
 	ImGui::Text("3rd Party Libraries used :");
 	ImGui::Bullet(); if (ImGui::Button("Assimp 5.2.5")) { OsOpenInShell("https://assimp-docs.readthedocs.io/"); }
@@ -421,8 +457,59 @@ void ModuleUI::AboutWindow()
 	ImGui::Bullet(); if (ImGui::Button("OpenGL 2022-12-04#3")) { OsOpenInShell("https://www.opengl.org/"); }
 	ImGui::Bullet(); if (ImGui::Button("SDL2 2.28.3")) { OsOpenInShell("https://wiki.libsdl.org/"); }
 	ImGui::Separator();
-	if (ImGui::CollapsingHeader("License")) {
-		ImGui::TextWrapped("MIT License \nCopyright(c) 2023 Jonathan Cacay & Ethan Martin \nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, the Software, to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and / sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: \nThe above copyright noticeand this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.");
-	}
+	if (ImGui::CollapsingHeader("License")) { ImGui::Text(aboutContent.c_str()); }
 	ImGui::End();
+}
+
+void ModuleUI::HardwareWindow()
+{
+	ImGui::Begin("Hardware information", &hardware, ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Text("GPU Information:");
+	std::string textToShow = "GPU: " + info.Gpu;
+	ImGui::Text(textToShow.c_str());
+
+	textToShow = "Vendor: " + info.GpuVendor; 
+	ImGui::Text(textToShow.c_str());
+
+	textToShow = "Driver: " + info.GpuDriver;
+	ImGui::Text(textToShow.c_str());
+
+	ImGui::Separator();
+
+	ImGui::Text("VRAM Information:");
+	textToShow = "Budget: " + std::to_string(info.vram_mb_budget) + " mb";
+	ImGui::Text(textToShow.c_str());
+
+	textToShow = "Usage: " + std::to_string(info.vram_mb_usage) + " mb";
+	ImGui::Text(textToShow.c_str());
+
+	textToShow = "Available: " + std::to_string(info.vram_mb_available) + " mb";
+	ImGui::Text(textToShow.c_str());
+
+	ImGui::End();
+}
+
+void ModuleUI::GetHardwareInformation()
+{
+	SDL_GetVersion(&info.version);
+
+	info.GpuVendor.assign((const char*)glGetString(GL_VENDOR));
+	info.Gpu.assign((const char*)glGetString(GL_RENDERER));
+	info.GpuDriver.assign((const char*)glGetString(GL_VERSION));
+
+	GLint vmem_budget = 0;
+	GLint vmem_available = 0;
+	GLint vmem_usage = 0;
+
+	glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &vmem_budget);
+	glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &vmem_available);
+
+	vmem_usage = vmem_budget - vmem_available;
+
+	info.vram_mb_budget = float(vmem_budget) / 1024.0f;
+	info.vram_mb_usage = float(vmem_usage) / 1024.f;
+	info.vram_mb_available = float(vmem_available) / 1024.f;
+
+	info.cpu_count = SDL_GetCPUCount();
+	info.l1_cachekb = SDL_GetCPUCacheLineSize();
 }
