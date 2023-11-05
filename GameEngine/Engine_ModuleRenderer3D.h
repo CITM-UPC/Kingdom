@@ -8,6 +8,8 @@
 #include <list>
 #include <vector>
 #include "Mesh.h"
+#include "MeshLoader.h"
+#include "GameObject.h"
 
 class Engine_ModuleRenderer3D : public Engine_Module
 {
@@ -36,12 +38,11 @@ public:
 		vsync = active;
 	}
 
-	void addFbx(const std::string& filePath) {
-		auto mesh_obtained = Mesh::loadFromFile(filePath);
+	void addGameObject()
+	{
+		GameObject currentObject;
 
-		std::string meshName = filePath;
-		deleteSubstring(meshName, ".fbx");
-		eraseBeforeDelimiter(meshName);
+		std::string meshName = "GameObject";
 		int currentCopies = checkNameAvailability(meshName);
 		if (currentCopies > 0) {
 			meshName.append("(");
@@ -50,8 +51,33 @@ public:
 			meshName.append(")");
 		}
 
-		mesh_obtained.data()->get()->setName(meshName);
-		meshList.push_back(mesh_obtained);
+		currentObject.name = meshName;
+		gameObjectList.push_back(currentObject);
+	}
+
+	void addGameObject(const std::string& filePath) {
+
+		auto mesh_vector = MeshLoader::loadFromFile(filePath);
+
+		for (const auto& mesh : mesh_vector)
+		{
+			GameObject currentObject;
+			currentObject.AddComponent(mesh);
+
+			std::string meshName = filePath;
+			deleteSubstring(meshName, ".fbx");
+			eraseBeforeDelimiter(meshName);
+			int currentCopies = checkNameAvailability(meshName);
+			if (currentCopies > 0) {
+				meshName.append("(");
+				std::string copiesToString = std::to_string(currentCopies);
+				meshName.append(copiesToString);
+				meshName.append(")");
+			}
+
+			currentObject.name = meshName;
+			gameObjectList.push_back(currentObject);
+		}
 	}
 
 	void deleteSubstring(std::string& mainString, const std::string& substringToDelete) {
@@ -80,8 +106,8 @@ public:
 	int checkNameAvailability(std::string name) {
 		int count = 0;
 
-		for (const auto& vector : meshList) {
-			detectAndIncrement(vector.data()->get()->getName(), name, count);
+		for (const auto& vector : gameObjectList) {
+			detectAndIncrement(vector.name, name, count);
 		}
 
 		return count;
@@ -92,7 +118,7 @@ public:
 	SDL_GLContext context;
 	glm::mat3x3 NormalMatrix;
 	glm::mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
-	std::list<std::vector<Mesh::Ptr>> meshList;
+	std::list<GameObject> gameObjectList;
 
 private:
 

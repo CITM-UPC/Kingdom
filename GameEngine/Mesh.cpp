@@ -11,56 +11,12 @@
 
 using namespace std;
 
-std::vector<Mesh::Ptr> Mesh::loadFromFile(const std::string& path) {
-
-    vector<Mesh::Ptr> mesh_ptrs;
-
-    auto scene = aiImportFile(path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
-    for (size_t m = 0; m < scene->mNumMeshes; ++m) {
-        auto mesh = scene->mMeshes[m];
-        auto faces = mesh->mFaces;
-        vec3f* verts = (vec3f*)mesh->mVertices;
-        vec3f* texCoords = (vec3f*)mesh->mTextureCoords[0];
-
-        vector<V3T2> vertex_data;
-        vector<unsigned int> index_data;
-
-        for (size_t i = 0; i < mesh->mNumVertices; ++i) {
-            V3T2 v = { verts[i], vec2f(texCoords[i].x, texCoords[i].y) };
-            vertex_data.push_back(v);
-        }
-
-        for (size_t f = 0; f < mesh->mNumFaces; ++f) {
-            index_data.push_back(faces[f].mIndices[0]);
-            index_data.push_back(faces[f].mIndices[1]);
-            index_data.push_back(faces[f].mIndices[2]);
-        }
-
-        auto material = scene->mMaterials[mesh->mMaterialIndex];
-        aiString aiPath;
-        material->GetTexture(aiTextureType_DIFFUSE, 0, &aiPath);
-
-        size_t slash_pos = path.rfind('/');
-        if (slash_pos == string::npos) slash_pos = path.rfind('\\');
-        string folder_path = (slash_pos != string::npos) ? path.substr(0, slash_pos+1) : "./";
-        string texPath = folder_path + aiScene::GetShortFilename(aiPath.C_Str());
-
-        auto mesh_ptr = make_shared<Mesh>(Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size());
-        mesh_ptr->texture = make_shared<Texture2D>(texPath);
-
-        mesh_ptrs.push_back(mesh_ptr);
-    }
-
-    aiReleaseImport(scene);
-    
-    return mesh_ptrs;
-}
-
 Mesh::Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* index_data, unsigned int numIndexs) :
     _format(format),
     _numVerts(numVerts),
     _numIndexs(numIndexs)
 {
+
     glGenBuffers(1, &_vertex_buffer_id); // aquí peta
     glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer_id);
 
@@ -99,6 +55,16 @@ Mesh::Mesh(Mesh&& b) noexcept :
     b._vertex_buffer_id = 0;
     b._indexs_buffer_id = 0;
 
+}
+
+Mesh::Mesh(const Mesh& cpy) : meshName(cpy.meshName),
+_format(cpy._format),
+_vertex_buffer_id(cpy._vertex_buffer_id),
+_numVerts(cpy._numVerts),
+_indexs_buffer_id(cpy._indexs_buffer_id),
+_numIndexs(cpy._numIndexs),
+texture(cpy.texture)    // Copies the shared_ptr, so it now points to the same object
+{
 }
 
 void Mesh::draw() {
@@ -162,4 +128,9 @@ const unsigned int Mesh::getNumVerts() {
 
 const unsigned int Mesh::getNumIndexs() {
     return _numIndexs;
+}
+
+void Mesh::Update()
+{
+    draw();
 }

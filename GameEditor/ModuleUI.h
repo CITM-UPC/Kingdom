@@ -55,10 +55,12 @@ private:
 	bool options = false;
 	bool camDebug = false;
 	bool about = false;
+
 	bool hardware = false;
 
 	std::string aboutContent;
 
 	// Hardware information
 	HardwareInformation info;
+
 };
