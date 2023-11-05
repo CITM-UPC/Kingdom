@@ -49,7 +49,7 @@ void GameObject::AddComponent(Mesh component)
 {
 	std::unique_ptr<Component> ptr = std::make_unique<Mesh>(component);
 
-	components.push_back(ptr.get());
+	components.push_back(ptr.release());
 }
 
 void GameObject::RemoveComponent(Component::Type component)
@@ -63,13 +63,6 @@ void GameObject::RemoveComponent(Component::Type component)
 		}
 	}
 }
-//void GameObject::RemoveComponent(Component::Type component)
-//{
-//	components.erase(std::remove_if(components.begin(), components.end(),
-//		[component](const std::unique_ptr<Component>& comp) {
-//			return comp->type == component;
-//		}), components.end());
-//}
 
 GameObject* GameObject::Find(std::string name, std::list<GameObject> gameObjectList)
 {

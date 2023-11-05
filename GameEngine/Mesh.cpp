@@ -65,7 +65,6 @@ _vertex_buffer_id(cpy._vertex_buffer_id),
 _numVerts(cpy._numVerts),
 _indexs_buffer_id(cpy._indexs_buffer_id),
 _numIndexs(cpy._numIndexs),
-meshInfo(cpy.meshInfo), // Copies the shared_ptr, so it now points to the same object
 texture(cpy.texture)    // Copies the shared_ptr, so it now points to the same object
 {
 }
