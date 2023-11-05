@@ -2,6 +2,9 @@
 #include "Module.h"
 #include "Globals.h"
 #include <string>
+#include <cstring>
+#include "..\GameEngine\GameObject.h"
+#include "..\GameEngine\Component.h"
 
 struct HardwareInformation {
 	SDL_version version;
@@ -62,4 +65,5 @@ private:
 
 	// Hardware information
 	HardwareInformation info;
+	GameObject gameObjSelected;
 };

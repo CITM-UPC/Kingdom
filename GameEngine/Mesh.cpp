@@ -15,7 +15,7 @@ Mesh::Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const
 	_numVerts(numVerts),
 	_numIndexs(numIndexs)
 {
-	glGenBuffers(1, &_vertex_buffer_id); // aquí peta
+	glGenBuffers(1, &_vertex_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer_id);
 
 	switch (_format) {

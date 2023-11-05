@@ -3,6 +3,7 @@
 
 GameObject::GameObject()
 {
+	name = "";
 	components.push_back(std::make_shared<Transform>());
 }
 

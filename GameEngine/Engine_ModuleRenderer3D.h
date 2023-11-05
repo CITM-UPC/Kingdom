@@ -61,11 +61,13 @@ public:
 		for (const auto& mesh : mesh_vector)
 		{
 			GameObject currentObject;
+			
 			currentObject.AddComponent(mesh);
 
 			std::string meshName = filePath;
-			deleteSubstring(meshName, ".fbx");
 			eraseBeforeDelimiter(meshName);
+			mesh.get()->setName(meshName);
+			deleteSubstring(meshName, ".fbx");
 			int currentCopies = checkNameAvailability(meshName);
 			if (currentCopies > 0) {
 				meshName.append("(");

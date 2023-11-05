@@ -86,13 +86,13 @@ update_status ModuleUI::PreUpdate()
 	}
 
 	if (FPSgraph)   FPSGraphWindow();
-	if (hierarchy)	HierarchyWindow();
-	if (inspector)	InspectorWindow();
 	if (logWindow)	LogConsoleTestWindow();
 
 	if (options)	OptionsWindow();
 	if (camDebug)	CamDebugWindow();
 	if (about)      AboutWindow();
+	if (inspector)	InspectorWindow();
+	if (hierarchy)	HierarchyWindow();
 	if (hardware)   HardwareWindow();
 
 #pragma region ImGui_Windows_Test
@@ -236,20 +236,89 @@ void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
 	for (auto& gameObject : App->gEngine->renderer3D->gameObjectList) {
+
 		if (ImGui::MenuItem(gameObject.name.c_str())) {
-			// select the mesh
+			gameObjSelected = gameObject;
 		}
 	}
 	ImGui::EndMenu();
+
+
 }
 
 void ModuleUI::InspectorWindow()
 {
 	ImGui::Begin("Inspector", &inspector);
-	// if (meshselected != null)
-	//for (const auto& mesh_ptr : meshSelected) {
-		// add code here
-	//}
+	if (gameObjSelected.name != "") {
+		ImGui::Checkbox("Active", &gameObjSelected.isActive);
+		ImGui::SameLine(); ImGui::Text("GameObject name: ");
+		ImGui::SameLine(); ImGui::Text(gameObjSelected.name.c_str());
+		for (auto& component : gameObjSelected.GetComponents()) {
+			if (component.get()->getType() == Component::Type::TRANSFORM) {
+				Transform* transform = dynamic_cast<Transform*>(component.get());
+				if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_None))
+				{
+					if (ImGui::BeginTable("", 4))
+					{
+						//ImGui::DragFloat("", &transform->sc.x, 0.005f, -FLT_MAX, +FLT_MAX, "%.3f");
+						ImGui::TableNextRow();
+						ImGui::TableSetColumnIndex(0);
+						ImGui::Checkbox("Active", &transform->isActive);
+						ImGui::Text("Position");
+						ImGui::Text("Rotation");
+						ImGui::Text("Scale");
+
+						ImGui::TableSetColumnIndex(1);
+						ImGui::Text("X");
+						ImGui::Text(std::to_string(transform->position.x).c_str());
+						ImGui::Text(std::to_string(transform->rotation.x).c_str());
+						ImGui::Text("1");
+
+						ImGui::TableSetColumnIndex(2);
+						ImGui::Text("Y");
+						ImGui::Text(std::to_string(transform->position.y).c_str());
+						ImGui::Text(std::to_string(transform->rotation.y).c_str());
+						ImGui::Text("1");
+
+						ImGui::TableSetColumnIndex(3);
+						ImGui::Text("Z");
+						ImGui::Text(std::to_string(transform->position.z).c_str());
+						ImGui::Text(std::to_string(transform->rotation.z).c_str());
+						ImGui::Text("1");
+
+						ImGui::EndTable();
+					}
+				}
+			}
+			if (component.get()->getType() == Component::Type::MESH) {
+				Mesh* mesh = dynamic_cast<Mesh*>(component.get());
+				if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_None))
+				{
+					ImGui::Checkbox("Active", &mesh->isActive);
+					ImGui::SameLine();  ImGui::Text("Filename: ");
+					ImGui::SameLine();  ImGui::Text(mesh->getName().c_str());
+					ImGui::Separator();
+					ImGui::Text("Indexes: ");
+					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumIndexs()).c_str());
+					/*ImGui::Text("Normals: ");
+					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumNormals()).c_str());*/
+					ImGui::Text("Vertexs: ");
+					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumVerts()).c_str());
+					/*ImGui::Text("Faces: ");
+					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumFaces()).c_str());*/
+					ImGui::Separator();
+				}
+			}
+			if (component.get()->getType() == Component::Type::TEXTURE2D) {
+				Texture2D* texture2D = dynamic_cast<Texture2D*>(component.get());
+				if (ImGui::CollapsingHeader("Texture", ImGuiTreeNodeFlags_None))
+				{
+				}
+			}
+
+		}
+
+	}
 	ImGui::EndMenu();
 }
 
@@ -479,6 +548,16 @@ void ModuleUI::HardwareWindow()
 	ImGui::Text(textToShow.c_str());
 
 	textToShow = "Available: " + std::to_string(info.vram_mb_available) + " mb";
+	ImGui::Text(textToShow.c_str());
+
+	ImGui::Separator();
+
+	ImGui::Text("CPU Information:");
+
+	textToShow = "CPU Count: " + std::to_string(info.cpu_count);
+	ImGui::Text(textToShow.c_str());
+
+	textToShow = "CPU cache line size: " + std::to_string(info.l1_cachekb);
 	ImGui::Text(textToShow.c_str());
 
 	ImGui::End();
