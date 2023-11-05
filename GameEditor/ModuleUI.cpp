@@ -206,9 +206,9 @@ update_status ModuleUI::MainMenuBar()
 void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
-	for (const auto& vector : App->gEngine->renderer3D->gameObjectList) {
+	for (auto& gameObject : App->gEngine->renderer3D->gameObjectList) {
 
-		if (ImGui::MenuItem(vector.name.c_str())) {
+		if (ImGui::MenuItem(gameObject.name.c_str())) {
 			// select the mesh
 		}
 

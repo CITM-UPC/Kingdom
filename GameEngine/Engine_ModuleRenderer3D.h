@@ -54,16 +54,16 @@ public:
 		currentObject.name = meshName;
 		gameObjectList.push_back(currentObject);
 	}
-	/*void addGameObject(const std::string& filePath) {
+
+	void addGameObject(const std::string& filePath) {
 
 		auto mesh_vector = MeshLoader::loadFromFile(filePath);
 
 		for (const auto& mesh : mesh_vector)
 		{
 			GameObject currentObject;
-			currentObject.AddComponent(Component::Type::MESH);
-			Mesh* meshToAdd = dynamic_cast<Mesh*>(currentObject.GetComponent(Component::Type::MESH));
-			meshToAdd->meshInfo = mesh;
+			currentObject.AddComponent(mesh);
+			//Mesh* meshToAdd = dynamic_cast<Mesh*>(currentObject.GetComponent(Component::Type::MESH));
 
 			std::string meshName = filePath;
 			deleteSubstring(meshName, ".fbx");
@@ -79,7 +79,7 @@ public:
 			currentObject.name = meshName;
 			gameObjectList.push_back(currentObject);
 		}
-	}*/
+	}
 
 	void deleteSubstring(std::string& mainString, const std::string& substringToDelete) {
 		size_t pos = mainString.find(substringToDelete);

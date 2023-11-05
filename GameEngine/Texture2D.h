@@ -20,6 +20,10 @@ public:
 
 	void Update() override;
 
+	Type getType() const override {
+		return Type::TEXTURE2D;
+	}
+
 private:
 	Texture2D(const Texture2D&);
 	Texture2D operator=(const Texture2D&);

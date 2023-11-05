@@ -14,12 +14,12 @@ public:
 		TEXTURE2D
 	};
 
-	Type type;
 	bool isActive = true;
 	GameObject* gameObject;
 	
 public:
 
 	virtual void Update() = 0;
+	virtual Type getType() const = 0;
 
 };

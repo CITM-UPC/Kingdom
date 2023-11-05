@@ -3,33 +3,26 @@
 
 GameObject::GameObject()
 {
-	AddComponent(Component::Type::TRANSFORM);
+	components.push_back(std::make_shared<Transform>());
+	//AddComponent(Component::Type::TRANSFORM);
 	//components.push_back(std::make_unique<Transform>().release());
 }
 
 GameObject::~GameObject() = default;
 
-Component* GameObject::GetComponent(Component::Type componentType)
+std::vector<std::shared_ptr<Component>> GameObject::GetComponents(Component::Type componentType)
 {
-	for (auto const& comp : components)
-	{
-		if (comp->type == componentType)
-		{
-			return comp;
-		}
-	}
-
-	return nullptr;
+	return components;
 }
 
 void GameObject::AddComponent(Component::Type component)
 {
-	std::unique_ptr<Component> ptr;
+	std::shared_ptr<Component> ptr;
 	
 	switch (component)
 	{
 	case Component::Type::TRANSFORM:
-		ptr = std::make_unique<Transform>();
+		ptr = std::make_shared<Transform>();
 		break;
 	case Component::Type::MESH:
 		ptr = std::make_unique<Mesh>();
@@ -42,21 +35,19 @@ void GameObject::AddComponent(Component::Type component)
 		break;
 	}
 
-	components.push_back(ptr.release());
+	components.push_back(ptr);
 }
 
-void GameObject::AddComponent(Mesh component)
+void GameObject::AddComponent(std::shared_ptr<Mesh> component)
 {
-	std::unique_ptr<Component> ptr = std::make_unique<Mesh>(component);
-
-	components.push_back(ptr.get());
+	components.push_back(component);
 }
 
 void GameObject::RemoveComponent(Component::Type component)
 {
 	for (auto& comp : components)
 	{
-		if (comp->type == component)
+		if (comp->getType() == component)
 		{
 			components.erase(std::remove(components.begin(),components.end(), comp));
 			break;

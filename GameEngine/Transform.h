@@ -29,6 +29,10 @@ public:
 
 	void Update() override;
 
+	Type getType() const override {
+		return Type::TRANSFORM;
+	}
+
 public:
 	vec3 position;
 	vec3 rotation;

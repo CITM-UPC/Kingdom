@@ -18,16 +18,16 @@ public:
 
 private:
 
-	std::list<Component*> components;
+	std::vector<std::shared_ptr<Component>> components;
 
 public:
 
 	GameObject();
 	~GameObject();
 
-	Component* GetComponent(Component::Type componentType);
+	std::vector<std::shared_ptr<Component>> GetComponents(Component::Type componentType);
 	void AddComponent(Component::Type component);
-	void AddComponent(Mesh component);
+	void AddComponent(std::shared_ptr<Mesh> component);
 	void RemoveComponent(Component::Type component);
 
 	static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);

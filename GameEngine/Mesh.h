@@ -34,7 +34,6 @@ public:
 		
 	}
 	
-	std::shared_ptr<Mesh> meshInfo;
 	Texture2D::Ptr texture;
 
 	Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* indexs_data = nullptr, unsigned int numIndexs = 0);
@@ -51,6 +50,10 @@ public:
 	const unsigned int getNumIndexs();
 
 	void Update() override;
+
+	Type getType() const override {
+		return Type::MESH;
+	}
 
 private:
 	

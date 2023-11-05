@@ -101,7 +101,7 @@ bool Engine_ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(screen_width, screen_height);
 
-	//addGameObject("Assets/BakerHouse.fbx");
+	addGameObject("Assets/BakerHouse.fbx");
 
 	return ret;
 }
@@ -128,7 +128,6 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 
 engine_status Engine_ModuleRenderer3D::Update()
 {
-
 	return ENGINE_UPDATE_CONTINUE;
 }
 

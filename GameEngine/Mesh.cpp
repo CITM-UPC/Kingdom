@@ -16,7 +16,6 @@ Mesh::Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const
     _numVerts(numVerts),
     _numIndexs(numIndexs)
 {
-    type = Component::Type::MESH;
 
     glGenBuffers(1, &_vertex_buffer_id); // aquí peta
     glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer_id);
@@ -53,7 +52,6 @@ Mesh::Mesh(Mesh&& b) noexcept :
     _numIndexs(b._numIndexs),
     texture(b.texture)
 {
-    type = Component::Type::MESH;
     b._vertex_buffer_id = 0;
     b._indexs_buffer_id = 0;
 
@@ -65,7 +63,6 @@ _vertex_buffer_id(cpy._vertex_buffer_id),
 _numVerts(cpy._numVerts),
 _indexs_buffer_id(cpy._indexs_buffer_id),
 _numIndexs(cpy._numIndexs),
-meshInfo(cpy.meshInfo), // Copies the shared_ptr, so it now points to the same object
 texture(cpy.texture)    // Copies the shared_ptr, so it now points to the same object
 {
 }
