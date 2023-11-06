@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 
+#include "GameObject.h"
 #include "Mesh.h"
 #include "Texture2D.h"
 #include <assimp/postprocess.h>
@@ -13,7 +14,7 @@ class MeshLoader
 {
 public:
 
-	static std::vector<std::shared_ptr<Mesh>> loadMeshFromFile(const std::string& path)
+	static std::vector<std::shared_ptr<Mesh>> loadMeshFromFile(GameObject& parentGO, const std::string& path)
 	{
 		std::vector<std::shared_ptr<Mesh>> mesh_ptrs;
 
@@ -38,7 +39,7 @@ public:
 				index_data.push_back(faces[f].mIndices[2]);
 			}
 
-			auto mesh_ptr = std::make_shared<Mesh>(Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size());
+			auto mesh_ptr = std::make_shared<Mesh>(parentGO, Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size());
 
 			mesh_ptrs.push_back(mesh_ptr);
 		}
@@ -47,7 +48,7 @@ public:
 
 		return mesh_ptrs;
 	}
-	static std::vector<std::shared_ptr<Texture2D>> loadTextureFromFile(const std::string& path)
+	static std::vector<std::shared_ptr<Texture2D>> loadTextureFromFile(GameObject& parentGO, const std::string& path)
 	{
 		std::vector<std::shared_ptr<Texture2D>> texture_ptrs;
 
@@ -64,7 +65,7 @@ public:
 			std::string folder_path = (slash_pos != std::string::npos) ? path.substr(0, slash_pos + 1) : "./";
 			std::string texPath = folder_path + aiScene::GetShortFilename(aiPath.C_Str());
 
-			auto texture_ptr = std::make_shared<Texture2D>(texPath);
+			auto texture_ptr = std::make_shared<Texture2D>(parentGO, texPath);
 
 			texture_ptrs.push_back(texture_ptr);
 		}

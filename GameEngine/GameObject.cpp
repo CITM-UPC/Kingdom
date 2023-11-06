@@ -4,7 +4,7 @@
 GameObject::GameObject()
 {
 	name = "";
-	components.push_back(std::make_shared<Transform>());
+	components.push_back(std::make_shared<Transform>(*this));
 }
 
 GameObject::~GameObject() = default;
@@ -34,20 +34,19 @@ void GameObject::AddComponent(Component::Type component)
 	switch (component)
 	{
 	case Component::Type::TRANSFORM:
-		ptr = std::make_shared<Transform>();
+		ptr = std::make_shared<Transform>(*this);
 		break;
 	case Component::Type::MESH:
-		ptr = std::make_shared<Mesh>();
+		ptr = std::make_shared<Mesh>(*this);
 		break;
 	case Component::Type::TEXTURE2D:
-		ptr = std::make_shared<Texture2D>();
+		ptr = std::make_shared<Texture2D>(*this);
 		break;
 	default:
 		ENGINE_LOG("Cant add component to components list in GameObject");
 		break;
 	}
 
-	ptr->gameObject = *this;
 	components.push_back(ptr);
 }
 

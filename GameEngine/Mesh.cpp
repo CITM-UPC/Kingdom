@@ -83,8 +83,8 @@ void Mesh::draw() {
 		break;
 	case Formats::F_V3T2:
 		glEnable(GL_TEXTURE_2D);
-		std::shared_ptr<Texture2D> texture = std::dynamic_pointer_cast<Texture2D>(gameObject->GetComponent(Component::Type::TEXTURE2D));
-		if (texture.get()) { texture->bind(); }
+		//std::shared_ptr<Texture2D> texture = std::dynamic_pointer_cast<Texture2D>(gameObject->GetComponent(Component::Type::TEXTURE2D));
+		//if (texture.get()) { texture->bind(); }
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glVertexPointer(3, GL_FLOAT, sizeof(V3T2), nullptr);
 		glTexCoordPointer(2, GL_FLOAT, sizeof(V3T2), (void*)sizeof(V3));

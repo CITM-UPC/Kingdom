@@ -56,8 +56,11 @@ public:
 	}
 
 	void addGameObject(const std::string& filePath) {
-		auto mesh_vector = MeshLoader::loadMeshFromFile(filePath);
-		auto texture_vector = MeshLoader::loadTextureFromFile(filePath);
+
+		GameObject tmpGO;
+
+		auto mesh_vector = MeshLoader::loadMeshFromFile(tmpGO, filePath);
+		auto texture_vector = MeshLoader::loadTextureFromFile(tmpGO, filePath);
 
 		int i = 0;
 		for (const auto& mesh : mesh_vector)
