@@ -47,7 +47,6 @@ private:
 	void OptionsWindow();
 	void CamDebugWindow();
 	void AboutWindow();
-	void HardwareWindow();
 
 	void GetInfrastructureInfo();
 
@@ -62,7 +61,6 @@ private:
 	bool options = false;
 	bool camDebug = false;
 	bool about = false;
-	bool infrastructure = false;
 
 	bool autoScrollLog = true;
 

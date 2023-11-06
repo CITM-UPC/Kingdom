@@ -93,7 +93,6 @@ update_status ModuleUI::PreUpdate()
 	if (about)      AboutWindow();
 	if (inspector)	InspectorWindow();
 	if (hierarchy)	HierarchyWindow();
-	if (infrastructure)   HardwareWindow();
 
 #pragma region ImGui_Windows_Test
 
@@ -165,12 +164,11 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::MenuItem("Pause", "Not implemented")) {}
 			if (ImGui::MenuItem("Step", "Not implemented")) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Settings", "Not implemented")) {}
+			if (ImGui::MenuItem("Settings")) { options = true; }
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Options"))
 		{
-			if (ImGui::MenuItem("Config Window")) options = true;
 			if (ImGui::MenuItem("Camera Debug")) camDebug = true;
 
 			ImGui::EndMenu();
@@ -181,7 +179,6 @@ update_status ModuleUI::MainMenuBar()
 				ImGui::MenuItem("Inspector", "", &inspector);
 				ImGui::MenuItem("Log", "", &logWindow);
 				ImGui::MenuItem("FPS Graph", "", &FPSgraph);
-				ImGui::MenuItem("Infrastructure Information", "", &infrastructure);
 				ImGui::EndMenu();
 			}
 			ImGui::Separator();
@@ -327,7 +324,7 @@ void ModuleUI::LogConsoleTestWindow()
 	ImGuiTextFilter filter;
 	ImGui::Begin("Log Console", &logWindow);
 	if (ImGui::Button("Clear")) { App->logHistory.clear(); }
-	ImGui::SameLine(); 
+	ImGui::SameLine();
 	bool copy = ImGui::Button("Copy");
 	ImGui::SameLine(); filter.Draw("Filter", -100.0f);
 	ImGui::Separator();
@@ -338,7 +335,7 @@ void ModuleUI::LogConsoleTestWindow()
 	}
 	if (ImGui::Button("Options")) ImGui::OpenPopup("Options");
 	ImGui::Separator();
-	
+
 	if (ImGui::BeginChild("", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar)) {
 		if (copy) ImGui::LogToClipboard();
 
@@ -362,10 +359,87 @@ void ModuleUI::LogConsoleTestWindow()
 
 void ModuleUI::OptionsWindow()
 {
-	ImGui::Begin("Options Window", &options);
-	ImGui::Text("This window is a placeholder.\nFunctionality is WIP");
-	static bool testBool = false;
-	if (ImGui::Checkbox("VSYNC", &testBool)) { LOG("Checkbox Pressed"); };
+	ImGui::Begin("Options Window", &options, ImGuiWindowFlags_AlwaysAutoResize);
+
+	if (ImGui::BeginTabBar("", ImGuiTabBarFlags_None))
+	{
+		if (ImGui::BeginTabItem("Display"))
+		{
+			ImGui::Text("Window size");
+			ImGui::SliderInt("Width", &App->window->width, 640, 4096, "%d");
+			ImGui::SliderInt("Height", &App->window->height, 360, 2160, "%d");
+			ImGui::Separator();
+			SDL_SetWindowSize(App->window->window, App->window->width, App->window->height);
+			ImGui::Text("Window flags");
+			ImGui::Checkbox("Fullscreen", &App->window->fullscreen);
+			ImGui::Checkbox("Borderless", &App->window->borderless);
+			ImGui::Checkbox("Resizable", &App->window->resizable);
+			SDL_SetWindowFullscreen(App->window->window, App->window->fullscreen);
+			(App->window->borderless) ? SDL_SetWindowBordered(App->window->window, SDL_FALSE) : SDL_SetWindowBordered(App->window->window, SDL_TRUE);
+			(App->window->resizable) ? SDL_SetWindowResizable(App->window->window, SDL_TRUE) : SDL_SetWindowResizable(App->window->window, SDL_FALSE);
+
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Controls"))
+		{
+			ImGui::Text("Not yet implemented");
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Renderer"))
+		{
+			ImGui::Text("Not yet implemented");
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("System"))
+		{
+			ImGui::Text("Software Information:");
+			ImGui::Text("SDL:");
+			ImGui::Bullet(); ImGui::Text("Compiled: ");
+			ImGui::SameLine(); ImGui::TextColored({ 0.352f, 0.386f, 0.750f, 1.0f }, info.sdl_version_compiled.c_str());
+			ImGui::Bullet(); ImGui::Text("Linked: ");
+			ImGui::SameLine(); ImGui::TextColored({ 0.352f, 0.386f, 0.750f, 1.0f }, info.sdl_version_linked.c_str());
+			ImGui::Text("OpenGL:");
+			ImGui::Bullet(); ImGui::TextColored({ 0.719f, 0.735f, 0.910f, 1.0f }, info.gl_version.c_str());
+			ImGui::Text("DevIL:");
+			ImGui::Bullet(); ImGui::TextColored({ 0.610f, 0.0488f, 0.142f, 1.0f }, info.devil_version.c_str());
+			ImGui::Separator();
+
+			ImGui::Text("GPU Information:");
+			std::string textToShow = "GPU: " + info.Gpu;
+			ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
+
+			textToShow = "Vendor: " + info.GpuVendor;
+			ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
+
+			textToShow = "Driver: " + info.GpuDriver;
+			ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
+
+			ImGui::Separator();
+
+			ImGui::Text("VRAM Information:");
+			textToShow = "Budget: " + std::to_string(info.vram_mb_budget) + " mb";
+			ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
+
+			textToShow = "Usage: " + std::to_string(info.vram_mb_usage) + " mb";
+			ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
+
+			textToShow = "Available: " + std::to_string(info.vram_mb_available) + " mb";
+			ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
+
+			ImGui::Separator();
+
+			ImGui::Text("CPU Information:");
+
+			textToShow = "CPU Cores: " + std::to_string(info.cpu_count);
+			ImGui::Bullet(); ImGui::TextColored({ 0.890f, 0.876f, 0.0356f, 1.0f }, textToShow.c_str());
+
+			textToShow = "CPU cache line size: " + std::to_string(info.l1_cachekb);
+			ImGui::Bullet(); ImGui::TextColored({ 0.890f, 0.876f, 0.0356f, 1.0f }, textToShow.c_str());
+
+		}
+		ImGui::EndTabBar();
+	}
+
 	ImGui::End();
 }
 
@@ -407,56 +481,6 @@ void ModuleUI::AboutWindow()
 	ImGui::Bullet(); if (ImGui::Button("SDL2 2.28.3")) { OsOpenInShell("https://wiki.libsdl.org/"); }
 	ImGui::Separator();
 	if (ImGui::CollapsingHeader("License")) { ImGui::Text(aboutContent.c_str()); }
-	ImGui::End();
-}
-
-void ModuleUI::HardwareWindow()
-{
-	ImGui::Begin("Infrastructure information", &infrastructure, ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Software Information:");
-	ImGui::Text("SDL:");
-	ImGui::Bullet(); ImGui::Text("Compiled: ");
-	ImGui::SameLine(); ImGui::TextColored({ 0.352f, 0.386f, 0.750f, 1.0f }, info.sdl_version_compiled.c_str());
-	ImGui::Bullet(); ImGui::Text("Linked: ");
-	ImGui::SameLine(); ImGui::TextColored({ 0.352f, 0.386f, 0.750f, 1.0f }, info.sdl_version_linked.c_str());
-	ImGui::Text("OpenGL:");
-	ImGui::Bullet(); ImGui::TextColored({ 0.719f, 0.735f, 0.910f, 1.0f }, info.gl_version.c_str());
-	ImGui::Text("DevIL:");
-	ImGui::Bullet(); ImGui::TextColored({ 0.610f, 0.0488f, 0.142f, 1.0f }, info.devil_version.c_str());
-	ImGui::Separator();
-
-	ImGui::Text("GPU Information:");
-	std::string textToShow = "GPU: " + info.Gpu;
-	ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
-
-	textToShow = "Vendor: " + info.GpuVendor;
-	ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
-
-	textToShow = "Driver: " + info.GpuDriver;
-	ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
-
-	ImGui::Separator();
-
-	ImGui::Text("VRAM Information:");
-	textToShow = "Budget: " + std::to_string(info.vram_mb_budget) + " mb";
-	ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
-
-	textToShow = "Usage: " + std::to_string(info.vram_mb_usage) + " mb";
-	ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
-
-	textToShow = "Available: " + std::to_string(info.vram_mb_available) + " mb";
-	ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
-
-	ImGui::Separator();
-
-	ImGui::Text("CPU Information:");
-
-	textToShow = "CPU Cores: " + std::to_string(info.cpu_count);
-	ImGui::Bullet(); ImGui::TextColored({ 0.890f, 0.876f, 0.0356f, 1.0f }, textToShow.c_str());
-
-	textToShow = "CPU cache line size: " + std::to_string(info.l1_cachekb);
-	ImGui::Bullet(); ImGui::TextColored({ 0.890f, 0.876f, 0.0356f, 1.0f }, textToShow.c_str());
-
 	ImGui::End();
 }
 
