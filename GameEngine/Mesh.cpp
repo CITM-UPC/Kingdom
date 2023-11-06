@@ -10,7 +10,8 @@
 
 using namespace std;
 
-Mesh::Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* index_data, unsigned int numIndexs) :
+Mesh::Mesh(GameObject& owner, Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* index_data, unsigned int numIndexs) :
+	Component(owner),
 	_format(format),
 	_numVerts(numVerts),
 	_numIndexs(numIndexs)
@@ -43,6 +44,7 @@ Mesh::Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const
 }
 
 Mesh::Mesh(Mesh&& b) noexcept :
+	Component(b.gameObject),
 	_format(b._format),
 	_vertex_buffer_id(b._vertex_buffer_id),
 	_numVerts(b._numVerts),
@@ -53,7 +55,9 @@ Mesh::Mesh(Mesh&& b) noexcept :
 	b._indexs_buffer_id = 0;
 }
 
-Mesh::Mesh(const Mesh& cpy) : meshName(cpy.meshName),
+Mesh::Mesh(const Mesh& cpy) : 
+Component(cpy.gameObject),
+meshName(cpy.meshName),
 _format(cpy._format),
 _vertex_buffer_id(cpy._vertex_buffer_id),
 _numVerts(cpy._numVerts),

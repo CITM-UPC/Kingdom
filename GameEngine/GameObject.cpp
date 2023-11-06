@@ -47,19 +47,19 @@ void GameObject::AddComponent(Component::Type component)
 		break;
 	}
 
-	ptr->gameObject = this;
+	ptr->gameObject = *this;
 	components.push_back(ptr);
 }
 
 void GameObject::AddComponent(std::shared_ptr<Mesh> component)
 {
-	component->gameObject = this;
+	component->gameObject = *this;
 	components.push_back(component);
 }
 
 void GameObject::AddComponent(std::shared_ptr<Texture2D> component)
 {
-	component->gameObject = this;
+	component->gameObject = *this;
 	components.push_back(component);
 }
 

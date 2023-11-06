@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
-#include "GameObject.h"
+
+class GameObject;
 
 class Component
 {
@@ -14,10 +15,11 @@ public:
 	};
 
 	bool isActive = true;
-	GameObject* gameObject;
+	GameObject& gameObject;
 
 public:
 
+	Component(GameObject& owner) : gameObject(owner) {}
 	virtual void Update() = 0;
 	virtual Type getType() const = 0;
 };

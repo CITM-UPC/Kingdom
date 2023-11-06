@@ -12,7 +12,7 @@ public:
 		GLOBAL,
 	};
 
-	Transform();
+	Transform(GameObject& owner);
 	~Transform();
 
 	//Moves the object to 'position'.

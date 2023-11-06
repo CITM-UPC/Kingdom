@@ -9,9 +9,9 @@ private:
 	unsigned int _id;
 
 public:
-	Texture2D() : _id(0) {}
+	Texture2D(GameObject& owner) : Component(owner), _id(0) {}
 
-	explicit Texture2D(const std::string& path);
+	explicit Texture2D(GameObject& owner, const std::string& path);
 	Texture2D(Texture2D&& tex) noexcept;
 	void bind() const;
 	~Texture2D();

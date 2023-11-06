@@ -6,7 +6,7 @@
 
 using namespace std;
 
-Texture2D::Texture2D(const std::string& path) {
+Texture2D::Texture2D(GameObject& owner, const std::string& path) : Component(owner) {
 	//load image data using devil
 	auto img = ilGenImage();
 	ilBindImage(img);
@@ -31,7 +31,7 @@ Texture2D::Texture2D(const std::string& path) {
 	ilDeleteImage(img);
 }
 
-Texture2D::Texture2D(Texture2D&& tex) noexcept : _id(tex._id) {
+Texture2D::Texture2D(Texture2D&& tex) noexcept : Component(tex.gameObject), _id(tex._id) {
 	tex._id = 0;
 }
 

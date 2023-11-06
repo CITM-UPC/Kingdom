@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-Transform::Transform()
+Transform::Transform(GameObject& owner) : Component(owner)
 {
 	position = vec3(0, 0, 0);
 	rotation = vec3(0, 0, 0);
