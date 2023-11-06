@@ -47,8 +47,7 @@ Mesh::Mesh(Mesh&& b) noexcept :
 	_vertex_buffer_id(b._vertex_buffer_id),
 	_numVerts(b._numVerts),
 	_indexs_buffer_id(b._indexs_buffer_id),
-	_numIndexs(b._numIndexs),
-	texture(b.texture)
+	_numIndexs(b._numIndexs)
 {
 	b._vertex_buffer_id = 0;
 	b._indexs_buffer_id = 0;
@@ -59,8 +58,7 @@ _format(cpy._format),
 _vertex_buffer_id(cpy._vertex_buffer_id),
 _numVerts(cpy._numVerts),
 _indexs_buffer_id(cpy._indexs_buffer_id),
-_numIndexs(cpy._numIndexs),
-texture(cpy.texture)    // Copies the shared_ptr, so it now points to the same object
+_numIndexs(cpy._numIndexs)
 {
 }
 
@@ -81,7 +79,8 @@ void Mesh::draw() {
 		break;
 	case Formats::F_V3T2:
 		glEnable(GL_TEXTURE_2D);
-		if (texture.get()) texture->bind();
+		std::shared_ptr<Texture2D> texture = std::dynamic_pointer_cast<Texture2D>(gameObject->GetComponent(Component::Type::TEXTURE2D));
+		if (texture.get()) { texture->bind(); }
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glVertexPointer(3, GL_FLOAT, sizeof(V3T2), nullptr);
 		glTexCoordPointer(2, GL_FLOAT, sizeof(V3T2), (void*)sizeof(V3));

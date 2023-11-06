@@ -11,7 +11,6 @@ private:
 public:
 	Texture2D() : _id(0) {}
 
-	typedef std::shared_ptr<Texture2D> Ptr;
 	explicit Texture2D(const std::string& path);
 	Texture2D(Texture2D&& tex) noexcept;
 	void bind() const;

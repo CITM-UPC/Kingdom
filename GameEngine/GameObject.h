@@ -29,6 +29,7 @@ public:
 	std::vector<std::shared_ptr<Component>> GetComponents();
 	void AddComponent(Component::Type component);
 	void AddComponent(std::shared_ptr<Mesh> component);
+	void AddComponent(std::shared_ptr<Texture2D> component);
 	void RemoveComponent(Component::Type component);
 
 	static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);

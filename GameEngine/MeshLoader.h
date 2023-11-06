@@ -13,7 +13,7 @@ class MeshLoader
 {
 public:
 
-	static std::vector<std::shared_ptr<Mesh>> loadFromFile(const std::string& path)
+	static std::vector<std::shared_ptr<Mesh>> loadMeshFromFile(const std::string& path)
 	{
 		std::vector<std::shared_ptr<Mesh>> mesh_ptrs;
 
@@ -38,6 +38,23 @@ public:
 				index_data.push_back(faces[f].mIndices[2]);
 			}
 
+			auto mesh_ptr = std::make_shared<Mesh>(Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size());
+
+			mesh_ptrs.push_back(mesh_ptr);
+		}
+
+		aiReleaseImport(scene);
+
+		return mesh_ptrs;
+	}
+	static std::vector<std::shared_ptr<Texture2D>> loadTextureFromFile(const std::string& path)
+	{
+		std::vector<std::shared_ptr<Texture2D>> texture_ptrs;
+
+		auto scene = aiImportFile(path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
+		for (size_t m = 0; m < scene->mNumMeshes; ++m) {
+			auto mesh = scene->mMeshes[m];
+
 			auto material = scene->mMaterials[mesh->mMaterialIndex];
 			aiString aiPath;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &aiPath);
@@ -47,14 +64,13 @@ public:
 			std::string folder_path = (slash_pos != std::string::npos) ? path.substr(0, slash_pos + 1) : "./";
 			std::string texPath = folder_path + aiScene::GetShortFilename(aiPath.C_Str());
 
-			auto mesh_ptr = std::make_shared<Mesh>(Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size());
-			mesh_ptr->texture = std::make_shared<Texture2D>(texPath);
+			auto texture_ptr = std::make_shared<Texture2D>(texPath);
 
-			mesh_ptrs.push_back(mesh_ptr);
+			texture_ptrs.push_back(texture_ptr);
 		}
 
 		aiReleaseImport(scene);
 
-		return mesh_ptrs;
+		return texture_ptrs;
 	}
 };
