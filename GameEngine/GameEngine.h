@@ -6,6 +6,7 @@
 //#include "ModuleInput.h"
 #include "Engine_ModuleRenderer3D.h"
 //#include "ModuleAudio.h"
+#include <IL/il.h>
 
 #include "Camera.h"
 
@@ -33,6 +34,15 @@ public:
 	engine_status Update();
 	engine_status PostUpdate();
 	bool CleanUp();
+
+	std::string getDevILVersion() {
+		return std::to_string(ilGetInteger(IL_VERSION_NUM));
+	}
+
+	std::string getOpenGLVersion() {
+		const GLubyte* version = glGetString(GL_VERSION);
+		return reinterpret_cast<const char*>(version);
+	}
 
 private:
 

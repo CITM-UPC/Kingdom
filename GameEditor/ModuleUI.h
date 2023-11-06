@@ -6,8 +6,12 @@
 #include "..\GameEngine\GameObject.h"
 #include "..\GameEngine\Component.h"
 
-struct HardwareInformation {
-	SDL_version version;
+struct InfrastructureInfo {
+	std::string sdl_version_compiled;
+	std::string sdl_version_linked;
+	std::string gl_version;
+	std::string devil_version;
+
 	std::string GpuVendor;
 	std::string Gpu;
 	std::string GpuDriver;
@@ -45,7 +49,7 @@ private:
 	void AboutWindow();
 	void HardwareWindow();
 
-	void GetHardwareInformation();
+	void GetInfrastructureInfo();
 
 private:
 
@@ -59,11 +63,11 @@ private:
 	bool camDebug = false;
 	bool about = false;
 
-	bool hardware = false;
+	bool infrastructure = false;
 
 	std::string aboutContent;
 
 	// Hardware information
-	HardwareInformation info;
+	InfrastructureInfo info;
 	GameObject gameObjSelected;
 };

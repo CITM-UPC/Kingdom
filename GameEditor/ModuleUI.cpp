@@ -72,7 +72,7 @@ update_status ModuleUI::PreUpdate()
 {
 	//This here does not work. Currently in Input.cpp
 	//ImGui_ImplSDL2_ProcessEvent(&pollevent);
-	GetHardwareInformation();
+	GetInfrastructureInfo();
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
@@ -93,7 +93,7 @@ update_status ModuleUI::PreUpdate()
 	if (about)      AboutWindow();
 	if (inspector)	InspectorWindow();
 	if (hierarchy)	HierarchyWindow();
-	if (hardware)   HardwareWindow();
+	if (infrastructure)   HardwareWindow();
 
 #pragma region ImGui_Windows_Test
 
@@ -179,9 +179,9 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::BeginMenu("Menus")) {
 				ImGui::MenuItem("Hierarchy", "", &hierarchy);
 				ImGui::MenuItem("Inspector", "", &inspector);
-				ImGui::MenuItem("FPS Graph", "", &FPSgraph);
-				ImGui::MenuItem("Hardware Information", "", &hardware);
 				ImGui::MenuItem("Log", "", &logWindow);
+				ImGui::MenuItem("FPS Graph", "", &FPSgraph);
+				ImGui::MenuItem("Infrastructure Information", "", &infrastructure);
 				ImGui::EndMenu();
 			}
 			ImGui::Separator();
@@ -527,45 +527,67 @@ void ModuleUI::AboutWindow()
 
 void ModuleUI::HardwareWindow()
 {
-	ImGui::Begin("Hardware information", &hardware, ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Begin("Infrastructure information", &infrastructure, ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Text("Software Information:");
+	ImGui::Text("SDL:");
+	ImGui::Bullet(); ImGui::Text("Compiled: ");
+	ImGui::SameLine(); ImGui::TextColored({ 0.352f, 0.386f, 0.750f, 1.0f }, info.sdl_version_compiled.c_str());
+	ImGui::Bullet(); ImGui::Text("Linked: ");
+	ImGui::SameLine(); ImGui::TextColored({ 0.352f, 0.386f, 0.750f, 1.0f }, info.sdl_version_linked.c_str());
+	ImGui::Text("OpenGL:");
+	ImGui::Bullet(); ImGui::TextColored({ 0.719f, 0.735f, 0.910f, 1.0f }, info.gl_version.c_str());
+	ImGui::Text("DevIL:");
+	ImGui::Bullet(); ImGui::TextColored({ 0.610f, 0.0488f, 0.142f, 1.0f }, info.devil_version.c_str());
+	ImGui::Separator();
+
 	ImGui::Text("GPU Information:");
 	std::string textToShow = "GPU: " + info.Gpu;
-	ImGui::Text(textToShow.c_str());
+	ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
 
 	textToShow = "Vendor: " + info.GpuVendor;
-	ImGui::Text(textToShow.c_str());
+	ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
 
 	textToShow = "Driver: " + info.GpuDriver;
-	ImGui::Text(textToShow.c_str());
+	ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
 
 	ImGui::Separator();
 
 	ImGui::Text("VRAM Information:");
 	textToShow = "Budget: " + std::to_string(info.vram_mb_budget) + " mb";
-	ImGui::Text(textToShow.c_str());
+	ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
 
 	textToShow = "Usage: " + std::to_string(info.vram_mb_usage) + " mb";
-	ImGui::Text(textToShow.c_str());
+	ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
 
 	textToShow = "Available: " + std::to_string(info.vram_mb_available) + " mb";
-	ImGui::Text(textToShow.c_str());
+	ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
 
 	ImGui::Separator();
 
 	ImGui::Text("CPU Information:");
 
-	textToShow = "CPU Count: " + std::to_string(info.cpu_count);
-	ImGui::Text(textToShow.c_str());
+	textToShow = "CPU Cores: " + std::to_string(info.cpu_count);
+	ImGui::Bullet(); ImGui::TextColored({ 0.890f, 0.876f, 0.0356f, 1.0f }, textToShow.c_str());
 
 	textToShow = "CPU cache line size: " + std::to_string(info.l1_cachekb);
-	ImGui::Text(textToShow.c_str());
+	ImGui::Bullet(); ImGui::TextColored({ 0.890f, 0.876f, 0.0356f, 1.0f }, textToShow.c_str());
 
 	ImGui::End();
 }
 
-void ModuleUI::GetHardwareInformation()
+void ModuleUI::GetInfrastructureInfo()
 {
-	SDL_GetVersion(&info.version);
+	SDL_version compiled;
+	SDL_version linked;
+
+	SDL_VERSION(&compiled);
+	SDL_GetVersion(&linked);
+
+	info.sdl_version_compiled = std::to_string(compiled.major) + "." + std::to_string(compiled.minor) + "." + std::to_string(compiled.patch);
+	info.sdl_version_linked = std::to_string(linked.major) + "." + std::to_string(linked.minor) + "." + std::to_string(linked.patch);
+
+	info.gl_version = App->gEngine->getOpenGLVersion();
+	info.devil_version = App->gEngine->getDevILVersion();
 
 	info.GpuVendor.assign((const char*)glGetString(GL_VENDOR));
 	info.Gpu.assign((const char*)glGetString(GL_RENDERER));
