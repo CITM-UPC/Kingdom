@@ -324,10 +324,12 @@ void ModuleUI::InspectorWindow()
 
 void ModuleUI::LogConsoleTestWindow()
 {
+	ImGuiTextFilter filter;
 	ImGui::Begin("Log Console", &logWindow);
 	if (ImGui::Button("Clear")) { App->logHistory.clear(); }
 	ImGui::SameLine(); 
 	bool copy = ImGui::Button("Copy");
+	ImGui::SameLine(); filter.Draw("Filter", -100.0f);
 	ImGui::Separator();
 	if (ImGui::BeginPopup("Options"))
 	{
@@ -341,7 +343,15 @@ void ModuleUI::LogConsoleTestWindow()
 		if (copy) ImGui::LogToClipboard();
 
 		for (const auto& log : App->logHistory)
-			ImGui::Text(log.c_str());
+			if (filter.IsActive()) {
+				if (filter.PassFilter(log.c_str())) {
+					ImGui::Text(log.c_str());
+				}
+			}
+			else {
+				ImGui::Text(log.c_str());
+			}
+
 		if (autoScrollLog && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
 			ImGui::SetScrollHereY(1.0f);
 		ImGui::GetClipboardText();
