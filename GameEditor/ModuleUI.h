@@ -62,8 +62,9 @@ private:
 	bool options = false;
 	bool camDebug = false;
 	bool about = false;
-
 	bool infrastructure = false;
+
+	bool autoScrollLog = true;
 
 	std::string aboutContent;
 

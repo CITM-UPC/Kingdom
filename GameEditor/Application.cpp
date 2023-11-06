@@ -31,12 +31,14 @@ bool Application::Init()
 	bool ret = true;
 
 	// Call Init() in all modules
+	logHistory.push_back("Initializing modules --------------");
 	for (auto const& item : list_modules)
 	{
 		item->Init();
 	}
 
 	// After all Init calls we call Start() in all modules
+	logHistory.push_back("Application Start --------------");
 	LOG("Application Start --------------");
 	for (auto const& item : list_modules)
 	{

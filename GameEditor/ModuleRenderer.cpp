@@ -13,6 +13,7 @@ ModuleRenderer::~ModuleRenderer()
 // Called before render is available
 bool ModuleRenderer::Init()
 {
+	App->logHistory.push_back("Creating Renderer context");
 	LOG("Creating Renderer context");
 	bool ret = true;
 

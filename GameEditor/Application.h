@@ -43,6 +43,7 @@ public:
 	bool CleanUp();
 
 	vector<float> fpsHistory;
+	list<string> logHistory;
 
 private:
 
