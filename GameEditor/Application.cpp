@@ -31,7 +31,7 @@ bool Application::Init()
 	bool ret = true;
 
 	// Call Init() in all modules
-	logHistory.push_back("Initializing modules --------------");
+	logHistory.push_back("Initializing Editor modules --------------");
 	for (auto const& item : list_modules)
 	{
 		item->Init();
@@ -102,6 +102,11 @@ update_status Application::Update()
 
 	// Replace oldest data in the history
 	if (fpsHistory.size() > 100) fpsHistory.erase(fpsHistory.begin());
+
+
+	logHistory.insert(logHistory.end(), gEngine->renderer3D->logHistory.begin(), gEngine->renderer3D->logHistory.end());
+
+	gEngine->renderer3D->logHistory.clear();
 
 	return ret;
 }

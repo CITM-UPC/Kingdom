@@ -53,6 +53,7 @@ public:
 
 		currentObject.name = meshName;
 		gameObjectList.push_back(currentObject);
+		
 	}
 
 	void addGameObject(const std::string& filePath) {
@@ -120,6 +121,7 @@ public:
 	glm::mat3x3 NormalMatrix;
 	glm::mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 	std::list<GameObject> gameObjectList;
+	std::list<std::string> logHistory;
 
 private:
 

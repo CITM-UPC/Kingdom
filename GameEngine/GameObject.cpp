@@ -48,6 +48,7 @@ void GameObject::AddComponent(Component::Type component)
 	}
 
 	components.push_back(ptr);
+
 }
 
 void GameObject::AddComponent(std::shared_ptr<Mesh> component)
