@@ -326,7 +326,8 @@ void ModuleUI::LogConsoleTestWindow()
 {
 	ImGui::Begin("Log Console", &logWindow);
 	if (ImGui::Button("Clear")) { App->logHistory.clear(); }
-	ImGui::SameLine(); if (ImGui::Button("Copy")) { App->logHistory.push_back("mondongo"); }
+	ImGui::SameLine(); 
+	bool copy = ImGui::Button("Copy");
 	ImGui::Separator();
 	if (ImGui::BeginPopup("Options"))
 	{
@@ -335,11 +336,15 @@ void ModuleUI::LogConsoleTestWindow()
 	}
 	if (ImGui::Button("Options")) ImGui::OpenPopup("Options");
 	ImGui::Separator();
+	
 	if (ImGui::BeginChild("", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar)) {
+		if (copy) ImGui::LogToClipboard();
+
 		for (const auto& log : App->logHistory)
 			ImGui::Text(log.c_str());
 		if (autoScrollLog && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
 			ImGui::SetScrollHereY(1.0f);
+		ImGui::GetClipboardText();
 	}
 	ImGui::EndChild();
 	ImGui::End();
