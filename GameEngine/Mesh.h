@@ -18,6 +18,9 @@ public:
 	struct V3C4 { vec3f v; vec4f c; };
 	struct V3T2 { vec3f v; vec2f t; };
 
+	bool usingTexture = true;
+	Texture2D* texture = nullptr;
+
 private:
 
 	std::string meshName;
@@ -36,7 +39,7 @@ private:
 	const unsigned int _numFaces;
 
 public:
-	Mesh() : _format(Formats::F_V3), _numVerts(0), _numIndexs(0), _numTexCoords(0), _numNormals(0), _numFaces(0) {
+	Mesh(GameObject& owner) : Component(owner), _format(Formats::F_V3), _numVerts(0), _numIndexs(0), _numTexCoords(0), _numNormals(0), _numFaces(0) {
 	}
 
 	Texture2D::Ptr texture;
@@ -48,12 +51,11 @@ public:
 	std::vector<vec3f> mNormals;
 	std::vector<vec3f> mFaceCenters;
 	std::vector<vec3f> mFaceNormals;
-
-	Mesh(Formats format, const void* vertex_data, unsigned int numVerts,
+	Mesh(GameObject& owner, Formats format, const void* vertex_data, unsigned int numVerts,
 						 const unsigned int* indexs_data = nullptr, unsigned int numIndexs = 0,
 						 const unsigned int numTexCoords = 0, unsigned int numNormals = 0, unsigned int numFaces = 0);
 
-	Mesh(Mesh&& b) noexcept;
+	Mesh(Mesh&& b) noexcept; //move constructor (the one used when you call std::move)
 	Mesh(const Mesh& cpy);
 	void draw();
 	~Mesh();
@@ -79,5 +81,5 @@ public:
 
 private:
 
-	Mesh& operator=(const Mesh&);
+	Mesh& operator=(const Mesh&) = delete;
 };

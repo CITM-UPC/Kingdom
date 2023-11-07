@@ -21,6 +21,8 @@ bool ModuleRenderer::Init()
 	ret = App->gEngine->renderer3D->Init();
 	vsync = VSYNC;
 
+	FocusCamera();
+
 	return ret;
 }
 
@@ -63,6 +65,7 @@ bool ModuleRenderer::CleanUp()
 	return true;
 }
 
+
 void ModuleRenderer::DoCameraInput()
 {
 	DoZoom();
@@ -71,8 +74,6 @@ void ModuleRenderer::DoCameraInput()
 	{
 		keysInputFPS();
 		mouseInputFPS();
-
-		App->gEngine->cam.UpdateLookAt();
 	}
 	if (App->input->GetKey(SDL_SCANCODE_LALT))
 	{
@@ -85,6 +86,10 @@ void ModuleRenderer::DoCameraInput()
 			mouseCameraPan();
 		}
 	}
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+	{
+		FocusCamera();
+	}
 }
 
 void ModuleRenderer::keysInputFPS()
@@ -94,27 +99,27 @@ void ModuleRenderer::keysInputFPS()
 
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 	{
-		App->gEngine->cam.transform.Move(glm::dvec3(0, 0, camSpeed));
+		App->gEngine->cameraGO.GetComponent<Transform>()->Move(glm::dvec3(0, 0, camSpeed));
 	}
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 	{
-		App->gEngine->cam.transform.Move(glm::dvec3(0, 0, -camSpeed));
+		App->gEngine->cameraGO.GetComponent<Transform>()->Move(glm::dvec3(0, 0, -camSpeed));
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
-		App->gEngine->cam.transform.Move(glm::dvec3(camSpeed, 0, 0));
+		App->gEngine->cameraGO.GetComponent<Transform>()->Move(glm::dvec3(camSpeed, 0, 0));
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
-		App->gEngine->cam.transform.Move(glm::dvec3(-camSpeed, 0, 0));
+		App->gEngine->cameraGO.GetComponent<Transform>()->Move(glm::dvec3(-camSpeed, 0, 0));
 	}
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
 	{
-		App->gEngine->cam.transform.Move(glm::dvec3(0, camSpeed, 0), Transform::Space::GLOBAL);
+		App->gEngine->cameraGO.GetComponent<Transform>()->Move(glm::dvec3(0, camSpeed, 0), Transform::Space::GLOBAL);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT)
 	{
-		App->gEngine->cam.transform.Move(glm::dvec3(0, -camSpeed, 0), Transform::Space::GLOBAL);
+		App->gEngine->cameraGO.GetComponent<Transform>()->Move(glm::dvec3(0, -camSpeed, 0), Transform::Space::GLOBAL);
 	}
 }
 void ModuleRenderer::mouseInputFPS()
@@ -124,8 +129,8 @@ void ModuleRenderer::mouseInputFPS()
 	int dx = App->input->GetMouseXMotion();
 	int dy = -App->input->GetMouseYMotion();
 
-	App->gEngine->cam.transform.Rotate(glm::vec3(0, dx * sensitivity, 0), Transform::Space::GLOBAL);
-	App->gEngine->cam.transform.Rotate(glm::vec3(dy * sensitivity, 0, 0));
+	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(glm::vec3(0, dx * sensitivity, 0), Transform::Space::GLOBAL);
+	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(glm::vec3(dy * sensitivity, 0, 0));
 }
 
 void ModuleRenderer::mouseCamOrbit()
@@ -135,13 +140,13 @@ void ModuleRenderer::mouseCamOrbit()
 	int dx = App->input->GetMouseXMotion();
 	int dy = -App->input->GetMouseYMotion();
 
-	App->gEngine->cam.transform.MoveTo(App->gEngine->cam.lookAtPos);
+	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(App->gEngine->cameraGO.GetComponent<Camera>()->lookAtPos);
 
-	App->gEngine->cam.transform.Rotate(vec3(0, dx * sensitivity, 0), Transform::Space::GLOBAL);
-	App->gEngine->cam.transform.Rotate(vec3(dy * sensitivity, 0, 0));
+	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(vec3(0, dx * sensitivity, 0), Transform::Space::GLOBAL);
+	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(vec3(dy * sensitivity, 0, 0));
 
-	vec3 finalPos = App->gEngine->cam.transform.position - (App->gEngine->cam.transform.forward * App->gEngine->cam.camOffset);
-	App->gEngine->cam.transform.MoveTo(finalPos);
+	vec3 finalPos = App->gEngine->cameraGO.GetComponent<Transform>()->position - (App->gEngine->cameraGO.GetComponent<Transform>()->forward * App->gEngine->cameraGO.GetComponent<Camera>()->camOffset);
+	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(finalPos);
 }
 void ModuleRenderer::mouseCameraPan()
 {
@@ -150,11 +155,10 @@ void ModuleRenderer::mouseCameraPan()
 
 	float panSpeed = 0.01f;
 
-	App->gEngine->cam.transform.Move(vec3(dx * panSpeed, 0, 0));
-	App->gEngine->cam.transform.Move(vec3(0, dy * panSpeed, 0));
-
-	App->gEngine->cam.UpdateLookAt();
+	App->gEngine->cameraGO.GetComponent<Transform>()->Move(vec3(dx * panSpeed, 0, 0));
+	App->gEngine->cameraGO.GetComponent<Transform>()->Move(vec3(0, dy * panSpeed, 0));
 }
+
 void ModuleRenderer::DoZoom()
 {
 	int scrollWheel = App->input->GetMouseZ();
@@ -163,19 +167,26 @@ void ModuleRenderer::DoZoom()
 	{
 		float zoomSensitivity = 0.3f;
 
-		App->gEngine->cam.camOffset -= scrollWheel * zoomSensitivity;
+		App->gEngine->cameraGO.GetComponent<Camera>()->camOffset -= scrollWheel * zoomSensitivity;
 
-		if (App->gEngine->cam.camOffset <= 0.1f)
+		if (App->gEngine->cameraGO.GetComponent<Camera>()->camOffset <= 0.1f)
 		{
-			App->gEngine->cam.camOffset = 0.1f;
+			App->gEngine->cameraGO.GetComponent<Camera>()->camOffset = 0.1f;
 			return;
 		}
-		else if (App->gEngine->cam.camOffset >= 50.0f)
+		else if (App->gEngine->cameraGO.GetComponent<Camera>()->camOffset >= 50.0f)
 		{
-			App->gEngine->cam.camOffset = 50.0f;
+			App->gEngine->cameraGO.GetComponent<Camera>()->camOffset = 50.0f;
 			return;
 		}
 
-		App->gEngine->cam.transform.Move(vec3(0, 0, scrollWheel * zoomSensitivity));
+		App->gEngine->cameraGO.GetComponent<Transform>()->Move(vec3(0, 0, scrollWheel * zoomSensitivity));
 	}
+}
+
+void ModuleRenderer::FocusCamera()
+{
+	vec3 targetPos = App->ui->GetSelectedObjectPos() - App->gEngine->cameraGO.GetComponent<Transform>()->forward * App->gEngine->cameraGO.GetComponent<Camera>()->camOffset;
+
+	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(targetPos);
 }

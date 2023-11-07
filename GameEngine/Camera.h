@@ -1,13 +1,17 @@
 #pragma once
 
 #include <glm/vec3.hpp>
-#include "Transform.h"
+#include "Component.h"
 
-struct Camera
+class Camera : public Component
 {
 public:
-	Camera();
-	void UpdateLookAt();
+	Camera(GameObject& owner);
+	~Camera();
+	void Update() override;
+	Type getType() const override {
+		return Type::CAMERA;
+	}
 
 public:
 	double fov;
@@ -15,7 +19,6 @@ public:
 	double clippingPlaneViewNear;
 	double clippingPlaneViewFar;
 
-	Transform transform;
-	vec3 lookAtPos;
+	glm::dvec3 lookAtPos;
 	double camOffset;
 };

@@ -7,6 +7,10 @@ GameEngine::GameEngine()
 
 	//AddModule(input);
 	AddModule(renderer3D);
+
+	cameraGO.AddComponent(Component::Type::CAMERA);
+	cameraGO.GetComponent<Transform>()->Rotate(vec3(0, 35, 0), Transform::Space::GLOBAL);
+	cameraGO.GetComponent<Transform>()->Rotate(vec3(-20, 0, 0));
 }
 
 GameEngine::~GameEngine()

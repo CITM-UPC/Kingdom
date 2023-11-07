@@ -21,6 +21,7 @@ public:
 	void mouseCamOrbit();
 	void mouseCameraPan();
 	void DoZoom();
+	void FocusCamera();
 
 public:
 

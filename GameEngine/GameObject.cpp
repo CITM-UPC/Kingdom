@@ -4,23 +4,23 @@
 GameObject::GameObject()
 {
 	name = "";
-	components.push_back(std::make_shared<Transform>());
+	components.push_back(std::make_shared<Transform>(*this));
 }
 
 GameObject::~GameObject() = default;
 
-std::shared_ptr<Component> GameObject::GetComponent(Component::Type componentType)
-{
-	for (auto& comp : components)
-	{
-		if (comp->getType() == componentType)
-		{
-			return comp;
-		}
-	}
-
-	return nullptr;
-}
+//std::shared_ptr<Component> GameObject::GetComponent(Component::Type componentType)
+//{
+//	for (auto& comp : components)
+//	{
+//		if (comp->getType() == componentType)
+//		{
+//			return comp;
+//		}
+//	}
+//
+//	return nullptr;
+//}
 
 std::vector<std::shared_ptr<Component>> GameObject::GetComponents()
 {
@@ -34,13 +34,16 @@ void GameObject::AddComponent(Component::Type component)
 	switch (component)
 	{
 	case Component::Type::TRANSFORM:
-		ptr = std::make_shared<Transform>();
+		ptr = std::make_shared<Transform>(*this);
 		break;
 	case Component::Type::MESH:
-		ptr = std::make_shared<Mesh>();
+		ptr = std::make_shared<Mesh>(*this);
 		break;
 	case Component::Type::TEXTURE2D:
-		ptr = std::make_shared<Texture2D>();
+		ptr = std::make_shared<Texture2D>(*this);
+		break;
+	case Component::Type::CAMERA:
+		ptr = std::make_shared<Camera>(*this);
 		break;
 	default:
 		ENGINE_LOG("Cant add component to components list in GameObject");
@@ -52,6 +55,13 @@ void GameObject::AddComponent(Component::Type component)
 
 void GameObject::AddComponent(std::shared_ptr<Mesh> component)
 {
+	component->gameObject = *this;
+	components.push_back(component);
+}
+
+void GameObject::AddComponent(std::shared_ptr<Texture2D> component)
+{
+	component->gameObject = *this;
 	components.push_back(component);
 }
 

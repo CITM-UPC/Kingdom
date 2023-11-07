@@ -10,7 +10,8 @@
 
 using namespace std;
 
-Mesh::Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* index_data, unsigned int numIndexs, const unsigned int numTexCoords, unsigned int numNormals, unsigned int numFaces) :
+Mesh::Mesh(GameObject& owner, Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* index_data, unsigned int numIndexs, const unsigned int numTexCoords, unsigned int numNormals, unsigned int numFaces) :
+  Component(owner),
 	_format(format),
 	_numVerts(numVerts),
 	_numIndexs(numIndexs),
@@ -46,6 +47,7 @@ Mesh::Mesh(Formats format, const void* vertex_data, unsigned int numVerts, const
 }
 
 Mesh::Mesh(Mesh&& b) noexcept :
+	Component(b.gameObject),
 	_format(b._format),
 	_vertex_buffer_id(b._vertex_buffer_id),
 	_numVerts(b._numVerts),
@@ -60,7 +62,9 @@ Mesh::Mesh(Mesh&& b) noexcept :
 	b._indexs_buffer_id = 0;
 }
 
-Mesh::Mesh(const Mesh& cpy) : meshName(cpy.meshName),
+Mesh::Mesh(const Mesh& cpy) : 
+Component(cpy.gameObject),
+meshName(cpy.meshName),
 _format(cpy._format),
 _vertex_buffer_id(cpy._vertex_buffer_id),
 _numVerts(cpy._numVerts),
@@ -90,7 +94,7 @@ void Mesh::draw() {
 		break;
 	case Formats::F_V3T2:
 		glEnable(GL_TEXTURE_2D);
-		if (texture.get()) texture->bind();
+		(texture) ? texture->bind() : texture->unbind();
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glVertexPointer(3, GL_FLOAT, sizeof(V3T2), nullptr);
 		glTexCoordPointer(2, GL_FLOAT, sizeof(V3T2), (void*)sizeof(V3));
