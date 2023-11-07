@@ -21,6 +21,8 @@ bool ModuleRenderer::Init()
 	ret = App->gEngine->renderer3D->Init();
 	vsync = VSYNC;
 
+	FocusCamera();
+
 	return ret;
 }
 
@@ -83,6 +85,10 @@ void ModuleRenderer::DoCameraInput()
 		{
 			mouseCameraPan();
 		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+	{
+		FocusCamera();
 	}
 }
 
@@ -152,6 +158,7 @@ void ModuleRenderer::mouseCameraPan()
 	App->gEngine->cameraGO.GetComponent<Transform>()->Move(vec3(dx * panSpeed, 0, 0));
 	App->gEngine->cameraGO.GetComponent<Transform>()->Move(vec3(0, dy * panSpeed, 0));
 }
+
 void ModuleRenderer::DoZoom()
 {
 	int scrollWheel = App->input->GetMouseZ();
@@ -175,4 +182,11 @@ void ModuleRenderer::DoZoom()
 
 		App->gEngine->cameraGO.GetComponent<Transform>()->Move(vec3(0, 0, scrollWheel * zoomSensitivity));
 	}
+}
+
+void ModuleRenderer::FocusCamera()
+{
+	vec3 targetPos = App->ui->GetSelectedObjectPos() - App->gEngine->cameraGO.GetComponent<Transform>()->forward * App->gEngine->cameraGO.GetComponent<Camera>()->camOffset;
+
+	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(targetPos);
 }

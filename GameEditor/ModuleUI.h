@@ -36,6 +36,8 @@ public:
 
 	void RenderUI();
 
+	vec3 GetSelectedObjectPos();
+
 private:
 
 	update_status MainMenuBar();

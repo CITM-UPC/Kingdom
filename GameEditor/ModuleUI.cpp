@@ -128,6 +128,11 @@ void ModuleUI::RenderUI()
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+vec3 ModuleUI::GetSelectedObjectPos()
+{
+	return gameObjSelected.GetComponent<Transform>()->position;
+}
+
 update_status ModuleUI::MainMenuBar()
 {
 	if (ImGui::BeginMainMenuBar())
