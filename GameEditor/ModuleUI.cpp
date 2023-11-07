@@ -315,12 +315,10 @@ void ModuleUI::InspectorWindow()
 					ImGui::Text("Tex coords: ");
 					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumTexCoords()).c_str());
 					ImGui::Separator();
-					if (ImGui::Checkbox("Use Texture", &mesh->usingTexture)) 
+					if (ImGui::Checkbox("Use Texture", &mesh->usingTexture))
 					{
 						(mesh->usingTexture) ? mesh->texture = gameObjSelected.GetComponent<Texture2D>() : mesh->texture = nullptr;
 					}
-				}
-			}
 					ImGui::Checkbox("Draw vertex normals", &mesh->drawVertexNormals);
 					ImGui::Checkbox("Draw face normals", &mesh->drawFaceNormals);
 				}
