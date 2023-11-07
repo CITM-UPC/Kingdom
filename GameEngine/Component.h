@@ -11,14 +11,16 @@ public:
 	{
 		TRANSFORM,
 		MESH,
-		TEXTURE2D
+		TEXTURE2D,
+		CAMERA
 	};
 
 	bool isActive = true;
-	GameObject* gameObject;
+	GameObject& gameObject;
 
 public:
 
+	Component(GameObject& owner) : gameObject(owner) {}
 	virtual void Update() = 0;
 	virtual Type getType() const = 0;
 };

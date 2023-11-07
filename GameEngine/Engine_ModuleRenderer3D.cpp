@@ -118,13 +118,19 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(gEngine->cam.fov, gEngine->cam.aspectRatio, gEngine->cam.clippingPlaneViewNear, gEngine->cam.clippingPlaneViewFar);
+	gluPerspective(	gEngine->cameraGO.GetComponent<Camera>()->fov, 
+					gEngine->cameraGO.GetComponent<Camera>()->aspectRatio, 
+					gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear, 
+					gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewFar);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(gEngine->cam.transform.position.x, gEngine->cam.transform.position.y, gEngine->cam.transform.position.z,
-		gEngine->cam.lookAtPos.x, gEngine->cam.lookAtPos.y, gEngine->cam.lookAtPos.z,
-		gEngine->cam.transform.up.x, gEngine->cam.transform.up.y, gEngine->cam.transform.up.z);
+
+	gEngine->cameraGO.GetComponent<Camera>()->lookAtPos = gEngine->cameraGO.GetComponent<Transform>()->position + gEngine->cameraGO.GetComponent<Transform>()->forward * gEngine->cameraGO.GetComponent<Camera>()->camOffset;
+
+	gluLookAt(	gEngine->cameraGO.GetComponent<Transform>()->position.x,	gEngine->cameraGO.GetComponent<Transform>()->position.y,	gEngine->cameraGO.GetComponent<Transform>()->position.z,
+				gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.x,		gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.y,		gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.z,
+				gEngine->cameraGO.GetComponent<Transform>()->up.x,			gEngine->cameraGO.GetComponent<Transform>()->up.y,			gEngine->cameraGO.GetComponent<Transform>()->up.z);
 
 	return ENGINE_UPDATE_CONTINUE;
 }
@@ -182,7 +188,7 @@ void Engine_ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gEngine->cam.aspectRatio = (float)width / (float)height;
+	//gEngine->cam.aspectRatio = (float)width / (float)height;
 	ProjectionMatrix = glm::perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
 	glLoadMatrixf(glm::value_ptr(ProjectionMatrix));
 
