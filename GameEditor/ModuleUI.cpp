@@ -249,7 +249,14 @@ void ModuleUI::InspectorWindow()
 	if (gameObjSelected.name != "") {
 		ImGui::Checkbox("Active", &gameObjSelected.isActive);
 		ImGui::SameLine(); ImGui::Text("GameObject name: ");
-		ImGui::SameLine(); ImGui::Text(gameObjSelected.name.c_str());
+		ImGui::SameLine(); ImGui::TextColored({ 0.144f, 0.422f, 0.720f, 1.0f }, gameObjSelected.name.c_str());
+
+		ImGui::SetNextItemWidth(100.0f);
+		if (ImGui::BeginCombo("Tag", "Untagged", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
+
+		ImGui::SetNextItemWidth(100.0f);
+		if (ImGui::BeginCombo("Layer", "Default", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
+		
 		for (auto& component : gameObjSelected.GetComponents()) {
 			if (component.get()->getType() == Component::Type::TRANSFORM) {
 				Transform* transform = dynamic_cast<Transform*>(component.get());
@@ -293,7 +300,7 @@ void ModuleUI::InspectorWindow()
 				{
 					ImGui::Checkbox("Active", &mesh->isActive);
 					ImGui::SameLine();  ImGui::Text("Filename: ");
-					ImGui::SameLine();  ImGui::Text(mesh->getName().c_str());
+					ImGui::SameLine();  ImGui::TextColored({ 0.920f, 0.845f, 0.0184f, 1.0f }, mesh->getName().c_str());
 					ImGui::Separator();
 					ImGui::Text("Indexes: ");
 					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumIndexs()).c_str());
@@ -312,7 +319,6 @@ void ModuleUI::InspectorWindow()
 				{
 				}
 			}
-
 		}
 
 	}
