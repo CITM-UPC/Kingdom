@@ -44,7 +44,7 @@ public:
 				index_data.push_back(faces[f].mIndices[2]);
 			}
 
-			auto mesh_ptr = std::make_shared<Mesh>(Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size(), numTexCoords, numNormals, numFaces);
+			auto mesh_ptr = std::make_shared<Mesh>(parentGO, Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size(), numTexCoords, numNormals, numFaces);
 
 			mesh_ptrs.push_back(mesh_ptr);
 		}
