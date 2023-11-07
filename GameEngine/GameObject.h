@@ -8,6 +8,7 @@
 #include "Transform.h"
 #include "Mesh.h"
 #include "Texture2D.h"
+#include "Camera.h"
 
 class GameObject
 {

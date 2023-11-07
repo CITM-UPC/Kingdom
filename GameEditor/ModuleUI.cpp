@@ -487,6 +487,7 @@ void ModuleUI::OptionsWindow()
 void ModuleUI::CamDebugWindow()
 {
 	ImGui::Begin("Cam Debug", &camDebug);
+	/*
 	ImGui::Text("Camera Position x: %f", App->gEngine->cam.transform.position.x);
 	ImGui::Text("Camera Position y: %f", App->gEngine->cam.transform.position.y);
 	ImGui::Text("Camera Position z: %f", App->gEngine->cam.transform.position.z);
@@ -502,6 +503,7 @@ void ModuleUI::CamDebugWindow()
 	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[0][0], App->gEngine->cam.transform.referenceFrameMat[0][1], App->gEngine->cam.transform.referenceFrameMat[0][2]);
 	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[1][0], App->gEngine->cam.transform.referenceFrameMat[1][1], App->gEngine->cam.transform.referenceFrameMat[1][2]);
 	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[2][0], App->gEngine->cam.transform.referenceFrameMat[2][1], App->gEngine->cam.transform.referenceFrameMat[2][2]);
+	*/
 	ImGui::End();
 }
 

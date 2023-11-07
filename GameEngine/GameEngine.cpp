@@ -7,6 +7,8 @@ GameEngine::GameEngine()
 
 	//AddModule(input);
 	AddModule(renderer3D);
+
+	cameraGO.AddComponent(Component::Type::CAMERA);
 }
 
 GameEngine::~GameEngine()

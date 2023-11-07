@@ -16,7 +16,7 @@ public:
 	Engine_ModuleRenderer3D* renderer3D;
 	//ModuleAudio* audio;
 
-	Camera cam;
+	GameObject cameraGO;
 
 private:
 

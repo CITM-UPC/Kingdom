@@ -32,7 +32,7 @@ update_status ModuleRenderer::PreUpdate()
 update_status ModuleRenderer::Update()
 {
 	App->gEngine->renderer3D->Update();
-	DoCameraInput();
+	//DoCameraInput();
 
 	return UPDATE_CONTINUE;
 }
@@ -60,6 +60,7 @@ bool ModuleRenderer::CleanUp()
 	return true;
 }
 
+/*
 void ModuleRenderer::DoCameraInput()
 {
 	DoZoom();
@@ -176,3 +177,4 @@ void ModuleRenderer::DoZoom()
 		App->gEngine->cam.transform.Move(vec3(0, 0, scrollWheel * zoomSensitivity));
 	}
 }
+*/

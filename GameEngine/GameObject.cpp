@@ -42,6 +42,9 @@ void GameObject::AddComponent(Component::Type component)
 	case Component::Type::TEXTURE2D:
 		ptr = std::make_shared<Texture2D>(*this);
 		break;
+	case Component::Type::CAMERA:
+		ptr = std::make_shared<Camera>(*this);
+		break;
 	default:
 		ENGINE_LOG("Cant add component to components list in GameObject");
 		break;
