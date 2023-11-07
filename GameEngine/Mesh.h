@@ -33,7 +33,7 @@ public:
 	}
 
 	Mesh(GameObject& owner, Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* indexs_data = nullptr, unsigned int numIndexs = 0);
-	Mesh(Mesh&& b) noexcept;
+	Mesh(Mesh&& b) noexcept; //move constructor (the one used when you call std::move)
 	Mesh(const Mesh& cpy);
 	void draw();
 	~Mesh();

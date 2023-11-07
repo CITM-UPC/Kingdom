@@ -26,7 +26,8 @@ public:
 	GameObject();
 	~GameObject();
 
-	std::shared_ptr<Component> GetComponent(Component::Type componentType);
+	template <typename T> T* GetComponent();
+	//std::shared_ptr<Component> GetComponent(Component::Type componentType);
 	std::vector<std::shared_ptr<Component>> GetComponents();
 	void AddComponent(Component::Type component);
 	void AddComponent(std::shared_ptr<Mesh> component);
@@ -37,3 +38,15 @@ public:
 
 	void UpdateComponents();
 };
+
+template<typename T>
+inline T* GameObject::GetComponent()
+{
+	for (auto component : components) {
+		T* returnComponent = dynamic_cast<T*>(component.get());
+		if (returnComponent) {
+			return returnComponent;
+		}
+	}
+	return nullptr;
+}

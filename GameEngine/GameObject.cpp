@@ -9,18 +9,18 @@ GameObject::GameObject()
 
 GameObject::~GameObject() = default;
 
-std::shared_ptr<Component> GameObject::GetComponent(Component::Type componentType)
-{
-	for (auto& comp : components)
-	{
-		if (comp->getType() == componentType)
-		{
-			return comp;
-		}
-	}
-
-	return nullptr;
-}
+//std::shared_ptr<Component> GameObject::GetComponent(Component::Type componentType)
+//{
+//	for (auto& comp : components)
+//	{
+//		if (comp->getType() == componentType)
+//		{
+//			return comp;
+//		}
+//	}
+//
+//	return nullptr;
+//}
 
 std::vector<std::shared_ptr<Component>> GameObject::GetComponents()
 {

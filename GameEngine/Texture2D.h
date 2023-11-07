@@ -12,7 +12,7 @@ public:
 	Texture2D(GameObject& owner) : Component(owner), _id(0) {}
 
 	explicit Texture2D(GameObject& owner, const std::string& path);
-	Texture2D(Texture2D&& tex) noexcept;
+	Texture2D(Texture2D&& tex) noexcept; //move constructor (the one used when you call std::move)
 	void bind() const;
 	~Texture2D();
 

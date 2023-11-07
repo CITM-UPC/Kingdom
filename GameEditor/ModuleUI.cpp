@@ -487,23 +487,21 @@ void ModuleUI::OptionsWindow()
 void ModuleUI::CamDebugWindow()
 {
 	ImGui::Begin("Cam Debug", &camDebug);
-	/*
-	ImGui::Text("Camera Position x: %f", App->gEngine->cam.transform.position.x);
-	ImGui::Text("Camera Position y: %f", App->gEngine->cam.transform.position.y);
-	ImGui::Text("Camera Position z: %f", App->gEngine->cam.transform.position.z);
+	ImGui::Text("Camera Position x: %f", App->gEngine->cameraGO.GetComponent<Transform>()->position.x);
+	ImGui::Text("Camera Position y: %f", App->gEngine->cameraGO.GetComponent<Transform>()->position.y);
+	ImGui::Text("Camera Position z: %f", App->gEngine->cameraGO.GetComponent<Transform>()->position.z);
 	ImGui::Separator();
-	ImGui::Text("LookAt Pos x: %f", App->gEngine->cam.lookAtPos.x);
-	ImGui::Text("LookAt Pos y: %f", App->gEngine->cam.lookAtPos.y);
-	ImGui::Text("LookAt Pos z: %f", App->gEngine->cam.lookAtPos.z);
+	ImGui::Text("LookAt Pos x: %f", App->gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.x);
+	ImGui::Text("LookAt Pos y: %f", App->gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.y);
+	ImGui::Text("LookAt Pos z: %f", App->gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.z);
 	ImGui::Separator();
-	ImGui::Text("Forward: %f, %f, %f", App->gEngine->cam.transform.forward.x, App->gEngine->cam.transform.forward.y, App->gEngine->cam.transform.forward.z);
-	ImGui::Text("Right: %f, %f, %f", App->gEngine->cam.transform.right.x, App->gEngine->cam.transform.right.y, App->gEngine->cam.transform.right.z);
-	ImGui::Text("Up: %f, %f, %f", App->gEngine->cam.transform.up.x, App->gEngine->cam.transform.up.y, App->gEngine->cam.transform.up.z);
+	ImGui::Text("Forward: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->forward.x, App->gEngine->cameraGO.GetComponent<Transform>()->forward.y, App->gEngine->cameraGO.GetComponent<Transform>()->forward.z);
+	ImGui::Text("Right: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->right.x, App->gEngine->cameraGO.GetComponent<Transform>()->right.y, App->gEngine->cameraGO.GetComponent<Transform>()->right.z);
+	ImGui::Text("Up: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->up.x, App->gEngine->cameraGO.GetComponent<Transform>()->up.y, App->gEngine->cameraGO.GetComponent<Transform>()->up.z);
 	ImGui::Separator();
-	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[0][0], App->gEngine->cam.transform.referenceFrameMat[0][1], App->gEngine->cam.transform.referenceFrameMat[0][2]);
-	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[1][0], App->gEngine->cam.transform.referenceFrameMat[1][1], App->gEngine->cam.transform.referenceFrameMat[1][2]);
-	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cam.transform.referenceFrameMat[2][0], App->gEngine->cam.transform.referenceFrameMat[2][1], App->gEngine->cam.transform.referenceFrameMat[2][2]);
-	*/
+	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[0][0], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[0][1], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[0][2]);
+	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[1][0], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[1][1], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[1][2]);
+	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[2][0], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[2][1], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[2][2]);
 	ImGui::End();
 }
 
