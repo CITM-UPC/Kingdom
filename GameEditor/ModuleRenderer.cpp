@@ -69,8 +69,6 @@ void ModuleRenderer::DoCameraInput()
 	{
 		keysInputFPS();
 		mouseInputFPS();
-
-		App->gEngine->cameraGO.GetComponent<Camera>()->UpdateLookAt();
 	}
 	if (App->input->GetKey(SDL_SCANCODE_LALT))
 	{
@@ -150,8 +148,6 @@ void ModuleRenderer::mouseCameraPan()
 
 	App->gEngine->cameraGO.GetComponent<Transform>()->Move(vec3(dx * panSpeed, 0, 0));
 	App->gEngine->cameraGO.GetComponent<Transform>()->Move(vec3(0, dy * panSpeed, 0));
-
-	App->gEngine->cameraGO.GetComponent<Camera>()->UpdateLookAt();
 }
 void ModuleRenderer::DoZoom()
 {

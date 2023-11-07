@@ -53,5 +53,5 @@ public:
 
 private:
 
-	Mesh& operator=(const Mesh&);
+	Mesh& operator=(const Mesh&) = delete;
 };

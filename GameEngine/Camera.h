@@ -8,7 +8,6 @@ class Camera : public Component
 public:
 	Camera(GameObject& owner);
 	~Camera();
-	void UpdateLookAt();
 	void Update() override;
 	Type getType() const override {
 		return Type::CAMERA;
