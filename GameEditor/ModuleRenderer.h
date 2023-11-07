@@ -22,7 +22,12 @@ public:
 	void mouseCameraPan();
 	void DoZoom();
 
+public:
+
+	bool vsync;
+
 private:
 
 	double camSpeed = 0.1;
+	
 };

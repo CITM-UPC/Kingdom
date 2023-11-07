@@ -19,7 +19,7 @@ Engine_ModuleRenderer3D::~Engine_ModuleRenderer3D() = default;
 // Called before render is available
 bool Engine_ModuleRenderer3D::Init()
 {
-	logHistory.push_back("Creating 3D Renderer context");
+	logHistory.push_back("[Engine] Creating 3D Renderer context");
 	ENGINE_LOG("Creating 3D Renderer context");
 	bool ret = true;
 
@@ -40,11 +40,11 @@ bool Engine_ModuleRenderer3D::Init()
 	if (ret == true)
 	{
 		// Initialize DevIL
-		logHistory.push_back("Initializing DevIL");
+		logHistory.push_back("[Engine] Initializing DevIL");
 		ilInit();
 
 		// Initialize glew
-		logHistory.push_back("Initializing OpenGL");
+		logHistory.push_back("[Engine] Initializing OpenGL");
 		glewInit();
 
 		//Use Vsync
@@ -104,7 +104,7 @@ bool Engine_ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(screen_width, screen_height);
 
-	logHistory.push_back("Added BakerHouse.fbx");
+	logHistory.push_back("[Engine] Added BakerHouse.fbx");
 	addGameObject("Assets/BakerHouse.fbx");
 
 	return ret;

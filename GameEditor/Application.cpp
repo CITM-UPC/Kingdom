@@ -30,15 +30,18 @@ bool Application::Init()
 {
 	bool ret = true;
 
+	targetFPS = 360;
+	frameDurationTime = 1.0s / targetFPS;
+
 	// Call Init() in all modules
-	logHistory.push_back("Initializing Editor modules --------------");
+	logHistory.push_back("[Editor] Initializing Editor modules --------------");
 	for (auto const& item : list_modules)
 	{
 		item->Init();
 	}
 
 	// After all Init calls we call Start() in all modules
-	logHistory.push_back("Application Start --------------");
+	logHistory.push_back("[Editor] Application Start --------------");
 	LOG("Application Start --------------");
 	for (auto const& item : list_modules)
 	{
@@ -102,7 +105,6 @@ update_status Application::Update()
 
 	// Replace oldest data in the history
 	if (fpsHistory.size() > 100) fpsHistory.erase(fpsHistory.begin());
-
 
 	logHistory.insert(logHistory.end(), gEngine->renderer3D->logHistory.begin(), gEngine->renderer3D->logHistory.end());
 

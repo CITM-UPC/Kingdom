@@ -43,7 +43,7 @@ private:
 	void FPSGraphWindow();
 	void HierarchyWindow();
 	void InspectorWindow();
-	void LogConsoleTestWindow();
+	void LogConsoleWindow();
 	void OptionsWindow();
 	void CamDebugWindow();
 	void AboutWindow();

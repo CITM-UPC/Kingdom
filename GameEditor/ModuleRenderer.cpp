@@ -13,11 +13,13 @@ ModuleRenderer::~ModuleRenderer()
 // Called before render is available
 bool ModuleRenderer::Init()
 {
-	App->logHistory.push_back("Creating Renderer context");
+	App->logHistory.push_back("[Editor] Creating Renderer context");
 	LOG("Creating Renderer context");
+
 	bool ret = true;
 
 	ret = App->gEngine->renderer3D->Init();
+	vsync = VSYNC;
 
 	return ret;
 }

@@ -16,7 +16,7 @@ ModuleWindow::~ModuleWindow()
 // Called before render is available
 bool ModuleWindow::Init()
 {
-	App->logHistory.push_back("Init SDL window & surface");
+	App->logHistory.push_back("[Editor] Init SDL window & surface");
 	LOG("Init SDL window & surface");
 	bool ret = true;
 

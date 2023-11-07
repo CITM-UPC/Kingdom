@@ -86,7 +86,7 @@ update_status ModuleUI::PreUpdate()
 	}
 
 	if (FPSgraph)   FPSGraphWindow();
-	if (logWindow)	LogConsoleTestWindow();
+	if (logWindow)	LogConsoleWindow();
 
 	if (options)	OptionsWindow();
 	if (camDebug)	CamDebugWindow();
@@ -149,8 +149,8 @@ update_status ModuleUI::MainMenuBar()
 		}
 		if (ImGui::BeginMenu("Edit"))
 		{
-			if (ImGui::MenuItem("Undo", "Ctrl+Z")) {}
-			if (ImGui::MenuItem("Redo", "Ctrl+Y", false, false)) {}  // Disabled item
+			if (ImGui::MenuItem("Undo", "Not implemented")) {}
+			if (ImGui::MenuItem("Redo", "Not implemented")) {}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Select All", "Not implemented")) {}
 			if (ImGui::MenuItem("Deselect All", "Not implemented")) {}
@@ -164,10 +164,10 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::MenuItem("Pause", "Not implemented")) {}
 			if (ImGui::MenuItem("Step", "Not implemented")) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Settings")) { options = true; }
+			if (ImGui::MenuItem("Settings", "Display, Controls, Renderer, System")) { options = true; }
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Options"))
+		if (ImGui::BeginMenu("Debug"))
 		{
 			if (ImGui::MenuItem("Camera Debug")) camDebug = true;
 
@@ -177,7 +177,7 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::BeginMenu("Menus")) {
 				ImGui::MenuItem("Hierarchy", "", &hierarchy);
 				ImGui::MenuItem("Inspector", "", &inspector);
-				ImGui::MenuItem("Log", "", &logWindow);
+				ImGui::MenuItem("Console Log", "", &logWindow);
 				ImGui::MenuItem("FPS Graph", "", &FPSgraph);
 				ImGui::EndMenu();
 			}
@@ -201,7 +201,7 @@ update_status ModuleUI::MainMenuBar()
 		}
 		if (ImGui::BeginMenu("Help"))
 		{
-			if (ImGui::MenuItem("About")) about = true;
+			if (ImGui::MenuItem("About...")) about = true;
 			ImGui::Separator();
 			if (ImGui::MenuItem("Check releases...")) { OsOpenInShell("https://github.com/CITM-UPC/Kingdom/releases"); }
 			ImGui::EndMenu();
@@ -319,7 +319,7 @@ void ModuleUI::InspectorWindow()
 	ImGui::EndMenu();
 }
 
-void ModuleUI::LogConsoleTestWindow()
+void ModuleUI::LogConsoleWindow()
 {
 	ImGuiTextFilter filter;
 	ImGui::Begin("Log Console", &logWindow);
@@ -365,77 +365,100 @@ void ModuleUI::OptionsWindow()
 	{
 		if (ImGui::BeginTabItem("Display"))
 		{
-			ImGui::Text("Window size");
-			ImGui::SliderInt("Width", &App->window->width, 640, 4096, "%d");
-			ImGui::SliderInt("Height", &App->window->height, 360, 2160, "%d");
-			ImGui::Separator();
-			SDL_SetWindowSize(App->window->window, App->window->width, App->window->height);
-			ImGui::Text("Window flags");
-			ImGui::Checkbox("Fullscreen", &App->window->fullscreen);
-			ImGui::Checkbox("Borderless", &App->window->borderless);
-			ImGui::Checkbox("Resizable", &App->window->resizable);
-			SDL_SetWindowFullscreen(App->window->window, App->window->fullscreen);
-			(App->window->borderless) ? SDL_SetWindowBordered(App->window->window, SDL_FALSE) : SDL_SetWindowBordered(App->window->window, SDL_TRUE);
-			(App->window->resizable) ? SDL_SetWindowResizable(App->window->window, SDL_TRUE) : SDL_SetWindowResizable(App->window->window, SDL_FALSE);
+			if (ImGui::CollapsingHeader("Window")) {
+				ImGui::Text("Window size");
+				ImGui::SliderInt("Width", &App->window->width, 640, 4096, "%d");
+				ImGui::SliderInt("Height", &App->window->height, 360, 2160, "%d");
+				ImGui::Separator();
+				SDL_SetWindowSize(App->window->window, App->window->width, App->window->height);
+				ImGui::Text("Window flags");
+				ImGui::Checkbox("Fullscreen", &App->window->fullscreen);
+				ImGui::Checkbox("Borderless", &App->window->borderless);
+				ImGui::Checkbox("Resizable", &App->window->resizable);
+				SDL_SetWindowFullscreen(App->window->window, App->window->fullscreen);
+				(App->window->borderless) ? SDL_SetWindowBordered(App->window->window, SDL_FALSE) : SDL_SetWindowBordered(App->window->window, SDL_TRUE);
+				(App->window->resizable) ? SDL_SetWindowResizable(App->window->window, SDL_TRUE) : SDL_SetWindowResizable(App->window->window, SDL_FALSE);
+			}
+			if (ImGui::CollapsingHeader("Framerate")) {
+				string textToShow = "Resfresh rate: " + to_string(App->fpsHistory[0]);
+				ImGui::Text(textToShow.c_str());
+
+				ImGui::SliderInt("Target FPS", &App->targetFPS, 30, 240, "%d");
+				App->frameDurationTime = 1.0s / App->targetFPS;
+			}
 
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Controls"))
 		{
-			ImGui::Text("Not yet implemented");
+			if (ImGui::CollapsingHeader("Mouse information")) {
+				ImGui::Text("Mouse X position: ");
+				ImGui::SameLine(); ImGui::TextColored({ 0.720f, 0.691f, 0.144f, 1.0f }, to_string(App->input->GetMouseX()).c_str());
+
+				ImGui::Text("Mouse Y position: ");
+				ImGui::SameLine(); ImGui::TextColored({ 0.720f, 0.691f, 0.144f, 1.0f }, to_string(App->input->GetMouseY()).c_str());
+
+				ImGui::Text("Mouse X motion: ");
+				ImGui::SameLine(); ImGui::TextColored({ 0.720f, 0.691f, 0.144f, 1.0f }, to_string(App->input->GetMouseXMotion()).c_str());
+
+				ImGui::Text("Mouse Y motion: ");
+				ImGui::SameLine(); ImGui::TextColored({ 0.720f, 0.691f, 0.144f, 1.0f }, to_string(App->input->GetMouseYMotion()).c_str());
+			}
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Renderer"))
 		{
-			ImGui::Text("Not yet implemented");
+			ImGui::Checkbox("VSync", &App->renderer->vsync);
+			SDL_GL_SetSwapInterval(App->renderer->vsync);
+
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("System"))
 		{
-			ImGui::Text("Software Information:");
-			ImGui::Text("SDL:");
-			ImGui::Bullet(); ImGui::Text("Compiled: ");
-			ImGui::SameLine(); ImGui::TextColored({ 0.352f, 0.386f, 0.750f, 1.0f }, info.sdl_version_compiled.c_str());
-			ImGui::Bullet(); ImGui::Text("Linked: ");
-			ImGui::SameLine(); ImGui::TextColored({ 0.352f, 0.386f, 0.750f, 1.0f }, info.sdl_version_linked.c_str());
-			ImGui::Text("OpenGL:");
-			ImGui::Bullet(); ImGui::TextColored({ 0.719f, 0.735f, 0.910f, 1.0f }, info.gl_version.c_str());
-			ImGui::Text("DevIL:");
-			ImGui::Bullet(); ImGui::TextColored({ 0.610f, 0.0488f, 0.142f, 1.0f }, info.devil_version.c_str());
-			ImGui::Separator();
+			if (ImGui::CollapsingHeader("Software")) {
+				ImGui::Text("SDL:");
+				ImGui::Bullet(); ImGui::Text("Compiled: ");
+				ImGui::SameLine(); ImGui::TextColored({ 0.352f, 0.386f, 0.750f, 1.0f }, info.sdl_version_compiled.c_str());
+				ImGui::Bullet(); ImGui::Text("Linked: ");
+				ImGui::SameLine(); ImGui::TextColored({ 0.352f, 0.386f, 0.750f, 1.0f }, info.sdl_version_linked.c_str());
+				ImGui::Text("OpenGL:");
+				ImGui::Bullet(); ImGui::TextColored({ 0.719f, 0.735f, 0.910f, 1.0f }, info.gl_version.c_str());
+				ImGui::Text("DevIL:");
+				ImGui::Bullet(); ImGui::TextColored({ 0.610f, 0.0488f, 0.142f, 1.0f }, info.devil_version.c_str());
+			}
+			if (ImGui::CollapsingHeader("Hardware")) {
+				ImGui::Text("GPU Information:");
+				std::string textToShow = "GPU: " + info.Gpu;
+				ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
 
-			ImGui::Text("GPU Information:");
-			std::string textToShow = "GPU: " + info.Gpu;
-			ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
+				textToShow = "Vendor: " + info.GpuVendor;
+				ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
 
-			textToShow = "Vendor: " + info.GpuVendor;
-			ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
+				textToShow = "Driver: " + info.GpuDriver;
+				ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
 
-			textToShow = "Driver: " + info.GpuDriver;
-			ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
+				ImGui::Separator();
 
-			ImGui::Separator();
+				ImGui::Text("VRAM Information:");
+				textToShow = "Budget: " + std::to_string(info.vram_mb_budget) + " mb";
+				ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
 
-			ImGui::Text("VRAM Information:");
-			textToShow = "Budget: " + std::to_string(info.vram_mb_budget) + " mb";
-			ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
+				textToShow = "Usage: " + std::to_string(info.vram_mb_usage) + " mb";
+				ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
 
-			textToShow = "Usage: " + std::to_string(info.vram_mb_usage) + " mb";
-			ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
+				textToShow = "Available: " + std::to_string(info.vram_mb_available) + " mb";
+				ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
 
-			textToShow = "Available: " + std::to_string(info.vram_mb_available) + " mb";
-			ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
+				ImGui::Separator();
 
-			ImGui::Separator();
+				ImGui::Text("CPU Information:");
 
-			ImGui::Text("CPU Information:");
+				textToShow = "CPU Cores: " + std::to_string(info.cpu_count);
+				ImGui::Bullet(); ImGui::TextColored({ 0.890f, 0.876f, 0.0356f, 1.0f }, textToShow.c_str());
 
-			textToShow = "CPU Cores: " + std::to_string(info.cpu_count);
-			ImGui::Bullet(); ImGui::TextColored({ 0.890f, 0.876f, 0.0356f, 1.0f }, textToShow.c_str());
-
-			textToShow = "CPU cache line size: " + std::to_string(info.l1_cachekb);
-			ImGui::Bullet(); ImGui::TextColored({ 0.890f, 0.876f, 0.0356f, 1.0f }, textToShow.c_str());
-
+				textToShow = "CPU cache line size: " + std::to_string(info.l1_cachekb);
+				ImGui::Bullet(); ImGui::TextColored({ 0.890f, 0.876f, 0.0356f, 1.0f }, textToShow.c_str());
+			}
 		}
 		ImGui::EndTabBar();
 	}
