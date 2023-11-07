@@ -233,14 +233,11 @@ void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
 	for (auto& gameObject : App->gEngine->renderer3D->gameObjectList) {
-
 		if (ImGui::MenuItem(gameObject.name.c_str())) {
 			gameObjSelected = gameObject;
 		}
 	}
 	ImGui::EndMenu();
-
-
 }
 
 void ModuleUI::InspectorWindow()
@@ -256,7 +253,7 @@ void ModuleUI::InspectorWindow()
 
 		ImGui::SetNextItemWidth(100.0f);
 		if (ImGui::BeginCombo("Layer", "Default", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
-		
+
 		for (auto& component : gameObjSelected.GetComponents()) {
 			if (component.get()->getType() == Component::Type::TRANSFORM) {
 				Transform* transform = dynamic_cast<Transform*>(component.get());
@@ -304,12 +301,14 @@ void ModuleUI::InspectorWindow()
 					ImGui::Separator();
 					ImGui::Text("Indexes: ");
 					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumIndexs()).c_str());
-					/*ImGui::Text("Normals: ");
-					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumNormals()).c_str());*/
+					ImGui::Text("Normals: ");
+					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumNormals()).c_str());
 					ImGui::Text("Vertexs: ");
 					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumVerts()).c_str());
-					/*ImGui::Text("Faces: ");
-					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumFaces()).c_str());*/
+					ImGui::Text("Faces: ");
+					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumFaces()).c_str());
+					ImGui::Text("Tex coords: ");
+					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumTexCoords()).c_str());
 					ImGui::Separator();
 				}
 			}
@@ -320,7 +319,6 @@ void ModuleUI::InspectorWindow()
 				}
 			}
 		}
-
 	}
 	ImGui::EndMenu();
 }

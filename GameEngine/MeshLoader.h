@@ -21,6 +21,11 @@ public:
 		for (size_t m = 0; m < scene->mNumMeshes; ++m) {
 			auto mesh = scene->mMeshes[m];
 			auto faces = mesh->mFaces;
+
+			int numTexCoords = mesh->mNumVertices; // Number of texture coordinates is same as the number of vertices
+			int numNormals = mesh->mNumVertices; // Number of normals is same as the number of vertices
+			int numFaces = mesh->mNumFaces;
+
 			vec3f* verts = (vec3f*)mesh->mVertices;
 			vec3f* texCoords = (vec3f*)mesh->mTextureCoords[0];
 
@@ -47,7 +52,7 @@ public:
 			std::string folder_path = (slash_pos != std::string::npos) ? path.substr(0, slash_pos + 1) : "./";
 			std::string texPath = folder_path + aiScene::GetShortFilename(aiPath.C_Str());
 
-			auto mesh_ptr = std::make_shared<Mesh>(Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size());
+			auto mesh_ptr = std::make_shared<Mesh>(Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size(), numTexCoords, numNormals, numFaces);
 			mesh_ptr->texture = std::make_shared<Texture2D>(texPath);
 
 			mesh_ptrs.push_back(mesh_ptr);
