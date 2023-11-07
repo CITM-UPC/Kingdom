@@ -10,11 +10,14 @@
 
 using namespace std;
 
-Mesh::Mesh(GameObject& owner, Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* index_data, unsigned int numIndexs) :
-	Component(owner),
+Mesh::Mesh(GameObject& owner, Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* index_data, unsigned int numIndexs, const unsigned int numTexCoords, unsigned int numNormals, unsigned int numFaces) :
+  Component(owner),
 	_format(format),
 	_numVerts(numVerts),
-	_numIndexs(numIndexs)
+	_numIndexs(numIndexs),
+	_numNormals(numNormals),
+	_numTexCoords(numTexCoords),
+	_numFaces(numFaces)
 {
 	glGenBuffers(1, &_vertex_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer_id);
@@ -49,7 +52,11 @@ Mesh::Mesh(Mesh&& b) noexcept :
 	_vertex_buffer_id(b._vertex_buffer_id),
 	_numVerts(b._numVerts),
 	_indexs_buffer_id(b._indexs_buffer_id),
-	_numIndexs(b._numIndexs)
+	_numIndexs(b._numIndexs),
+	_numTexCoords(b._numTexCoords),
+	_numNormals(b._numNormals),
+	_numFaces(b._numFaces),
+	texture(b.texture)
 {
 	b._vertex_buffer_id = 0;
 	b._indexs_buffer_id = 0;
@@ -62,7 +69,11 @@ _format(cpy._format),
 _vertex_buffer_id(cpy._vertex_buffer_id),
 _numVerts(cpy._numVerts),
 _indexs_buffer_id(cpy._indexs_buffer_id),
-_numIndexs(cpy._numIndexs)
+_numIndexs(cpy._numIndexs),
+_numTexCoords(cpy._numTexCoords),
+_numNormals(cpy._numNormals),
+_numFaces(cpy._numFaces),
+texture(cpy.texture)    // Copies the shared_ptr, so it now points to the same object
 {
 }
 
@@ -126,6 +137,18 @@ const unsigned int Mesh::getNumVerts() {
 
 const unsigned int Mesh::getNumIndexs() {
 	return _numIndexs;
+}
+
+const unsigned int Mesh::getNumTexCoords() {
+	return _numTexCoords;
+}
+
+const unsigned int Mesh::getNumNormals() {
+	return _numNormals;
+}
+
+const unsigned int Mesh::getNumFaces() {
+	return _numFaces;
 }
 
 void Mesh::Update()

@@ -66,7 +66,7 @@ public:
 		for (const auto& mesh : mesh_vector)
 		{
 			GameObject currentObject;
-			
+
 			currentObject.AddComponent(mesh);
 			currentObject.AddComponent(texture_vector.at(i));
 
@@ -129,6 +129,7 @@ public:
 	glm::mat3x3 NormalMatrix;
 	glm::mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 	std::list<GameObject> gameObjectList;
+	std::list<std::string> logHistory;
 
 private:
 

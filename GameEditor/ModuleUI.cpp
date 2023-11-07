@@ -72,7 +72,7 @@ update_status ModuleUI::PreUpdate()
 {
 	//This here does not work. Currently in Input.cpp
 	//ImGui_ImplSDL2_ProcessEvent(&pollevent);
-	GetHardwareInformation();
+	GetInfrastructureInfo();
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
@@ -86,14 +86,13 @@ update_status ModuleUI::PreUpdate()
 	}
 
 	if (FPSgraph)   FPSGraphWindow();
-	if (logWindow)	LogConsoleTestWindow();
+	if (logWindow)	LogConsoleWindow();
 
 	if (options)	OptionsWindow();
 	if (camDebug)	CamDebugWindow();
 	if (about)      AboutWindow();
 	if (inspector)	InspectorWindow();
 	if (hierarchy)	HierarchyWindow();
-	if (hardware)   HardwareWindow();
 
 #pragma region ImGui_Windows_Test
 
@@ -150,8 +149,8 @@ update_status ModuleUI::MainMenuBar()
 		}
 		if (ImGui::BeginMenu("Edit"))
 		{
-			if (ImGui::MenuItem("Undo", "Ctrl+Z")) {}
-			if (ImGui::MenuItem("Redo", "Ctrl+Y", false, false)) {}  // Disabled item
+			if (ImGui::MenuItem("Undo", "Not implemented")) {}
+			if (ImGui::MenuItem("Redo", "Not implemented")) {}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Select All", "Not implemented")) {}
 			if (ImGui::MenuItem("Deselect All", "Not implemented")) {}
@@ -165,12 +164,11 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::MenuItem("Pause", "Not implemented")) {}
 			if (ImGui::MenuItem("Step", "Not implemented")) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Settings", "Not implemented")) {}
+			if (ImGui::MenuItem("Settings", "Display, Controls, Renderer, System")) { options = true; }
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Options"))
+		if (ImGui::BeginMenu("Debug"))
 		{
-			if (ImGui::MenuItem("Config Window")) options = true;
 			if (ImGui::MenuItem("Camera Debug")) camDebug = true;
 
 			ImGui::EndMenu();
@@ -179,9 +177,8 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::BeginMenu("Menus")) {
 				ImGui::MenuItem("Hierarchy", "", &hierarchy);
 				ImGui::MenuItem("Inspector", "", &inspector);
+				ImGui::MenuItem("Console Log", "", &logWindow);
 				ImGui::MenuItem("FPS Graph", "", &FPSgraph);
-				ImGui::MenuItem("Hardware Information", "", &hardware);
-				ImGui::MenuItem("Log", "", &logWindow);
 				ImGui::EndMenu();
 			}
 			ImGui::Separator();
@@ -204,7 +201,7 @@ update_status ModuleUI::MainMenuBar()
 		}
 		if (ImGui::BeginMenu("Help"))
 		{
-			if (ImGui::MenuItem("About")) about = true;
+			if (ImGui::MenuItem("About...")) about = true;
 			ImGui::Separator();
 			if (ImGui::MenuItem("Check releases...")) { OsOpenInShell("https://github.com/CITM-UPC/Kingdom/releases"); }
 			ImGui::EndMenu();
@@ -236,14 +233,11 @@ void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
 	for (auto& gameObject : App->gEngine->renderer3D->gameObjectList) {
-
 		if (ImGui::MenuItem(gameObject.name.c_str())) {
 			gameObjSelected = gameObject;
 		}
 	}
 	ImGui::EndMenu();
-
-
 }
 
 void ModuleUI::InspectorWindow()
@@ -252,7 +246,14 @@ void ModuleUI::InspectorWindow()
 	if (gameObjSelected.name != "") {
 		ImGui::Checkbox("Active", &gameObjSelected.isActive);
 		ImGui::SameLine(); ImGui::Text("GameObject name: ");
-		ImGui::SameLine(); ImGui::Text(gameObjSelected.name.c_str());
+		ImGui::SameLine(); ImGui::TextColored({ 0.144f, 0.422f, 0.720f, 1.0f }, gameObjSelected.name.c_str());
+
+		ImGui::SetNextItemWidth(100.0f);
+		if (ImGui::BeginCombo("Tag", "Untagged", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
+
+		ImGui::SetNextItemWidth(100.0f);
+		if (ImGui::BeginCombo("Layer", "Default", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
+
 		for (auto& component : gameObjSelected.GetComponents()) {
 			if (component.get()->getType() == Component::Type::TRANSFORM) {
 				Transform* transform = dynamic_cast<Transform*>(component.get());
@@ -296,16 +297,18 @@ void ModuleUI::InspectorWindow()
 				{
 					ImGui::Checkbox("Active", &mesh->isActive);
 					ImGui::SameLine();  ImGui::Text("Filename: ");
-					ImGui::SameLine();  ImGui::Text(mesh->getName().c_str());
+					ImGui::SameLine();  ImGui::TextColored({ 0.920f, 0.845f, 0.0184f, 1.0f }, mesh->getName().c_str());
 					ImGui::Separator();
 					ImGui::Text("Indexes: ");
 					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumIndexs()).c_str());
-					/*ImGui::Text("Normals: ");
-					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumNormals()).c_str());*/
+					ImGui::Text("Normals: ");
+					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumNormals()).c_str());
 					ImGui::Text("Vertexs: ");
 					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumVerts()).c_str());
-					/*ImGui::Text("Faces: ");
-					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumFaces()).c_str());*/
+					ImGui::Text("Faces: ");
+					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumFaces()).c_str());
+					ImGui::Text("Tex coords: ");
+					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumTexCoords()).c_str());
 					ImGui::Separator();
 					if (ImGui::Checkbox("Use Texture", &mesh->usingTexture)) 
 					{
@@ -319,172 +322,155 @@ void ModuleUI::InspectorWindow()
 				{
 				}
 			}
-
 		}
-
 	}
 	ImGui::EndMenu();
 }
 
-void ModuleUI::LogConsoleTestWindow()
+void ModuleUI::LogConsoleWindow()
 {
-	struct ExampleAppLog
+	ImGuiTextFilter filter;
+	ImGui::Begin("Log Console", &logWindow);
+	if (ImGui::Button("Clear")) { App->logHistory.clear(); }
+	ImGui::SameLine();
+	bool copy = ImGui::Button("Copy");
+	ImGui::SameLine(); filter.Draw("Filter", -100.0f);
+	ImGui::Separator();
+	if (ImGui::BeginPopup("Options"))
 	{
-		ImGuiTextBuffer     Buf;
-		ImGuiTextFilter     Filter;
-		ImVector<int>       LineOffsets; // Index to lines offset. We maintain this with AddLog() calls.
-		bool                AutoScroll;  // Keep scrolling if already at the bottom.
-
-		ExampleAppLog()
-		{
-			AutoScroll = true;
-			Clear();
-		}
-
-		void    Clear()
-		{
-			Buf.clear();
-			LineOffsets.clear();
-			LineOffsets.push_back(0);
-		}
-
-		void    AddLog(const char* fmt, ...) IM_FMTARGS(2)
-		{
-			int old_size = Buf.size();
-			va_list args;
-			va_start(args, fmt);
-			Buf.appendfv(fmt, args);
-			va_end(args);
-			for (int new_size = Buf.size(); old_size < new_size; old_size++)
-				if (Buf[old_size] == '\n')
-					LineOffsets.push_back(old_size + 1);
-		}
-
-		void    Draw(const char* title, bool* p_open = NULL)
-		{
-			if (!ImGui::Begin(title, p_open))
-			{
-				ImGui::End();
-				return;
-			}
-
-			// Options menu
-			if (ImGui::BeginPopup("Options"))
-			{
-				ImGui::Checkbox("Auto-scroll", &AutoScroll);
-				ImGui::EndPopup();
-			}
-
-			// Main window
-			if (ImGui::Button("Options"))
-				ImGui::OpenPopup("Options");
-			ImGui::SameLine();
-			bool clear = ImGui::Button("Clear");
-			ImGui::SameLine();
-			bool copy = ImGui::Button("Copy");
-			ImGui::SameLine();
-			Filter.Draw("Filter", -100.0f);
-
-			ImGui::Separator();
-
-			if (ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar))
-			{
-				if (clear)
-					Clear();
-				if (copy)
-					ImGui::LogToClipboard();
-
-				ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-				const char* buf = Buf.begin();
-				const char* buf_end = Buf.end();
-				if (Filter.IsActive())
-				{
-					// In this example we don't use the clipper when Filter is enabled.
-					// This is because we don't have random access to the result of our filter.
-					// A real application processing logs with ten of thousands of entries may want to store the result of
-					// search/filter.. especially if the filtering function is not trivial (e.g. reg-exp).
-					for (int line_no = 0; line_no < LineOffsets.Size; line_no++)
-					{
-						const char* line_start = buf + LineOffsets[line_no];
-						const char* line_end = (line_no + 1 < LineOffsets.Size) ? (buf + LineOffsets[line_no + 1] - 1) : buf_end;
-						if (Filter.PassFilter(line_start, line_end))
-							ImGui::TextUnformatted(line_start, line_end);
-					}
-				}
-				else
-				{
-					// The simplest and easy way to display the entire buffer:
-					//   ImGui::TextUnformatted(buf_begin, buf_end);
-					// And it'll just work. TextUnformatted() has specialization for large blob of text and will fast-forward
-					// to skip non-visible lines. Here we instead demonstrate using the clipper to only process lines that are
-					// within the visible area.
-					// If you have tens of thousands of items and their processing cost is non-negligible, coarse clipping them
-					// on your side is recommended. Using ImGuiListClipper requires
-					// - A) random access into your data
-					// - B) items all being the  same height,
-					// both of which we can handle since we have an array pointing to the beginning of each line of text.
-					// When using the filter (in the block of code above) we don't have random access into the data to display
-					// anymore, which is why we don't use the clipper. Storing or skimming through the search result would make
-					// it possible (and would be recommended if you want to search through tens of thousands of entries).
-					ImGuiListClipper clipper;
-					clipper.Begin(LineOffsets.Size);
-					while (clipper.Step())
-					{
-						for (int line_no = clipper.DisplayStart; line_no < clipper.DisplayEnd; line_no++)
-						{
-							const char* line_start = buf + LineOffsets[line_no];
-							const char* line_end = (line_no + 1 < LineOffsets.Size) ? (buf + LineOffsets[line_no + 1] - 1) : buf_end;
-							ImGui::TextUnformatted(line_start, line_end);
-						}
-					}
-					clipper.End();
-				}
-				ImGui::PopStyleVar();
-
-				// Keep up at the bottom of the scroll region if we were already at the bottom at the beginning of the frame.
-				// Using a scrollbar or mouse-wheel will take away from the bottom edge.
-				if (AutoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
-					ImGui::SetScrollHereY(1.0f);
-			}
-			ImGui::EndChild();
-			ImGui::End();
-		}
-	};
-
-	static ExampleAppLog log;
-
-	// For the demo: add a debug button _BEFORE_ the normal log window contents
-	// We take advantage of a rarely used feature: multiple calls to Begin()/End() are appending to the _same_ window.
-	// Most of the contents of the window will be added by the log.Draw() call.
-	ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
-	ImGui::Begin("Example: Log", &logWindow);
-	//IMGUI_DEMO_MARKER("Examples/Log");
-	if (ImGui::SmallButton("[Debug] Add 5 entries"))
-	{
-		static int counter = 0;
-		const char* categories[3] = { "info", "warn", "error" };
-		const char* words[] = { "Bumfuzzled", "Cattywampus", "Snickersnee", "Abibliophobia", "Absquatulate", "Nincompoop", "Pauciloquent" };
-		for (int n = 0; n < 5; n++)
-		{
-			const char* category = categories[counter % IM_ARRAYSIZE(categories)];
-			const char* word = words[counter % IM_ARRAYSIZE(words)];
-			log.AddLog("[%05d] [%s] Hello, current time is %.1f, here's a word: '%s'\n",
-				ImGui::GetFrameCount(), category, ImGui::GetTime(), word);
-			counter++;
-		}
+		ImGui::Checkbox("Auto-scroll", &autoScrollLog);
+		ImGui::EndPopup();
 	}
-	ImGui::End();
+	if (ImGui::Button("Options")) ImGui::OpenPopup("Options");
+	ImGui::Separator();
 
-	// Actually call in the regular Log helper (which will Begin() into the same window as we just did)
-	log.Draw("Example: Log", &logWindow);
+	if (ImGui::BeginChild("", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar)) {
+		if (copy) ImGui::LogToClipboard();
+
+		for (const auto& log : App->logHistory)
+			if (filter.IsActive()) {
+				if (filter.PassFilter(log.c_str())) {
+					ImGui::Text(log.c_str());
+				}
+			}
+			else {
+				ImGui::Text(log.c_str());
+			}
+
+		if (autoScrollLog && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+			ImGui::SetScrollHereY(1.0f);
+		ImGui::GetClipboardText();
+	}
+	ImGui::EndChild();
+	ImGui::End();
 }
 
 void ModuleUI::OptionsWindow()
 {
-	ImGui::Begin("Options Window", &options);
-	ImGui::Text("This window is a placeholder.\nFunctionality is WIP");
-	static bool testBool = false;
-	if (ImGui::Checkbox("VSYNC", &testBool)) { LOG("Checkbox Pressed"); };
+	ImGui::Begin("Options Window", &options, ImGuiWindowFlags_AlwaysAutoResize);
+
+	if (ImGui::BeginTabBar("", ImGuiTabBarFlags_None))
+	{
+		if (ImGui::BeginTabItem("Display"))
+		{
+			if (ImGui::CollapsingHeader("Window")) {
+				ImGui::Text("Window size");
+				ImGui::SliderInt("Width", &App->window->width, 640, 4096, "%d");
+				ImGui::SliderInt("Height", &App->window->height, 360, 2160, "%d");
+				ImGui::Separator();
+				SDL_SetWindowSize(App->window->window, App->window->width, App->window->height);
+				ImGui::Text("Window flags");
+				ImGui::Checkbox("Fullscreen", &App->window->fullscreen);
+				ImGui::Checkbox("Borderless", &App->window->borderless);
+				ImGui::Checkbox("Resizable", &App->window->resizable);
+				SDL_SetWindowFullscreen(App->window->window, App->window->fullscreen);
+				(App->window->borderless) ? SDL_SetWindowBordered(App->window->window, SDL_FALSE) : SDL_SetWindowBordered(App->window->window, SDL_TRUE);
+				(App->window->resizable) ? SDL_SetWindowResizable(App->window->window, SDL_TRUE) : SDL_SetWindowResizable(App->window->window, SDL_FALSE);
+			}
+			if (ImGui::CollapsingHeader("Framerate")) {
+				string textToShow = "Resfresh rate: " + to_string(App->fpsHistory[0]);
+				ImGui::Text(textToShow.c_str());
+
+				ImGui::SliderInt("Target FPS", &App->targetFPS, 30, 240, "%d");
+				App->frameDurationTime = 1.0s / App->targetFPS;
+			}
+
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Controls"))
+		{
+			if (ImGui::CollapsingHeader("Mouse information")) {
+				ImGui::Text("Mouse X position: ");
+				ImGui::SameLine(); ImGui::TextColored({ 0.720f, 0.691f, 0.144f, 1.0f }, to_string(App->input->GetMouseX()).c_str());
+
+				ImGui::Text("Mouse Y position: ");
+				ImGui::SameLine(); ImGui::TextColored({ 0.720f, 0.691f, 0.144f, 1.0f }, to_string(App->input->GetMouseY()).c_str());
+
+				ImGui::Text("Mouse X motion: ");
+				ImGui::SameLine(); ImGui::TextColored({ 0.720f, 0.691f, 0.144f, 1.0f }, to_string(App->input->GetMouseXMotion()).c_str());
+
+				ImGui::Text("Mouse Y motion: ");
+				ImGui::SameLine(); ImGui::TextColored({ 0.720f, 0.691f, 0.144f, 1.0f }, to_string(App->input->GetMouseYMotion()).c_str());
+			}
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Renderer"))
+		{
+			ImGui::Checkbox("VSync", &App->renderer->vsync);
+			SDL_GL_SetSwapInterval(App->renderer->vsync);
+
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("System"))
+		{
+			if (ImGui::CollapsingHeader("Software")) {
+				ImGui::Text("SDL:");
+				ImGui::Bullet(); ImGui::Text("Compiled: ");
+				ImGui::SameLine(); ImGui::TextColored({ 0.352f, 0.386f, 0.750f, 1.0f }, info.sdl_version_compiled.c_str());
+				ImGui::Bullet(); ImGui::Text("Linked: ");
+				ImGui::SameLine(); ImGui::TextColored({ 0.352f, 0.386f, 0.750f, 1.0f }, info.sdl_version_linked.c_str());
+				ImGui::Text("OpenGL:");
+				ImGui::Bullet(); ImGui::TextColored({ 0.719f, 0.735f, 0.910f, 1.0f }, info.gl_version.c_str());
+				ImGui::Text("DevIL:");
+				ImGui::Bullet(); ImGui::TextColored({ 0.610f, 0.0488f, 0.142f, 1.0f }, info.devil_version.c_str());
+			}
+			if (ImGui::CollapsingHeader("Hardware")) {
+				ImGui::Text("GPU Information:");
+				std::string textToShow = "GPU: " + info.Gpu;
+				ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
+
+				textToShow = "Vendor: " + info.GpuVendor;
+				ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
+
+				textToShow = "Driver: " + info.GpuDriver;
+				ImGui::Bullet(); ImGui::TextColored({ 0.2f, 1.0f, 0.0f, 1.0f }, textToShow.c_str());
+
+				ImGui::Separator();
+
+				ImGui::Text("VRAM Information:");
+				textToShow = "Budget: " + std::to_string(info.vram_mb_budget) + " mb";
+				ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
+
+				textToShow = "Usage: " + std::to_string(info.vram_mb_usage) + " mb";
+				ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
+
+				textToShow = "Available: " + std::to_string(info.vram_mb_available) + " mb";
+				ImGui::Bullet(); ImGui::TextColored({ 0.0504f, 0.720f, 0.642f, 1.0f }, textToShow.c_str());
+
+				ImGui::Separator();
+
+				ImGui::Text("CPU Information:");
+
+				textToShow = "CPU Cores: " + std::to_string(info.cpu_count);
+				ImGui::Bullet(); ImGui::TextColored({ 0.890f, 0.876f, 0.0356f, 1.0f }, textToShow.c_str());
+
+				textToShow = "CPU cache line size: " + std::to_string(info.l1_cachekb);
+				ImGui::Bullet(); ImGui::TextColored({ 0.890f, 0.876f, 0.0356f, 1.0f }, textToShow.c_str());
+			}
+		}
+		ImGui::EndTabBar();
+	}
+
 	ImGui::End();
 }
 
@@ -529,47 +515,19 @@ void ModuleUI::AboutWindow()
 	ImGui::End();
 }
 
-void ModuleUI::HardwareWindow()
+void ModuleUI::GetInfrastructureInfo()
 {
-	ImGui::Begin("Hardware information", &hardware, ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("GPU Information:");
-	std::string textToShow = "GPU: " + info.Gpu;
-	ImGui::Text(textToShow.c_str());
+	SDL_version compiled;
+	SDL_version linked;
 
-	textToShow = "Vendor: " + info.GpuVendor;
-	ImGui::Text(textToShow.c_str());
+	SDL_VERSION(&compiled);
+	SDL_GetVersion(&linked);
 
-	textToShow = "Driver: " + info.GpuDriver;
-	ImGui::Text(textToShow.c_str());
+	info.sdl_version_compiled = std::to_string(compiled.major) + "." + std::to_string(compiled.minor) + "." + std::to_string(compiled.patch);
+	info.sdl_version_linked = std::to_string(linked.major) + "." + std::to_string(linked.minor) + "." + std::to_string(linked.patch);
 
-	ImGui::Separator();
-
-	ImGui::Text("VRAM Information:");
-	textToShow = "Budget: " + std::to_string(info.vram_mb_budget) + " mb";
-	ImGui::Text(textToShow.c_str());
-
-	textToShow = "Usage: " + std::to_string(info.vram_mb_usage) + " mb";
-	ImGui::Text(textToShow.c_str());
-
-	textToShow = "Available: " + std::to_string(info.vram_mb_available) + " mb";
-	ImGui::Text(textToShow.c_str());
-
-	ImGui::Separator();
-
-	ImGui::Text("CPU Information:");
-
-	textToShow = "CPU Count: " + std::to_string(info.cpu_count);
-	ImGui::Text(textToShow.c_str());
-
-	textToShow = "CPU cache line size: " + std::to_string(info.l1_cachekb);
-	ImGui::Text(textToShow.c_str());
-
-	ImGui::End();
-}
-
-void ModuleUI::GetHardwareInformation()
-{
-	SDL_GetVersion(&info.version);
+	info.gl_version = App->gEngine->getOpenGLVersion();
+	info.devil_version = App->gEngine->getDevILVersion();
 
 	info.GpuVendor.assign((const char*)glGetString(GL_VENDOR));
 	info.Gpu.assign((const char*)glGetString(GL_RENDERER));

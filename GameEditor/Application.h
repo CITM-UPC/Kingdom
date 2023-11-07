@@ -16,9 +16,6 @@
 using namespace std;
 using namespace chrono;
 
-static const unsigned int targetFPS = 60;
-static const auto frameDurationTime = 1.0s / targetFPS;
-
 class Application
 {
 public:
@@ -28,6 +25,9 @@ public:
 	ModuleUI* ui;
 
 	GameEngine* gEngine;
+
+	int targetFPS;
+	duration<double> frameDurationTime;
 
 private:
 
@@ -43,6 +43,7 @@ public:
 	bool CleanUp();
 
 	vector<float> fpsHistory;
+	list<string> logHistory;
 
 private:
 

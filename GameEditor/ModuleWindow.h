@@ -26,6 +26,9 @@ public:
 
 	//The surface contained by the window
 	SDL_Surface* screen_surface;
+
+	int width, height;
+	bool fullscreen, borderless, resizable;
 };
 
 #endif // __ModuleWindow_H__

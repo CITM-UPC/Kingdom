@@ -19,11 +19,11 @@ GameEngine::~GameEngine()
 bool GameEngine::Init()
 {
 	bool ret = true;
-
+	/*logHistory.push_back("Initializing Engine modules --------------");
 	for (auto const& item : list_modules)
 	{
 		ret = item->Init();
-	}
+	}*/
 
 	return ret;
 }
@@ -32,11 +32,12 @@ bool GameEngine::Start()
 {
 	bool ret = true;
 
-	ENGINE_LOG("Game Engine Start --------------");
-	for (auto const& item : list_modules)
-	{
-		ret = item->Start();
-	}
+	//logHistory.push_back("Game Engine Start --------------");
+	//ENGINE_LOG("Game Engine Start --------------");
+	//for (auto const& item : list_modules)
+	//{
+	//	ret = item->Start();
+	//}
 
 	return ret;
 }
@@ -53,11 +54,11 @@ engine_status GameEngine::PreUpdate()
 {
 	engine_status ret = ENGINE_UPDATE_CONTINUE;
 
-	for (auto const& item : list_modules)
+	/*for (auto const& item : list_modules)
 	{
 		ret = item->PreUpdate();
 		if (ret != ENGINE_UPDATE_CONTINUE) return ret;
-	}
+	}*/
 
 	return ret;
 }
@@ -65,7 +66,7 @@ engine_status GameEngine::PreUpdate()
 engine_status GameEngine::Update()
 {
 	engine_status ret = ENGINE_UPDATE_CONTINUE;
-	PrepareUpdate();
+	/*PrepareUpdate();
 
 	for (auto const& item : list_modules)
 	{
@@ -73,7 +74,7 @@ engine_status GameEngine::Update()
 		if (ret != ENGINE_UPDATE_CONTINUE) return ret;
 	}
 
-	FinishUpdate();
+	FinishUpdate();*/
 	return ret;
 }
 
@@ -81,11 +82,11 @@ engine_status GameEngine::PostUpdate()
 {
 	engine_status ret = ENGINE_UPDATE_CONTINUE;
 
-	for (auto const& item : list_modules)
+	/*for (auto const& item : list_modules)
 	{
 		ret = item->PostUpdate();
 		if (ret != ENGINE_UPDATE_CONTINUE) return ret;
-	}
+	}*/
 
 	return ret;
 }
