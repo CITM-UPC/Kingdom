@@ -14,6 +14,7 @@ public:
 	explicit Texture2D(GameObject& owner, const std::string& path);
 	Texture2D(Texture2D&& tex) noexcept; //move constructor (the one used when you call std::move)
 	void bind() const;
+	void unbind() const;
 	~Texture2D();
 
 	void Update() override;

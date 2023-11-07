@@ -309,7 +309,7 @@ void ModuleUI::InspectorWindow()
 					ImGui::Separator();
 					if (ImGui::Checkbox("Use Texture", &mesh->usingTexture)) 
 					{
-						(&mesh->usingTexture) ? mesh->texture = gameObjSelected.GetComponent<Texture2D>() : mesh->texture = nullptr;
+						(mesh->usingTexture) ? mesh->texture = gameObjSelected.GetComponent<Texture2D>() : mesh->texture = nullptr;
 					}
 				}
 			}

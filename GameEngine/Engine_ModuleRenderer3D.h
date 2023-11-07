@@ -70,6 +70,8 @@ public:
 			currentObject.AddComponent(mesh);
 			currentObject.AddComponent(texture_vector.at(i));
 
+			mesh->texture = currentObject.GetComponent<Texture2D>();
+
 			std::string meshName = filePath;
 			eraseBeforeDelimiter(meshName);
 			mesh.get()->setName(meshName);
