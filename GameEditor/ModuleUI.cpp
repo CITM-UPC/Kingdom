@@ -310,6 +310,8 @@ void ModuleUI::InspectorWindow()
 					ImGui::Text("Tex coords: ");
 					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumTexCoords()).c_str());
 					ImGui::Separator();
+					ImGui::Checkbox("Draw vertex normals", &mesh->drawVertexNormals);
+					ImGui::Checkbox("Draw face normals", &mesh->drawFaceNormals);
 				}
 			}
 			if (component.get()->getType() == Component::Type::TEXTURE2D) {

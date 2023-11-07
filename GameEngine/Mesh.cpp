@@ -103,11 +103,48 @@ void Mesh::draw() {
 	}
 	else {
 		glDrawArrays(GL_TRIANGLES, 0, _numVerts);
+
+	}
+
+	if (drawVertexNormals) {
+
+		glLineWidth(4.0f);
+		glBegin(GL_LINES);
+		glColor3f(0.0f, 1.0f, 0.0f);
+
+		for (int i = 0; i < _numVerts; i++) {
+
+			glVertex3f(mVertices[i].x, mVertices[i].y, mVertices[i].z);
+			glVertex3f(mVertices[i].x + mNormals[i].x * 0.1f,
+				mVertices[i].y + mNormals[i].y * 0.1f,
+				mVertices[i].z + mNormals[i].z * 0.1f);
+
+		}
+
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glEnd();
+
+	}
+
+	if (drawFaceNormals) {
+
+		glLineWidth(4.0f);
+		glBegin(GL_LINES);
+		glColor3f(1.0f, 0.0f, 0.0f);
+
+		for (int i = 0; i < _numFaces; i++) {
+			glm::vec3 endPoint = mFaceCenters[i] + 0.1f * mFaceNormals[i];
+			glVertex3f(mFaceCenters[i].x, mFaceCenters[i].y, mFaceCenters[i].z);
+			glVertex3f(endPoint.x, endPoint.y, endPoint.z);
+		}
+
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glEnd();
 	}
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+	 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);

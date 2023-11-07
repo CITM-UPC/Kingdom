@@ -55,6 +55,33 @@ public:
 			auto mesh_ptr = std::make_shared<Mesh>(Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size(), numTexCoords, numNormals, numFaces);
 			mesh_ptr->texture = std::make_shared<Texture2D>(texPath);
 
+			for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+				aiVector3D normal = mesh->mNormals[i];
+				vec3f glmNormal(normal.x, normal.y, normal.z);
+				mesh_ptr->mNormals.push_back(glmNormal);
+			}
+
+			for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+				aiVector3D vert = mesh->mVertices[i];
+				vec3f glmNormal(vert.x, vert.y, vert.z);
+				mesh_ptr->mVertices.push_back(glmNormal);
+			}
+
+			for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+				aiFace face = mesh->mFaces[i];
+
+				vec3f v0(mesh->mVertices[face.mIndices[0]].x, mesh->mVertices[face.mIndices[0]].y, mesh->mVertices[face.mIndices[0]].z);
+				vec3f v1(mesh->mVertices[face.mIndices[1]].x, mesh->mVertices[face.mIndices[1]].y, mesh->mVertices[face.mIndices[1]].z);
+				vec3f v2(mesh->mVertices[face.mIndices[2]].x, mesh->mVertices[face.mIndices[2]].y, mesh->mVertices[face.mIndices[2]].z);
+
+				vec3f faceNormal = glm::cross(v1 - v0, v2 - v0);
+				faceNormal = glm::normalize(faceNormal);
+				mesh_ptr->mFaceNormals.push_back(faceNormal);
+
+				vec3f faceCenter = (v0 + v1 + v2) / 3.0f;
+				mesh_ptr->mFaceCenters.push_back(faceCenter);
+			}
+
 			mesh_ptrs.push_back(mesh_ptr);
 		}
 

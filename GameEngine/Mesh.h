@@ -12,6 +12,7 @@
 class Mesh : public Graphic, public Component
 {
 public:
+
 	enum Formats { F_V3, F_V3C4, F_V3T2 };
 	struct V3 { vec3f v; };
 	struct V3C4 { vec3f v; vec4f c; };
@@ -39,6 +40,14 @@ public:
 	}
 
 	Texture2D::Ptr texture;
+
+	bool drawVertexNormals = false;
+	bool drawFaceNormals = false;
+
+	std::vector<vec3f> mVertices;
+	std::vector<vec3f> mNormals;
+	std::vector<vec3f> mFaceCenters;
+	std::vector<vec3f> mFaceNormals;
 
 	Mesh(Formats format, const void* vertex_data, unsigned int numVerts,
 						 const unsigned int* indexs_data = nullptr, unsigned int numIndexs = 0,
