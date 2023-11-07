@@ -17,6 +17,9 @@ public:
 	struct V3C4 { vec3f v; vec4f c; };
 	struct V3T2 { vec3f v; vec2f t; };
 
+	bool usingTexture = true;
+	Texture2D* texture = nullptr;
+
 private:
 
 	std::string meshName;
