@@ -53,7 +53,6 @@ public:
 
 		currentObject.name = meshName;
 		gameObjectList.push_back(currentObject);
-		
 	}
 
 	void addGameObject(const std::string& filePath) {
@@ -62,7 +61,7 @@ public:
 		for (const auto& mesh : mesh_vector)
 		{
 			GameObject currentObject;
-			
+
 			currentObject.AddComponent(mesh);
 
 			std::string meshName = filePath;

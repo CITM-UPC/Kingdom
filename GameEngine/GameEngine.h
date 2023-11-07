@@ -44,8 +44,6 @@ public:
 		return reinterpret_cast<const char*>(version);
 	}
 
-
-
 private:
 
 	void AddModule(Engine_Module* mod);
