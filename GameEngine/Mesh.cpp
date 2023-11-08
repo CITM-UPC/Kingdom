@@ -11,7 +11,7 @@
 using namespace std;
 
 Mesh::Mesh(GameObject& owner, Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* index_data, unsigned int numIndexs, const unsigned int numTexCoords, unsigned int numNormals, unsigned int numFaces) :
-  Component(owner),
+	Component(owner),
 	_format(format),
 	_numVerts(numVerts),
 	_numIndexs(numIndexs),
@@ -62,18 +62,18 @@ Mesh::Mesh(Mesh&& b) noexcept :
 	b._indexs_buffer_id = 0;
 }
 
-Mesh::Mesh(const Mesh& cpy) : 
-Component(cpy.gameObject),
-meshName(cpy.meshName),
-_format(cpy._format),
-_vertex_buffer_id(cpy._vertex_buffer_id),
-_numVerts(cpy._numVerts),
-_indexs_buffer_id(cpy._indexs_buffer_id),
-_numIndexs(cpy._numIndexs),
-_numTexCoords(cpy._numTexCoords),
-_numNormals(cpy._numNormals),
-_numFaces(cpy._numFaces),
-texture(cpy.texture)    // Copies the shared_ptr, so it now points to the same object
+Mesh::Mesh(const Mesh& cpy) :
+	Component(cpy.gameObject),
+	meshName(cpy.meshName),
+	_format(cpy._format),
+	_vertex_buffer_id(cpy._vertex_buffer_id),
+	_numVerts(cpy._numVerts),
+	_indexs_buffer_id(cpy._indexs_buffer_id),
+	_numIndexs(cpy._numIndexs),
+	_numTexCoords(cpy._numTexCoords),
+	_numNormals(cpy._numNormals),
+	_numFaces(cpy._numFaces),
+	texture(cpy.texture)    // Copies the shared_ptr, so it now points to the same object
 {
 }
 
@@ -107,31 +107,25 @@ void Mesh::draw() {
 	}
 	else {
 		glDrawArrays(GL_TRIANGLES, 0, _numVerts);
-
 	}
 
 	if (drawVertexNormals) {
-
 		glLineWidth(4.0f);
 		glBegin(GL_LINES);
 		glColor3f(0.0f, 1.0f, 0.0f);
 
 		for (int i = 0; i < _numVerts; i++) {
-
 			glVertex3f(mVertices[i].x, mVertices[i].y, mVertices[i].z);
 			glVertex3f(mVertices[i].x + mNormals[i].x * 0.1f,
 				mVertices[i].y + mNormals[i].y * 0.1f,
 				mVertices[i].z + mNormals[i].z * 0.1f);
-
 		}
 
 		glColor3f(0.0f, 1.0f, 0.0f);
 		glEnd();
-
 	}
 
 	if (drawFaceNormals) {
-
 		glLineWidth(4.0f);
 		glBegin(GL_LINES);
 		glColor3f(1.0f, 0.0f, 0.0f);
@@ -148,7 +142,7 @@ void Mesh::draw() {
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	 
+
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);

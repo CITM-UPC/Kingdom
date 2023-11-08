@@ -118,19 +118,19 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(	gEngine->cameraGO.GetComponent<Camera>()->fov, 
-					gEngine->cameraGO.GetComponent<Camera>()->aspectRatio, 
-					gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear, 
-					gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewFar);
+	gluPerspective(gEngine->cameraGO.GetComponent<Camera>()->fov,
+		gEngine->cameraGO.GetComponent<Camera>()->aspectRatio,
+		gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear,
+		gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewFar);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	gEngine->cameraGO.GetComponent<Camera>()->lookAtPos = gEngine->cameraGO.GetComponent<Transform>()->position + gEngine->cameraGO.GetComponent<Transform>()->forward * gEngine->cameraGO.GetComponent<Camera>()->camOffset;
 
-	gluLookAt(	gEngine->cameraGO.GetComponent<Transform>()->position.x,	gEngine->cameraGO.GetComponent<Transform>()->position.y,	gEngine->cameraGO.GetComponent<Transform>()->position.z,
-				gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.x,		gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.y,		gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.z,
-				gEngine->cameraGO.GetComponent<Transform>()->up.x,			gEngine->cameraGO.GetComponent<Transform>()->up.y,			gEngine->cameraGO.GetComponent<Transform>()->up.z);
+	gluLookAt(gEngine->cameraGO.GetComponent<Transform>()->position.x, gEngine->cameraGO.GetComponent<Transform>()->position.y, gEngine->cameraGO.GetComponent<Transform>()->position.z,
+		gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.x, gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.y, gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.z,
+		gEngine->cameraGO.GetComponent<Transform>()->up.x, gEngine->cameraGO.GetComponent<Transform>()->up.y, gEngine->cameraGO.GetComponent<Transform>()->up.z);
 
 	return ENGINE_UPDATE_CONTINUE;
 }

@@ -56,7 +56,6 @@ public:
 	}
 
 	void addGameObject(const std::string& filePath) {
-
 		GameObject tmpGO;
 
 		auto mesh_vector = MeshLoader::loadMeshFromFile(tmpGO, filePath);

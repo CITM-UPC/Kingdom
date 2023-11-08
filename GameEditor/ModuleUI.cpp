@@ -130,7 +130,15 @@ void ModuleUI::RenderUI()
 
 vec3 ModuleUI::GetSelectedObjectPos()
 {
-	return gameObjSelected.GetComponent<Transform>()->position;
+	if (gameObjSelected != nullptr)
+		return gameObjSelected->GetComponent<Transform>()->position;
+}
+
+void ModuleUI::SetSelectedObjectTexture(string filePath)
+{
+	if (gameObjSelected != nullptr) {
+		//gameObjSelected->AddComponent
+	}
 }
 
 update_status ModuleUI::MainMenuBar()
@@ -239,7 +247,7 @@ void ModuleUI::HierarchyWindow()
 	ImGui::Begin("Hierarchy", &hierarchy);
 	for (auto& gameObject : App->gEngine->renderer3D->gameObjectList) {
 		if (ImGui::MenuItem(gameObject.name.c_str())) {
-			gameObjSelected = gameObject;
+			gameObjSelected = &gameObject;
 		}
 	}
 	ImGui::EndMenu();
@@ -248,90 +256,92 @@ void ModuleUI::HierarchyWindow()
 void ModuleUI::InspectorWindow()
 {
 	ImGui::Begin("Inspector", &inspector);
-	if (gameObjSelected.name != "") {
-		ImGui::Checkbox("Active", &gameObjSelected.isActive);
-		ImGui::SameLine(); ImGui::Text("GameObject name: ");
-		ImGui::SameLine(); ImGui::TextColored({ 0.144f, 0.422f, 0.720f, 1.0f }, gameObjSelected.name.c_str());
+	if (gameObjSelected != nullptr) {
+		if (gameObjSelected->name != "") {
+			ImGui::Checkbox("Active", &gameObjSelected->isActive);
+			ImGui::SameLine(); ImGui::Text("GameObject name: ");
+			ImGui::SameLine(); ImGui::TextColored({ 0.144f, 0.422f, 0.720f, 1.0f }, gameObjSelected->name.c_str());
 
-		ImGui::SetNextItemWidth(100.0f);
-		if (ImGui::BeginCombo("Tag", "Untagged", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
+			ImGui::SetNextItemWidth(100.0f);
+			if (ImGui::BeginCombo("Tag", "Untagged", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
 
-		ImGui::SetNextItemWidth(100.0f);
-		if (ImGui::BeginCombo("Layer", "Default", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
+			ImGui::SetNextItemWidth(100.0f);
+			if (ImGui::BeginCombo("Layer", "Default", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
 
-		for (auto& component : gameObjSelected.GetComponents()) {
-			if (component.get()->getType() == Component::Type::TRANSFORM) {
-				Transform* transform = dynamic_cast<Transform*>(component.get());
-				if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_None))
-				{
-					if (ImGui::BeginTable("", 4))
+			for (auto& component : gameObjSelected->GetComponents()) {
+				if (component.get()->getType() == Component::Type::TRANSFORM) {
+					Transform* transform = dynamic_cast<Transform*>(component.get());
+					if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_None))
 					{
-						//ImGui::DragFloat("", &transform->sc.x, 0.005f, -FLT_MAX, +FLT_MAX, "%.3f");
-						ImGui::TableNextRow();
-						ImGui::TableSetColumnIndex(0);
-						ImGui::Checkbox("Active", &transform->isActive);
-						ImGui::Text("Position");
-						ImGui::Text("Rotation");
-						ImGui::Text("Scale");
+						if (ImGui::BeginTable("", 4))
+						{
+							//ImGui::DragFloat("", &transform->sc.x, 0.005f, -FLT_MAX, +FLT_MAX, "%.3f");
+							ImGui::TableNextRow();
+							ImGui::TableSetColumnIndex(0);
+							ImGui::Checkbox("Active", &transform->isActive);
+							ImGui::Text("Position");
+							ImGui::Text("Rotation");
+							ImGui::Text("Scale");
 
-						ImGui::TableSetColumnIndex(1);
-						ImGui::Text("X");
-						ImGui::Text(std::to_string(transform->position.x).c_str());
-						ImGui::Text(std::to_string(transform->rotation.x).c_str());
-						ImGui::Text("1");
+							ImGui::TableSetColumnIndex(1);
+							ImGui::Text("X");
+							ImGui::Text(std::to_string(transform->position.x).c_str());
+							ImGui::Text(std::to_string(transform->rotation.x).c_str());
+							ImGui::Text("1");
 
-						ImGui::TableSetColumnIndex(2);
-						ImGui::Text("Y");
-						ImGui::Text(std::to_string(transform->position.y).c_str());
-						ImGui::Text(std::to_string(transform->rotation.y).c_str());
-						ImGui::Text("1");
+							ImGui::TableSetColumnIndex(2);
+							ImGui::Text("Y");
+							ImGui::Text(std::to_string(transform->position.y).c_str());
+							ImGui::Text(std::to_string(transform->rotation.y).c_str());
+							ImGui::Text("1");
 
-						ImGui::TableSetColumnIndex(3);
-						ImGui::Text("Z");
-						ImGui::Text(std::to_string(transform->position.z).c_str());
-						ImGui::Text(std::to_string(transform->rotation.z).c_str());
-						ImGui::Text("1");
+							ImGui::TableSetColumnIndex(3);
+							ImGui::Text("Z");
+							ImGui::Text(std::to_string(transform->position.z).c_str());
+							ImGui::Text(std::to_string(transform->rotation.z).c_str());
+							ImGui::Text("1");
 
-						ImGui::EndTable();
+							ImGui::EndTable();
+						}
 					}
 				}
-			}
-			if (component.get()->getType() == Component::Type::MESH) {
-				Mesh* mesh = dynamic_cast<Mesh*>(component.get());
-				if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_None))
-				{
-					ImGui::Checkbox("Active", &mesh->isActive);
-					ImGui::SameLine();  ImGui::Text("Filename: ");
-					ImGui::SameLine();  ImGui::TextColored({ 0.920f, 0.845f, 0.0184f, 1.0f }, mesh->getName().c_str());
-					ImGui::Separator();
-					ImGui::Text("Indexes: ");
-					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumIndexs()).c_str());
-					ImGui::Text("Normals: ");
-					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumNormals()).c_str());
-					ImGui::Text("Vertexs: ");
-					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumVerts()).c_str());
-					ImGui::Text("Faces: ");
-					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumFaces()).c_str());
-					ImGui::Text("Tex coords: ");
-					ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumTexCoords()).c_str());
-					ImGui::Separator();
-					if (ImGui::Checkbox("Use Texture", &mesh->usingTexture))
+				if (component.get()->getType() == Component::Type::MESH) {
+					Mesh* mesh = dynamic_cast<Mesh*>(component.get());
+					if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_None))
 					{
-						(mesh->usingTexture) ? mesh->texture = gameObjSelected.GetComponent<Texture2D>() : mesh->texture = nullptr;
+						ImGui::Checkbox("Active", &mesh->isActive);
+						ImGui::SameLine();  ImGui::Text("Filename: ");
+						ImGui::SameLine();  ImGui::TextColored({ 0.920f, 0.845f, 0.0184f, 1.0f }, mesh->getName().c_str());
+						ImGui::Separator();
+						ImGui::Text("Indexes: ");
+						ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumIndexs()).c_str());
+						ImGui::Text("Normals: ");
+						ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumNormals()).c_str());
+						ImGui::Text("Vertexs: ");
+						ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumVerts()).c_str());
+						ImGui::Text("Faces: ");
+						ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumFaces()).c_str());
+						ImGui::Text("Tex coords: ");
+						ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumTexCoords()).c_str());
+						ImGui::Separator();
+						if (ImGui::Checkbox("Use Texture", &mesh->usingTexture))
+						{
+							(mesh->usingTexture) ? mesh->texture = gameObjSelected->GetComponent<Texture2D>() : mesh->texture = nullptr;
+						}
+						ImGui::Checkbox("Draw vertex normals", &mesh->drawVertexNormals);
+						ImGui::Checkbox("Draw face normals", &mesh->drawFaceNormals);
 					}
-					ImGui::Checkbox("Draw vertex normals", &mesh->drawVertexNormals);
-					ImGui::Checkbox("Draw face normals", &mesh->drawFaceNormals);
 				}
-			}
-			if (component.get()->getType() == Component::Type::TEXTURE2D) {
-				Texture2D* texture2D = dynamic_cast<Texture2D*>(component.get());
-				if (ImGui::CollapsingHeader("Texture", ImGuiTreeNodeFlags_None))
-				{
+				if (component.get()->getType() == Component::Type::TEXTURE2D) {
+					Texture2D* texture2D = dynamic_cast<Texture2D*>(component.get());
+					if (ImGui::CollapsingHeader("Texture", ImGuiTreeNodeFlags_None))
+					{
+					}
 				}
 			}
 		}
+		ImGui::EndMenu();
 	}
-	ImGui::EndMenu();
 }
 
 void ModuleUI::LogConsoleWindow()

@@ -42,7 +42,7 @@ public:
 template<typename T>
 inline T* GameObject::GetComponent()
 {
-	for (auto component : components) {
+	for (auto& component : components) {
 		T* returnComponent = dynamic_cast<T*>(component.get());
 		if (returnComponent) {
 			return returnComponent;

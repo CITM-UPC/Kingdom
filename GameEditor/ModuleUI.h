@@ -37,6 +37,7 @@ public:
 	void RenderUI();
 
 	vec3 GetSelectedObjectPos();
+	void SetSelectedObjectTexture(std::string filePath);
 
 private:
 
@@ -70,5 +71,5 @@ private:
 
 	// Hardware information
 	InfrastructureInfo info;
-	GameObject gameObjSelected;
+	GameObject* gameObjSelected;
 };

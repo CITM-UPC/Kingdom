@@ -73,7 +73,6 @@ public:
 			}
 
 			mesh_ptrs.push_back(mesh_ptr);
-
 		}
 
 		aiReleaseImport(scene);
@@ -100,7 +99,6 @@ public:
 
 			auto texture_ptr = std::make_shared<Texture2D>(parentGO, texPath);
 
-			
 			texture_ptrs.push_back(texture_ptr);
 		}
 

@@ -65,7 +65,6 @@ bool ModuleRenderer::CleanUp()
 	return true;
 }
 
-
 void ModuleRenderer::DoCameraInput()
 {
 	DoZoom();
