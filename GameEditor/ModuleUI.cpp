@@ -93,6 +93,7 @@ update_status ModuleUI::PreUpdate()
 	if (about)      AboutWindow();
 	if (inspector)	InspectorWindow();
 	if (hierarchy)	HierarchyWindow();
+	if (demo)       ImGui::ShowDemoWindow(&demo);
 
 #pragma region ImGui_Windows_Test
 
@@ -137,7 +138,17 @@ vec3 ModuleUI::GetSelectedObjectPos()
 void ModuleUI::SetSelectedObjectTexture(string filePath)
 {
 	if (gameObjSelected != nullptr) {
-		//gameObjSelected->AddComponent
+
+		if (gameObjSelected->GetComponent<Texture2D>() != nullptr)
+		{
+			gameObjSelected->RemoveComponent(Component::Type::TEXTURE2D);
+		}
+
+		auto texture_ptr = std::make_shared<Texture2D>(*gameObjSelected, filePath);
+		texture_ptr->path = filePath;
+
+		gameObjSelected->AddComponent(texture_ptr);
+		gameObjSelected->GetComponent<Mesh>()->texture = gameObjSelected->GetComponent<Texture2D>();
 	}
 }
 
@@ -183,7 +194,7 @@ update_status ModuleUI::MainMenuBar()
 		if (ImGui::BeginMenu("Debug"))
 		{
 			if (ImGui::MenuItem("Camera Debug")) camDebug = true;
-
+			if (ImGui::MenuItem("Demo window")) demo = true;
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Window")) {
@@ -324,11 +335,15 @@ void ModuleUI::InspectorWindow()
 						ImGui::Text("Tex coords: ");
 						ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumTexCoords()).c_str());
 						ImGui::Separator();
-						if (ImGui::Checkbox("Use Texture", &mesh->usingTexture))
-						{
+						if (ImGui::Checkbox("Use Texture", &mesh->usingTexture)) {
 							(mesh->usingTexture) ? mesh->texture = gameObjSelected->GetComponent<Texture2D>() : mesh->texture = nullptr;
 						}
-						if (mesh->getName().find("Cube") == std::string::npos)
+						ImGui::Checkbox("Use Checker Texture", &mesh->useChecker);
+						ImGui::SameLine(); ImGui::TextColored({ 0.5f, 0.5f, 0.5f, 1.0f }, "(?)");
+						if (ImGui::IsItemHovered()) {
+							ImGui::SetTooltip("Use Texture must be checked in order to see the checker texture.");
+						}
+            if (mesh->getName().find("Cube") == std::string::npos)
 						{
 							ImGui::Checkbox("Draw vertex normals", &mesh->drawVertexNormals);
 							ImGui::Checkbox("Draw face normals", &mesh->drawFaceNormals);
@@ -419,9 +434,10 @@ void ModuleUI::OptionsWindow()
 				(App->window->resizable) ? SDL_SetWindowResizable(App->window->window, SDL_TRUE) : SDL_SetWindowResizable(App->window->window, SDL_FALSE);
 			}
 			if (ImGui::CollapsingHeader("Framerate")) {
+				ImGui::Checkbox("VSync", &App->renderer->vsync);
+				SDL_GL_SetSwapInterval(App->renderer->vsync);
 				string textToShow = "Resfresh rate: " + to_string(App->fpsHistory[0]);
 				ImGui::Text(textToShow.c_str());
-
 				ImGui::SliderInt("Target FPS", &App->targetFPS, 30, 240, "%d");
 				App->frameDurationTime = 1.0s / App->targetFPS;
 			}
@@ -447,9 +463,33 @@ void ModuleUI::OptionsWindow()
 		}
 		if (ImGui::BeginTabItem("Renderer"))
 		{
-			ImGui::Checkbox("VSync", &App->renderer->vsync);
-			SDL_GL_SetSwapInterval(App->renderer->vsync);
+			ImGui::Text("OpenGL flags:");
 
+			ImGui::Bullet(); ImGui::Text("General:");
+			if (ImGui::Checkbox("Depth Test", &App->gEngine->renderer3D->depth_test)) {
+				App->gEngine->renderer3D->SwapDepthTest();
+			};
+			ImGui::SameLine(); if (ImGui::Checkbox("Cull Face", &App->gEngine->renderer3D->cull_face)) {
+				App->gEngine->renderer3D->SwapCullFace();
+			};
+			ImGui::SameLine(); if (ImGui::Checkbox("Lighting", &App->gEngine->renderer3D->lighting)) {
+				App->gEngine->renderer3D->SwapLighting();
+			};
+
+			ImGui::Bullet(); ImGui::Text("Points & lines:");
+			if (ImGui::Checkbox("Line Smooth", &App->gEngine->renderer3D->line_smooth)) {
+				App->gEngine->renderer3D->SwapLineSmooth();
+			};
+
+			ImGui::Bullet(); ImGui::Text("Polygon:");
+			if (ImGui::Checkbox("Polygon Smooth", &App->gEngine->renderer3D->polygon_smooth)) {
+				App->gEngine->renderer3D->SwapPolygonSmooth();
+			};
+
+			ImGui::Bullet(); ImGui::Text("Color:");
+			if (ImGui::Checkbox("Color Material", &App->gEngine->renderer3D->color_material)) {
+				App->gEngine->renderer3D->SwapColorMaterial();
+			};
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("System"))

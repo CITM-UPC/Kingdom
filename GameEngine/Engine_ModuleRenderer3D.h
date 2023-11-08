@@ -61,14 +61,21 @@ public:
 
 	void addGameObject(const std::string& filePath) {
 		GameObject tmpGO;
-		logHistory.push_back("[Engine] Add GameObject with path "+ filePath);
+		logHistory.push_back("[Engine] Add GameObject with path " + filePath);
 		auto mesh_vector = MeshLoader::loadMeshFromFile(tmpGO, filePath);
+
 		auto texture_vector = MeshLoader::loadTextureFromFile(tmpGO, filePath);
 
 		int i = 0;
 		for (const auto& mesh : mesh_vector)
 		{
 			GameObject currentObject;
+
+			logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(mesh.get()->getNumFaces()) + " faces, "
+				+ std::to_string(mesh.get()->getNumIndexs()) + " indexs, "
+				+ std::to_string(mesh.get()->getNumNormals()) + " normals, "
+				+ std::to_string(mesh.get()->getNumTexCoords()) + " tex coords, and "
+				+ std::to_string(mesh.get()->getNumVerts()) + " vertexs.");
 
 			currentObject.AddComponent(mesh);
 			currentObject.AddComponent(texture_vector.at(i));
@@ -118,9 +125,8 @@ public:
 	}
 
 	void applyTextureToGameObject(GameObject* gameObject, std::string filePath) {
-		
 		auto texture_vector = MeshLoader::loadTextureFromFile(*gameObject, filePath);
-
+		logHistory.push_back("[Engine] Texture loaded with path " + filePath);
 	};
 
 	void deleteSubstring(std::string& mainString, const std::string& substringToDelete) {
@@ -156,6 +162,13 @@ public:
 		return count;
 	}
 
+	void SwapDepthTest();
+	void SwapCullFace();
+	void SwapLighting();
+	void SwapColorMaterial();
+	void SwapLineSmooth();
+	void SwapPolygonSmooth();
+
 public:
 
 	SDL_GLContext context;
@@ -163,6 +176,16 @@ public:
 	glm::mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 	std::list<GameObject> gameObjectList;
 	std::list<std::string> logHistory;
+
+	bool depth_test;
+	bool cull_face;
+	bool lighting;
+
+	bool line_smooth;
+
+	bool polygon_smooth;
+
+	bool color_material;
 
 private:
 
