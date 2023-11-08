@@ -202,7 +202,7 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::BeginMenu("Create...")) {
 				if (ImGui::MenuItem("Create Empty")) { App->gEngine->renderer3D->addGameObject(); }
 				if (ImGui::MenuItem("Plane", "Not implemented")) {}
-				if (ImGui::MenuItem("Cube", "Not implemented")) {}
+				if (ImGui::MenuItem("Cube")) { Cube cube; App->gEngine->renderer3D->addGameObject(&cube); }
 				if (ImGui::MenuItem("Sphere", "Not implemented")) {}
 				if (ImGui::MenuItem("Cylinder", "Not implemented")) {}
 				if (ImGui::MenuItem("Cone", "Not implemented")) {}
@@ -328,8 +328,11 @@ void ModuleUI::InspectorWindow()
 						{
 							(mesh->usingTexture) ? mesh->texture = gameObjSelected->GetComponent<Texture2D>() : mesh->texture = nullptr;
 						}
-						ImGui::Checkbox("Draw vertex normals", &mesh->drawVertexNormals);
-						ImGui::Checkbox("Draw face normals", &mesh->drawFaceNormals);
+						if (mesh->getName().find("Cube") == std::string::npos)
+						{
+							ImGui::Checkbox("Draw vertex normals", &mesh->drawVertexNormals);
+							ImGui::Checkbox("Draw face normals", &mesh->drawFaceNormals);
+						}
 					}
 				}
 				if (component.get()->getType() == Component::Type::TEXTURE2D) {

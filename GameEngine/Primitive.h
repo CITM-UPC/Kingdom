@@ -8,21 +8,27 @@
 class Primitive
 {
 public:
+	enum Mesh::Formats _format = Mesh::Formats::F_V3;
+	glm::vec4 Color = glm::vec4(255, 255, 255, 255);
 
-	enum class Type
-	{
-		CUBE,
-		CYLINDER,
-		SPHERE,
-		PYRAMID
-	};
-
-	static const int NUM_FACES = 6;
-	static const int NUM_TRIANGLES = NUM_FACES * 2;
-	static const int NUM_VERTEXS = NUM_TRIANGLES * 3;
-
-	const enum Formats _format;
+protected:
 	std::vector<Mesh::V3> vertex_data;
+	std::vector<unsigned int> index_data;
 
-	glm::vec4 Color;
+	unsigned int numTexCoords; // Number of texture coordinates is same as the number of vertices
+	unsigned int numNormals; // Number of normals is same as the number of vertices
+	unsigned int numFaces;
+
+	std::string type;
+
+
+public:
+	std::vector<Mesh::V3>* getVertexData() { return &vertex_data; }
+	std::vector<unsigned int>* getIndexData() { return &index_data; }
+
+	unsigned int GetNumTexCoords() { return numTexCoords; }
+	unsigned int GetNumNormals() { return numNormals; }
+	unsigned int GetNumFaces() { return numFaces; }
+
+	std::string GetType() { return type; }
 };

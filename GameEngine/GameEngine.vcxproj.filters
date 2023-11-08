@@ -25,6 +25,9 @@
     <Filter Include="Object Components\Source Files">
       <UniqueIdentifier>{e058d294-8e22-4fc1-9ba4-a175e1ff79f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Primitives">
+      <UniqueIdentifier>{73c6192e-9964-44ed-a09a-80221a3e4139}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine.cpp">
@@ -91,6 +94,12 @@
     </ClInclude>
     <ClInclude Include="MeshLoader.h">
       <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitive.h">
+      <Filter>Primitives</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
