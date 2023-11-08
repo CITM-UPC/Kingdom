@@ -137,7 +137,17 @@ vec3 ModuleUI::GetSelectedObjectPos()
 void ModuleUI::SetSelectedObjectTexture(string filePath)
 {
 	if (gameObjSelected != nullptr) {
-		//gameObjSelected->AddComponent
+
+		if (gameObjSelected->GetComponent<Texture2D>() != nullptr)
+		{
+			gameObjSelected->RemoveComponent(Component::Type::TEXTURE2D);
+		}
+
+		auto texture_ptr = std::make_shared<Texture2D>(*gameObjSelected, filePath);
+		texture_ptr->path = filePath;
+
+		gameObjSelected->AddComponent(texture_ptr);
+		gameObjSelected->GetComponent<Mesh>()->texture = gameObjSelected->GetComponent<Texture2D>();
 	}
 }
 
