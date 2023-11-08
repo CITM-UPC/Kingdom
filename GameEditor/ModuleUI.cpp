@@ -302,19 +302,19 @@ void ModuleUI::InspectorWindow()
 							ImGui::Text("X");
 							ImGui::Text(std::to_string(transform->position.x).c_str());
 							ImGui::Text(std::to_string(transform->rotation.x).c_str());
-							ImGui::Text("1");
+							ImGui::Text(std::to_string(transform->scale.x).c_str());
 
 							ImGui::TableSetColumnIndex(2);
 							ImGui::Text("Y");
 							ImGui::Text(std::to_string(transform->position.y).c_str());
 							ImGui::Text(std::to_string(transform->rotation.y).c_str());
-							ImGui::Text("1");
+							ImGui::Text(std::to_string(transform->scale.y).c_str());
 
 							ImGui::TableSetColumnIndex(3);
 							ImGui::Text("Z");
 							ImGui::Text(std::to_string(transform->position.z).c_str());
 							ImGui::Text(std::to_string(transform->rotation.z).c_str());
-							ImGui::Text("1");
+							ImGui::Text(std::to_string(transform->scale.z).c_str());
 
 							ImGui::EndTable();
 						}

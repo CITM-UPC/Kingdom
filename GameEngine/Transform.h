@@ -36,6 +36,7 @@ public:
 public:
 	vec3 position;
 	vec3 rotation;
+	vec3 scale;
 
 	vec3 forward;
 	vec3 right;

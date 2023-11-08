@@ -4,6 +4,7 @@ Transform::Transform(GameObject& owner) : Component(owner)
 {
 	position = vec3(0, 0, 0);
 	rotation = vec3(0, 0, 0);
+	scale = vec3(1, 1, 1);
 
 	right = vec3(1, 0, 0);
 	up = vec3(0, 1, 0);
