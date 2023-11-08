@@ -64,6 +64,7 @@ private:
 	bool options = false;
 	bool camDebug = false;
 	bool about = false;
+	bool demo = false;
 
 	bool autoScrollLog = true;
 

@@ -93,6 +93,7 @@ update_status ModuleUI::PreUpdate()
 	if (about)      AboutWindow();
 	if (inspector)	InspectorWindow();
 	if (hierarchy)	HierarchyWindow();
+	if (demo)       ImGui::ShowDemoWindow(&demo);
 
 #pragma region ImGui_Windows_Test
 
@@ -183,7 +184,7 @@ update_status ModuleUI::MainMenuBar()
 		if (ImGui::BeginMenu("Debug"))
 		{
 			if (ImGui::MenuItem("Camera Debug")) camDebug = true;
-
+			if (ImGui::MenuItem("Demo window")) demo = true;
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Window")) {

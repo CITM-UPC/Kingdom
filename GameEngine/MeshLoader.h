@@ -103,7 +103,6 @@ public:
 			if (scene->HasTextures()) {
 				texture_ptr->height = scene->mTextures[0]->mHeight;
 				texture_ptr->width = scene->mTextures[0]->mWidth;
-
 			}
 			else {
 				texture_ptr->height = 1024; // assumption

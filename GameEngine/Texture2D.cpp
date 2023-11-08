@@ -32,7 +32,6 @@ Texture2D::Texture2D(GameObject& owner, const std::string& path) : Component(own
 	//now we can delete image from RAM
 	ilDeleteImage(img);
 
-
 	// Checker
 	GLubyte checkerImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
 
@@ -55,8 +54,6 @@ Texture2D::Texture2D(GameObject& owner, const std::string& path) : Component(own
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT,
 		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
-
-
 }
 
 Texture2D::Texture2D(Texture2D&& tex) noexcept : Component(tex.gameObject), _id(tex._id) {
