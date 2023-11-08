@@ -218,6 +218,7 @@ update_status ModuleUI::MainMenuBar()
 				if (ImGui::MenuItem("Create Empty")) { App->gEngine->renderer3D->addGameObject(); }
 				if (ImGui::MenuItem("Plane", "Not implemented")) {}
 				if (ImGui::MenuItem("Cube")) { Cube cube; App->gEngine->renderer3D->addGameObject(&cube); }
+				if (ImGui::MenuItem("Pyramid")) { Pyramid pyramid; App->gEngine->renderer3D->addGameObject(&pyramid); }
 				if (ImGui::MenuItem("Sphere", "Not implemented")) {}
 				if (ImGui::MenuItem("Cylinder", "Not implemented")) {}
 				if (ImGui::MenuItem("Cone", "Not implemented")) {}

@@ -13,6 +13,7 @@
 
 #include "Primitive.h"
 #include "Cube.h"
+#include "Pyramid.h"
 
 class Engine_ModuleRenderer3D : public Engine_Module
 {

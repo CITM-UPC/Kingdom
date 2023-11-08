@@ -101,5 +101,8 @@
     <ClInclude Include="Primitive.h">
       <Filter>Primitives</Filter>
     </ClInclude>
+    <ClInclude Include="Pyramid.h">
+      <Filter>Primitives</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
