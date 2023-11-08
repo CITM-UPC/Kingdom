@@ -129,6 +129,13 @@ public:
 		return count;
 	}
 
+	void SwapDepthTest();
+	void SwapCullFace();
+	void SwapLighting();
+	void SwapColorMaterial();
+	void SwapLineSmooth();
+	void SwapPolygonSmooth();
+
 public:
 
 	SDL_GLContext context;
@@ -136,6 +143,17 @@ public:
 	glm::mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 	std::list<GameObject> gameObjectList;
 	std::list<std::string> logHistory;
+
+	bool depth_test;
+	bool cull_face;
+	bool lighting;
+
+	bool line_smooth;
+
+	bool polygon_smooth;
+
+	bool color_material;
+
 
 private:
 

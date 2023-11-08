@@ -96,9 +96,20 @@ bool Engine_ModuleRenderer3D::Init()
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
 
 		glEnable(GL_DEPTH_TEST);
+		depth_test = true;
+
 		glEnable(GL_CULL_FACE);
-		//glEnable(GL_LIGHTING);
+		cull_face = true;
+
 		glEnable(GL_COLOR_MATERIAL);
+		color_material = true;
+
+		//glEnable(GL_LIGHTING);
+		lighting = false;
+		
+		line_smooth = false;
+
+		polygon_smooth = false;
 	}
 
 	// Projection matrix for
@@ -233,4 +244,64 @@ void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyA
 	//drawCubeTest();
 
 	drawAxis();
+}
+
+void Engine_ModuleRenderer3D::SwapDepthTest()
+{
+	if (depth_test) {
+		glEnable(GL_DEPTH_TEST);
+	}
+	else {
+		glDisable(GL_DEPTH_TEST);
+	}
+}
+
+void Engine_ModuleRenderer3D::SwapCullFace()
+{
+	if (cull_face) {
+		glEnable(GL_CULL_FACE);
+	}
+	else {
+		glDisable(GL_CULL_FACE);
+	}
+}
+
+void Engine_ModuleRenderer3D::SwapLighting()
+{
+	if (lighting) {
+		glEnable(GL_LIGHTING);
+	}
+	else {
+		glDisable(GL_LIGHTING);
+	}
+}
+
+void Engine_ModuleRenderer3D::SwapColorMaterial()
+{
+	if (color_material) {
+		glEnable(GL_COLOR_MATERIAL);
+	}
+	else {
+		glDisable(GL_COLOR_MATERIAL);
+	}
+}
+
+void Engine_ModuleRenderer3D::SwapLineSmooth()
+{
+	if (line_smooth) {
+		glEnable(GL_LINE_SMOOTH);
+	}
+	else {
+		glDisable(GL_LINE_SMOOTH);
+	}
+}
+
+void Engine_ModuleRenderer3D::SwapPolygonSmooth()
+{
+	if (polygon_smooth) {
+		glEnable(GL_POLYGON_SMOOTH);
+	}
+	else {
+		glDisable(GL_POLYGON_SMOOTH);
+	}
 }
