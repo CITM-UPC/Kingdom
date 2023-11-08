@@ -45,6 +45,8 @@ public:
 	bool drawVertexNormals = false;
 	bool drawFaceNormals = false;
 
+	bool useChecker = false;
+
 	std::vector<vec3f> mVertices;
 	std::vector<vec3f> mNormals;
 	std::vector<vec3f> mFaceCenters;

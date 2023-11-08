@@ -324,9 +324,13 @@ void ModuleUI::InspectorWindow()
 						ImGui::Text("Tex coords: ");
 						ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumTexCoords()).c_str());
 						ImGui::Separator();
-						if (ImGui::Checkbox("Use Texture", &mesh->usingTexture))
-						{
+						if (ImGui::Checkbox("Use Texture", &mesh->usingTexture)) {
 							(mesh->usingTexture) ? mesh->texture = gameObjSelected->GetComponent<Texture2D>() : mesh->texture = nullptr;
+						}
+						ImGui::Checkbox("Use Checker Texture", &mesh->useChecker);
+						ImGui::SameLine(); ImGui::TextColored({ 0.5f, 0.5f, 0.5f, 1.0f }, "(?)");
+						if (ImGui::IsItemHovered()) {
+							ImGui::SetTooltip("Use Texture must be checked in order to see the checker texture.");
 						}
 						ImGui::Checkbox("Draw vertex normals", &mesh->drawVertexNormals);
 						ImGui::Checkbox("Draw face normals", &mesh->drawFaceNormals);
