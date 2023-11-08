@@ -148,7 +148,11 @@ void ModuleUI::SetSelectedObjectTexture(string filePath)
 		texture_ptr->path = filePath;
 
 		gameObjSelected->AddComponent(texture_ptr);
-		gameObjSelected->GetComponent<Mesh>()->texture = gameObjSelected->GetComponent<Texture2D>();
+
+		if (gameObjSelected->GetComponent<Mesh>()->texture)
+		{
+			gameObjSelected->GetComponent<Mesh>()->texture = gameObjSelected->GetComponent<Texture2D>();
+		}
 	}
 }
 
