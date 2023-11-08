@@ -11,6 +11,9 @@
 #include "MeshLoader.h"
 #include "GameObject.h"
 
+#include "Primitive.h"
+#include "Cube.h"
+
 class Engine_ModuleRenderer3D : public Engine_Module
 {
 public:
@@ -95,6 +98,30 @@ public:
 			gameObjectList.push_back(currentObject);
 			i++;
 		}
+	}
+
+	void addGameObject(Primitive* shape)
+	{
+		GameObject currentObject;
+
+		auto mesh = std::make_shared<Mesh>(	currentObject, shape->_format, 
+											shape->getVertexData()->data(), shape->getVertexData()->size(), 
+											shape->getIndexData()->data(), shape->getIndexData()->size(),
+											shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
+		currentObject.AddComponent(mesh);
+
+		std::string meshName = shape->GetType();
+		mesh.get()->setName(meshName);
+		int currentCopies = checkNameAvailability(meshName);
+		if (currentCopies > 0) {
+			meshName.append("(");
+			std::string copiesToString = std::to_string(currentCopies);
+			meshName.append(copiesToString);
+			meshName.append(")");
+		}
+
+		currentObject.name = meshName;
+		gameObjectList.push_back(currentObject);
 	}
 
 	void applyTextureToGameObject(GameObject* gameObject, std::string filePath) {
