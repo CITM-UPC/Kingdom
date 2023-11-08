@@ -106,7 +106,7 @@ bool Engine_ModuleRenderer3D::Init()
 
 		//glEnable(GL_LIGHTING);
 		lighting = false;
-		
+
 		line_smooth = false;
 
 		polygon_smooth = false;

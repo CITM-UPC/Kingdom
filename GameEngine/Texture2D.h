@@ -34,8 +34,7 @@ public:
 	int width, height;
 
 private:
-	
+
 	Texture2D(const Texture2D&);
 	Texture2D operator=(const Texture2D&) = delete;
-
 };

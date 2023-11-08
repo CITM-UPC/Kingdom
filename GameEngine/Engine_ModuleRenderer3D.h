@@ -78,7 +78,6 @@ public:
 			currentObject.AddComponent(texture_vector.at(i));
 
 			mesh->texture = currentObject.GetComponent<Texture2D>();
-			
 
 			std::string meshName = filePath;
 			eraseBeforeDelimiter(meshName);
@@ -99,7 +98,6 @@ public:
 	}
 
 	void applyTextureToGameObject(GameObject* gameObject, std::string filePath) {
-
 		auto texture_vector = MeshLoader::loadTextureFromFile(*gameObject, filePath);
 		logHistory.push_back("[Engine] Texture loaded with path " + filePath);
 	};
@@ -161,7 +159,6 @@ public:
 	bool polygon_smooth;
 
 	bool color_material;
-
 
 private:
 
