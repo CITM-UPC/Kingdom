@@ -348,7 +348,7 @@ void ModuleUI::InspectorWindow()
 						if (ImGui::IsItemHovered()) {
 							ImGui::SetTooltip("Use Texture must be checked in order to see the checker texture.");
 						}
-            if (mesh->getName().find("Cube") == std::string::npos)
+            if (mesh->getName().find("Cube") == std::string::npos && mesh->getName().find("Pyramid") == std::string::npos)
 						{
 							ImGui::Checkbox("Draw vertex normals", &mesh->drawVertexNormals);
 							ImGui::Checkbox("Draw face normals", &mesh->drawFaceNormals);
