@@ -336,6 +336,17 @@ void ModuleUI::InspectorWindow()
 					Texture2D* texture2D = dynamic_cast<Texture2D*>(component.get());
 					if (ImGui::CollapsingHeader("Texture", ImGuiTreeNodeFlags_None))
 					{
+						ImGui::Checkbox("Active", &texture2D->isActive);
+						if (ImGui::BeginCombo("Shader", "Standard", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
+						if (ImGui::BeginCombo("Rendering mode", "Opaque", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
+						ImGui::Separator();
+						ImGui::Text("File path: ");
+						ImGui::SameLine(); ImGui::TextColored({ 0.920f, 0.845f, 0.0184f, 1.0f }, texture2D->path.c_str());
+						ImGui::Text("Texture size");
+						ImGui::Text("Height: ");
+						ImGui::SameLine(); ImGui::TextColored({ 0.920f, 0.845f, 0.0184f, 1.0f }, to_string(texture2D->height).c_str());
+						ImGui::Text("Width: ");
+						ImGui::SameLine(); ImGui::TextColored({ 0.920f, 0.845f, 0.0184f, 1.0f }, to_string(texture2D->width).c_str());
 					}
 				}
 			}

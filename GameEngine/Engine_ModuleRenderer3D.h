@@ -89,6 +89,12 @@ public:
 		}
 	}
 
+	void applyTextureToGameObject(GameObject* gameObject, std::string filePath) {
+		
+		auto texture_vector = MeshLoader::loadTextureFromFile(*gameObject, filePath);
+
+	};
+
 	void deleteSubstring(std::string& mainString, const std::string& substringToDelete) {
 		size_t pos = mainString.find(substringToDelete);
 

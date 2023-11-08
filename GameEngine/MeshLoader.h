@@ -98,6 +98,17 @@ public:
 			std::string texPath = folder_path + aiScene::GetShortFilename(aiPath.C_Str());
 
 			auto texture_ptr = std::make_shared<Texture2D>(parentGO, texPath);
+			texture_ptr->path = path;
+
+			if (scene->HasTextures()) {
+				texture_ptr->height = scene->mTextures[0]->mHeight;
+				texture_ptr->width = scene->mTextures[0]->mWidth;
+
+			}
+			else {
+				texture_ptr->height = 1024; // assumption
+				texture_ptr->width = 1024;
+			}
 
 			texture_ptrs.push_back(texture_ptr);
 		}

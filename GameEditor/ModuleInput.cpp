@@ -123,7 +123,13 @@ update_status ModuleInput::PreUpdate()
 			if (filePath.substr(filePath.find_last_of(".") + 1) == "png") {
 				App->logHistory.push_back("[Editor] .png detected with path" + filePath);
 				LOG(".png file detected");
-				//App->ui->SetSelectedObjectTexture(filePath);
+				App->ui->SetSelectedObjectTexture(filePath);
+			}
+			// Check if the dropped file has the .dds extension
+			if (filePath.substr(filePath.find_last_of(".") + 1) == "dds") {
+				App->logHistory.push_back("[Editor] .dds detected with path" + filePath);
+				LOG(".dds file detected");
+				App->ui->SetSelectedObjectTexture(filePath);
 			}
 
 			SDL_free(e.drop.file);  // Free dropped file's memory
