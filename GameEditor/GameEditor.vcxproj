@@ -153,6 +153,15 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
 ..\vcpkg\vcpkg.exe install sdl2 imgui[opengl3-binding,sdl2-binding,docking-experimental] jsoncpp --recurse --triplet x64-windows
 copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>mkdir ..\x64\Publish
+copy "..\x64\Release\*.*" "..\x64\Publish\"
+mkdir ..\x64\Publish\Assets
+copy ".\Assets\*.*" "..\x64\Publish\Assets"
+mkdir ..\x64\Publish\Fonts
+copy ".\Fonts\*.*" "..\x64\Publish\Fonts"
+copy ".\imgui.ini" "..\x64\Publish\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
