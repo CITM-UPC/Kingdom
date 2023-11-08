@@ -52,12 +52,13 @@ public:
 		}
 
 		currentObject.name = meshName;
+		logHistory.push_back("[Engine] Add GameObject");
 		gameObjectList.push_back(currentObject);
 	}
 
 	void addGameObject(const std::string& filePath) {
 		GameObject tmpGO;
-
+		logHistory.push_back("[Engine] Add GameObject with path "+ filePath);
 		auto mesh_vector = MeshLoader::loadMeshFromFile(tmpGO, filePath);
 		auto texture_vector = MeshLoader::loadTextureFromFile(tmpGO, filePath);
 
