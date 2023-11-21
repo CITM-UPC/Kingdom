@@ -33,14 +33,35 @@ public:
 		return Type::TRANSFORM;
 	}
 
+private:
+	union
+	{
+		mat4 _transformationMatrix;
+		struct
+		{
+			vec3 _right;	double _padding1;
+			vec3 _up;		double _padding2;
+			vec3 _forward;	double _padding3;
+			vec3 _position;	double _padding4;
+		};
+	};
+
 public:
-	vec3 position;
+	//vec3 position;
 	vec3 rotation;
 	vec3 scale;
 
-	vec3 forward;
-	vec3 right;
-	vec3 up;
+	//vec3 forward;
+	//vec3 right;
+	//vec3 up;
 
-	glm::mat3x3 referenceFrameMat;
+	//glm::mat3x3 referenceFrameMat;
+
+	inline const mat4& transform() const { return _transformationMatrix; }
+	inline vec3& position() { return _position; }
+	inline const vec3& pos() const { return _position; }
+
+	inline const vec3& right() const { return _right; }
+	inline const vec3& up() const { return _up; }
+	inline const vec3& forward() const { return _forward; }
 };

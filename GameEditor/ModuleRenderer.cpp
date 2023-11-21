@@ -144,7 +144,7 @@ void ModuleRenderer::mouseCamOrbit()
 	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(vec3(0, dx * sensitivity, 0), Transform::Space::GLOBAL);
 	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(vec3(dy * sensitivity, 0, 0));
 
-	vec3 finalPos = App->gEngine->cameraGO.GetComponent<Transform>()->position - (App->gEngine->cameraGO.GetComponent<Transform>()->forward * App->gEngine->cameraGO.GetComponent<Camera>()->camOffset);
+	vec3 finalPos = App->gEngine->cameraGO.GetComponent<Transform>()->position() - (App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->camOffset);
 	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(finalPos);
 }
 void ModuleRenderer::mouseCameraPan()
@@ -185,7 +185,7 @@ void ModuleRenderer::DoZoom()
 
 void ModuleRenderer::FocusCamera()
 {
-	vec3 targetPos = App->ui->GetSelectedObjectPos() - App->gEngine->cameraGO.GetComponent<Transform>()->forward * App->gEngine->cameraGO.GetComponent<Camera>()->camOffset;
+	vec3 targetPos = App->ui->GetSelectedObjectPos() - App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->camOffset;
 
 	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(targetPos);
 }
