@@ -124,6 +124,8 @@ bool Engine_ModuleRenderer3D::Init()
 // PreUpdate: clear buffer
 engine_status Engine_ModuleRenderer3D::PreUpdate()
 {
+	gEngine->cameraGO.UpdateComponents();
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
@@ -137,11 +139,11 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	gEngine->cameraGO.GetComponent<Camera>()->lookAtPos = gEngine->cameraGO.GetComponent<Transform>()->position() + gEngine->cameraGO.GetComponent<Transform>()->forward() * gEngine->cameraGO.GetComponent<Camera>()->camOffset;
+	//gEngine->cameraGO.GetComponent<Camera>()->lookAtPos = gEngine->cameraGO.GetComponent<Transform>()->position() + gEngine->cameraGO.GetComponent<Transform>()->forward() * gEngine->cameraGO.GetComponent<Camera>()->camOffset;
 
-	gluLookAt(	gEngine->cameraGO.GetComponent<Transform>()->position().x,	gEngine->cameraGO.GetComponent<Transform>()->position().y,	gEngine->cameraGO.GetComponent<Transform>()->position().z,
-				gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.x,		gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.y,		gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.z,
-				gEngine->cameraGO.GetComponent<Transform>()->up().x,		gEngine->cameraGO.GetComponent<Transform>()->up().y,		gEngine->cameraGO.GetComponent<Transform>()->up().z);
+	gluLookAt(	gEngine->cameraGO.GetComponent<Transform>()->position().x, gEngine->cameraGO.GetComponent<Transform>()->position().y, gEngine->cameraGO.GetComponent<Transform>()->position().z,
+				gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.x, gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.y, gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.z,
+				gEngine->cameraGO.GetComponent<Transform>()->up().x, gEngine->cameraGO.GetComponent<Transform>()->up().y, gEngine->cameraGO.GetComponent<Transform>()->up().z);
 
 	return ENGINE_UPDATE_CONTINUE;
 }
@@ -264,7 +266,7 @@ void Engine_ModuleRenderer3D::addGameObject()
 	gameObjectList.push_back(currentObject);
 }
 
-void Engine_ModuleRenderer3D::addGameObject(const std::string& filePath)
+void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 {
 	GameObject tmpGO;
 	logHistory.push_back("[Engine] Add GameObject with path " + filePath);
@@ -306,7 +308,7 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string& filePath)
 	}
 }
 
-void Engine_ModuleRenderer3D::addGameObject(Primitive* shape)
+void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 {
 	GameObject currentObject;
 
@@ -330,7 +332,7 @@ void Engine_ModuleRenderer3D::addGameObject(Primitive* shape)
 	gameObjectList.push_back(currentObject);
 }
 
-void Engine_ModuleRenderer3D::applyTextureToGameObject(GameObject* gameObject, std::string filePath)
+void Engine_ModuleRenderer3D::applyTextureToGameObject(GameObject * gameObject, std::string filePath)
 {
 	auto texture_vector = MeshLoader::loadTextureFromFile(*gameObject, filePath);
 	logHistory.push_back("[Engine] Texture loaded with path " + filePath);

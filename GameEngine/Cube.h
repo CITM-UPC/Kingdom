@@ -30,7 +30,6 @@ private:
 		1, 5, 7
 	};
 
-
 public:
 	Cube()
 	{

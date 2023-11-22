@@ -14,6 +14,8 @@ Transform::Transform(GameObject& owner) : Component(owner)
 	//forward = vec3(0, 0, 1);
 	_forward = vec3(0, 0, 1);
 
+	_padding1 = _padding2 = _padding3 = _padding4 = 0;
+
 	//referenceFrameMat = glm::mat3(1.0); //Identity
 }
 
@@ -80,9 +82,9 @@ void Transform::RotateTo(vec3f axis)
 	referenceFrameMat[2].x = forward.x;		referenceFrameMat[2].y = forward.y;		referenceFrameMat[2].z = forward.z;
 	*/
 
-	_right =	vec3(1, 0, 0);
-	_up =		vec3(0, 1, 0);
-	_forward =	vec3(0, 0, 1);
+	_right = vec3(1, 0, 0);
+	_up = vec3(0, 1, 0);
+	_forward = vec3(0, 0, 1);
 
 	mat4 rotX = glm::rotate(glm::mat4(1.0f), glm::radians(axis.x), glm::vec3(1.0f, 0.0f, 0.0f));
 	mat4 rotY = glm::rotate(glm::mat4(1.0f), glm::radians(axis.y), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -93,7 +95,7 @@ void Transform::RotateTo(vec3f axis)
 	_transformationMatrix = rotationMat * _transformationMatrix;
 }
 
-void Transform::Rotate(vec3f axis, Space referenceFrame)
+void Transform::Rotate(vec3 axis, Space referenceFrame)
 {
 	/*
 	//Translate the axis to the local refernce frame to apply the rotation
@@ -127,9 +129,14 @@ void Transform::Rotate(vec3f axis, Space referenceFrame)
 	up = rotMatrix * up;
 	*/
 
-	mat4 rotX = glm::rotate(glm::mat4(1.0f), glm::radians(axis.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	mat4 rotY = glm::rotate(glm::mat4(1.0f), glm::radians(axis.y), glm::vec3(0.0f, 1.0f, 0.0f));
-	mat4 rotZ = glm::rotate(glm::mat4(1.0f), glm::radians(axis.z), glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::vec4 vecInRefFrame = { axis.x, axis.y, axis.z, 0 };
+
+	if (referenceFrame == Space::LOCAL)
+		vecInRefFrame = _transformationMatrix * vecInRefFrame;
+
+	mat4 rotX = glm::rotate(glm::mat4(1.0f), glm::radians(vecInRefFrame.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	mat4 rotY = glm::rotate(glm::mat4(1.0f), glm::radians(vecInRefFrame.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	mat4 rotZ = glm::rotate(glm::mat4(1.0f), glm::radians(vecInRefFrame.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
 	mat4 rotationMat = rotZ * rotY * rotX;
 

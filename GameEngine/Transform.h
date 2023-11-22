@@ -25,7 +25,7 @@ public:
 	void RotateTo(vec3f axis);
 
 	//Rotates the object in 'axis' increments.
-	void Rotate(vec3f axis, Space referenceFrame = Space::LOCAL);
+	void Rotate(vec3 axis, Space referenceFrame = Space::LOCAL);
 
 	void Update() override;
 
@@ -33,7 +33,7 @@ public:
 		return Type::TRANSFORM;
 	}
 
-private:
+public:
 	union
 	{
 		mat4 _transformationMatrix;

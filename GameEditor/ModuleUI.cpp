@@ -138,7 +138,6 @@ vec3 ModuleUI::GetSelectedObjectPos()
 void ModuleUI::SetSelectedObjectTexture(string filePath)
 {
 	if (gameObjSelected != nullptr) {
-
 		if (gameObjSelected->GetComponent<Texture2D>() != nullptr)
 		{
 			gameObjSelected->RemoveComponent(Component::Type::TEXTURE2D);
@@ -348,7 +347,7 @@ void ModuleUI::InspectorWindow()
 						if (ImGui::IsItemHovered()) {
 							ImGui::SetTooltip("Use Texture must be checked in order to see the checker texture.");
 						}
-            if (mesh->getName().find("Cube") == std::string::npos && mesh->getName().find("Pyramid") == std::string::npos)
+						if (mesh->getName().find("Cube") == std::string::npos && mesh->getName().find("Pyramid") == std::string::npos)
 						{
 							ImGui::Checkbox("Draw vertex normals", &mesh->drawVertexNormals);
 							ImGui::Checkbox("Draw face normals", &mesh->drawFaceNormals);
@@ -565,9 +564,10 @@ void ModuleUI::CamDebugWindow()
 	ImGui::Text("Right: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->right().x, App->gEngine->cameraGO.GetComponent<Transform>()->right().y, App->gEngine->cameraGO.GetComponent<Transform>()->right().z);
 	ImGui::Text("Up: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->up().x, App->gEngine->cameraGO.GetComponent<Transform>()->up().y, App->gEngine->cameraGO.GetComponent<Transform>()->up().z);
 	ImGui::Separator();
-	//ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[0][0], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[0][1], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[0][2]);
-	//ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[1][0], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[1][1], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[1][2]);
-	//ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[2][0], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[2][1], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[2][2]);
+	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[0][0], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[0][1], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[0][2], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[0][3]);
+	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[1][0], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[1][1], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[1][2], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[1][3]);
+	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[2][0], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[2][1], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[2][2], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[2][3]);
+	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[3][0], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[3][1], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[3][2], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[3][3]);
 	ImGui::End();
 }
 
