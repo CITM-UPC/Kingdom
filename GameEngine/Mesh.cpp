@@ -10,7 +10,7 @@
 
 using namespace std;
 
-Mesh::Mesh(GameObject& owner, Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* index_data, unsigned int numIndexs, const unsigned int numTexCoords, unsigned int numNormals, unsigned int numFaces) :
+Mesh::Mesh(std::shared_ptr<GameObject> owner, Formats format, const void* vertex_data, unsigned int numVerts, const unsigned int* index_data, unsigned int numIndexs, const unsigned int numTexCoords, unsigned int numNormals, unsigned int numFaces) :
 	Component(owner),
 	_format(format),
 	_numVerts(numVerts),
@@ -47,7 +47,7 @@ Mesh::Mesh(GameObject& owner, Formats format, const void* vertex_data, unsigned 
 }
 
 Mesh::Mesh(Mesh&& b) noexcept :
-	Component(b.gameObject),
+	Component(b.owner.lock()),
 	_format(b._format),
 	_vertex_buffer_id(b._vertex_buffer_id),
 	_numVerts(b._numVerts),
@@ -63,7 +63,7 @@ Mesh::Mesh(Mesh&& b) noexcept :
 }
 
 Mesh::Mesh(const Mesh& cpy) :
-	Component(cpy.gameObject),
+	Component(cpy.owner.lock()),
 	meshName(cpy.meshName),
 	_format(cpy._format),
 	_vertex_buffer_id(cpy._vertex_buffer_id),

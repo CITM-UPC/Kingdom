@@ -4,7 +4,7 @@
 #include <string>
 
 #include "GameObject.h"
-#include "Mesh.h"
+#include "MeshInfo.h"
 #include "Texture2D.h"
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
@@ -14,9 +14,9 @@ class MeshLoader
 {
 public:
 
-	static std::vector<std::shared_ptr<Mesh>> loadMeshFromFile(GameObject& parentGO, const std::string& path)
+	static std::vector<MeshInfo> loadMeshFromFile(const std::string& path)
 	{
-		std::vector<std::shared_ptr<Mesh>> mesh_ptrs;
+		std::vector<MeshInfo> meshInfoVec;
 
 		auto scene = aiImportFile(path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
 		for (size_t m = 0; m < scene->mNumMeshes; ++m) {
@@ -44,7 +44,7 @@ public:
 				index_data.push_back(faces[f].mIndices[2]);
 			}
 
-			auto mesh_ptr = std::make_shared<Mesh>(parentGO, Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size(), numTexCoords, numNormals, numFaces);
+			auto mesh_ptr = std::make_unique<MeshInfo>(Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size(), numTexCoords, numNormals, numFaces);
 			for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
 				aiVector3D normal = mesh->mNormals[i];
 				vec3f glmNormal(normal.x, normal.y, normal.z);
@@ -72,17 +72,17 @@ public:
 				mesh_ptr->mFaceCenters.push_back(faceCenter);
 			}
 
-			mesh_ptrs.push_back(mesh_ptr);
+			meshInfoVec.push_back(std::move(mesh_ptr));
 		}
 
 		aiReleaseImport(scene);
 
-		return mesh_ptrs;
+		return meshInfoVec;
 	}
 
-	static std::vector<std::shared_ptr<Texture2D>> loadTextureFromFile(GameObject& parentGO, const std::string& path)
+	static std::vector<std::unique_ptr<Texture2D>> loadTextureFromFile(GameObject& parentGO, const std::string& path)
 	{
-		std::vector<std::shared_ptr<Texture2D>> texture_ptrs;
+		std::vector<std::unique_ptr<Texture2D>> texture_ptrs;
 
 		auto scene = aiImportFile(path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
 		for (size_t m = 0; m < scene->mNumMeshes; ++m) {
@@ -97,7 +97,7 @@ public:
 			std::string folder_path = (slash_pos != std::string::npos) ? path.substr(0, slash_pos + 1) : "./";
 			std::string texPath = folder_path + aiScene::GetShortFilename(aiPath.C_Str());
 
-			auto texture_ptr = std::make_shared<Texture2D>(parentGO, texPath);
+			auto texture_ptr = std::make_unique<Texture2D>(parentGO, texPath);
 			texture_ptr->path = path;
 
 			if (scene->HasTextures()) {

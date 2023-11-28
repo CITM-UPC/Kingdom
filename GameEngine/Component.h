@@ -16,11 +16,13 @@ public:
 	};
 
 	bool isActive = true;
-	GameObject& gameObject;
+	GameObject* owner;
 
 public:
 
-	Component(GameObject& owner) : gameObject(owner) {}
+	Component(GameObject* gameObject) : owner(gameObject) {}
+
 	virtual void Update() = 0;
+	//virtual void Render() = 0;
 	virtual Type getType() const = 0;
 };

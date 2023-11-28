@@ -19,7 +19,7 @@ public:
 
 private:
 
-	std::vector<std::shared_ptr<Component>> components;
+	std::vector<std::unique_ptr<Component>> components;
 
 public:
 
@@ -28,15 +28,18 @@ public:
 
 	template <typename T> T* GetComponent();
 	//std::shared_ptr<Component> GetComponent(Component::Type componentType);
-	std::vector<std::shared_ptr<Component>> GetComponents();
+
+	std::vector<std::unique_ptr<Component>>* GetComponents();
+
 	void AddComponent(Component::Type component);
-	void AddComponent(std::shared_ptr<Mesh> component);
-	void AddComponent(std::shared_ptr<Texture2D> component);
+	void AddComponent(std::unique_ptr<Component> component);
+
 	void RemoveComponent(Component::Type component);
 
-	static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);
-
 	void UpdateComponents();
+
+	//static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);
+
 };
 
 template<typename T>

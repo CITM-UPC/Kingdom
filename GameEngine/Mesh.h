@@ -19,7 +19,17 @@ public:
 	struct V3T2 { vec3f v; vec2f t; };
 
 	bool usingTexture = true;
-	Texture2D* texture = nullptr;
+	std::shared_ptr<Texture2D> texture;
+
+	bool drawVertexNormals = false;
+	bool drawFaceNormals = false;
+
+	bool useChecker = false;
+
+	std::vector<vec3f> mVertices;
+	std::vector<vec3f> mNormals;
+	std::vector<vec3f> mFaceCenters;
+	std::vector<vec3f> mFaceNormals;
 
 private:
 
@@ -39,19 +49,10 @@ private:
 	const unsigned int _numFaces;
 
 public:
-	Mesh(GameObject& owner) : Component(owner), _format(Formats::F_V3), _numVerts(0), _numIndexs(0), _numTexCoords(0), _numNormals(0), _numFaces(0) {
+	Mesh(GameObject* owner) : Component(owner), _format(Formats::F_V3), _numVerts(0), _numIndexs(0), _numTexCoords(0), _numNormals(0), _numFaces(0) {
 	}
 
-	bool drawVertexNormals = false;
-	bool drawFaceNormals = false;
-
-	bool useChecker = false;
-
-	std::vector<vec3f> mVertices;
-	std::vector<vec3f> mNormals;
-	std::vector<vec3f> mFaceCenters;
-	std::vector<vec3f> mFaceNormals;
-	Mesh(GameObject& owner, Formats format, const void* vertex_data, unsigned int numVerts,
+	Mesh(std::shared_ptr<GameObject> owner, Formats format, const void* vertex_data, unsigned int numVerts,
 		const unsigned int* indexs_data = nullptr, unsigned int numIndexs = 0,
 		const unsigned int numTexCoords = 0, unsigned int numNormals = 0, unsigned int numFaces = 0);
 
@@ -63,15 +64,15 @@ public:
 	std::string getName();
 	void setName(std::string name);
 
-	const unsigned int getNumVerts();
+	inline const unsigned int getNumVerts();
 
-	const unsigned int getNumIndexs();
+	inline const unsigned int getNumIndexs();
 
-	const unsigned int getNumTexCoords();
+	inline const unsigned int getNumTexCoords();
 
-	const unsigned int getNumNormals();
+	inline const unsigned int getNumNormals();
 
-	const unsigned int getNumFaces();
+	inline const unsigned int getNumFaces();
 
 	void Update() override;
 
