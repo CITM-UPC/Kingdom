@@ -277,7 +277,7 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 	int i = 0;
 	for (auto& mesh : mesh_vector)
 	{
-		std::shared_ptr<GameObject> currentObject = std::make_shared<GameObject>();
+		GameObject currentObject;
 
 		logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(mesh._numFaces) + " faces, "
 			+ std::to_string(mesh._numFaces) + " indexs, "
@@ -285,16 +285,16 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 			+ std::to_string(mesh._numTexCoords) + " tex coords, and "
 			+ std::to_string(mesh._numVerts) + " vertexs.");
 
-		currentObject.get()->AddComponent(std::move(Mesh(currentObject, mesh)));
+		currentObject.AddComponent(std::make_unique<Mesh>(currentObject, mesh));
 			
-		currentObject.get()->AddComponent(std::move(texture_vector.at(i)));
+		currentObject.AddComponent(std::move(texture_vector.at(i)));
 
-		mesh->texture = currentObject->GetComponent<Texture2D>();
+		currentObject.GetComponent<Mesh>()->texture = std::make_shared<Texture2D>(currentObject.GetComponent<Texture2D>());
 
 		std::string meshName = filePath;
 		eraseBeforeDelimiter(meshName);
 
-		mesh.get()->setName(meshName);
+		currentObject.GetComponent<Mesh>()->setName(meshName);
 
 		deleteSubstring(meshName, ".fbx");
 		int currentCopies = checkNameAvailability(meshName);
@@ -305,25 +305,23 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 			meshName.append(")");
 		}
 
-		currentObject.get()->name = meshName;
-		gameObjectList.push_back(std::move(*currentObject));
+		currentObject.name = meshName;
+		gameObjectList.push_back(currentObject);
 		i++;
 	}
 }
 
 void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 {
-	std::shared_ptr<GameObject> currentObject = std::make_shared<GameObject>();
+	GameObject currentObject;
 
-	auto mesh = std::make_unique<Mesh>(currentObject, shape->_format,
-		shape->getVertexData()->data(), shape->getVertexData()->size(),
-		shape->getIndexData()->data(), shape->getIndexData()->size(),
-		shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
+	MeshInfo info(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
 
-	currentObject->AddComponent(std::move(mesh));
+	currentObject.AddComponent(std::make_unique<Mesh>(currentObject, info));
 
 	std::string meshName = shape->GetType();
-	mesh.get()->setName(meshName);
+	currentObject.GetComponent<Mesh>()->setName(meshName);
+
 	int currentCopies = checkNameAvailability(meshName);
 	if (currentCopies > 0) {
 		meshName.append("(");
@@ -332,8 +330,8 @@ void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 		meshName.append(")");
 	}
 
-	currentObject.get()->name = meshName;
-	gameObjectList.push_back(std::move(*currentObject));
+	currentObject.name = meshName;
+	gameObjectList.push_back(currentObject);
 }
 
 void Engine_ModuleRenderer3D::applyTextureToGameObject(GameObject * gameObject, std::string filePath)

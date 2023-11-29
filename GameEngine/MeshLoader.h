@@ -44,7 +44,7 @@ public:
 				index_data.push_back(faces[f].mIndices[2]);
 			}
 
-			auto meshInfo_ptr = std::make_unique<MeshInfo>(Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size(), numTexCoords, numNormals, numFaces);
+			auto meshInfo_ptr = std::make_unique<MeshInfo>(vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size(), numTexCoords, numNormals, numFaces);
 
 			for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
 				aiVector3D normal = mesh->mNormals[i];

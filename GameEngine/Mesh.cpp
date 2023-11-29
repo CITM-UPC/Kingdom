@@ -46,6 +46,42 @@ Mesh::Mesh(GameObject* owner, Formats format, const void* vertex_data, unsigned 
 	}
 }
 
+Mesh::Mesh(GameObject* owner, const MeshInfo& meshinfo) :
+	Component(owner),
+	_format(Formats::F_V3T2),
+	_numVerts(meshinfo._numVerts),
+	_numIndexs(meshinfo._numIndexs),
+	_numNormals(meshinfo._numNormals),
+	_numTexCoords(meshinfo._numTexCoords),
+	_numFaces(meshinfo._numFaces)
+{
+	glGenBuffers(1, &_vertex_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer_id);
+
+	switch (_format) {
+	case Formats::F_V3:
+		glBufferData(GL_ARRAY_BUFFER, sizeof(V3) * meshinfo._numVerts, meshinfo._vertex_data, GL_STATIC_DRAW);
+		break;
+	case Formats::F_V3C4:
+		glBufferData(GL_ARRAY_BUFFER, sizeof(V3C4) * meshinfo._numVerts, meshinfo._vertex_data, GL_STATIC_DRAW);
+		break;
+	case Formats::F_V3T2:
+		glBufferData(GL_ARRAY_BUFFER, sizeof(V3T2) * meshinfo._numVerts, meshinfo._vertex_data, GL_STATIC_DRAW);
+		break;
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	if (meshinfo._index_data) {
+		glGenBuffers(1, &_indexs_buffer_id);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexs_buffer_id);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * meshinfo._numIndexs, meshinfo._index_data, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+	else {
+		_indexs_buffer_id = 0;
+	}
+}
+
 Mesh::Mesh(Mesh&& b) noexcept :
 	Component(b.owner),
 	_format(b._format),
