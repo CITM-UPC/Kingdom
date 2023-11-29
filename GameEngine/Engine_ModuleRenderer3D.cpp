@@ -250,7 +250,7 @@ void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyA
 
 void Engine_ModuleRenderer3D::addGameObject()
 {
-	std::shared_ptr<GameObject> currentObject;
+	GameObject currentObject;
 
 	std::string meshName = "GameObject";
 	int currentCopies = checkNameAvailability(meshName);
@@ -260,45 +260,29 @@ void Engine_ModuleRenderer3D::addGameObject()
 		meshName.append(copiesToString);
 		meshName.append(")");
 	}
+	currentObject.name = meshName;
 
-	currentObject.get()->name = meshName;
+	gameObjectList.push_back(currentObject);
+
 	logHistory.push_back("[Engine] Add GameObject");
-	gameObjectList.push_back(std::move(*currentObject));
 }
 
 void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 {
-	//In this method, I would first read from the file, and then first create the game object, set its name and directly push it to the gameObject list,
-	//and after that, get the object with GO_List.back() and push the components to it, passing as parent the GO_List.back() object directly. No address mismatches or workarounds.
-
-	GameObject tmpGO;
 	logHistory.push_back("[Engine] Add GameObject with path " + filePath);
-	auto mesh_vector = MeshLoader::loadMeshFromFile(filePath);
 
-	auto texture_vector = MeshLoader::loadTextureFromFile(tmpGO, filePath);
+	auto mesh_vector = MeshLoader::loadMeshFromFile(filePath);
+	auto texture_paths_vector = MeshLoader::loadTextureFromFile(filePath);
 
 	int i = 0;
 	for (auto& mesh : mesh_vector)
 	{
 		GameObject currentObject;
 
-		logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(mesh._numFaces) + " faces, "
-			+ std::to_string(mesh._numFaces) + " indexs, "
-			+ std::to_string(mesh._numNormals) + " normals, "
-			+ std::to_string(mesh._numTexCoords) + " tex coords, and "
-			+ std::to_string(mesh._numVerts) + " vertexs.");
+		std::string fileName = filePath;
+		eraseBeforeDelimiter(fileName);
 
-		currentObject.AddComponent(std::make_unique<Mesh>(&currentObject, mesh));
-			
-		currentObject.AddComponent(std::move(texture_vector.at(i)));
-
-		currentObject.GetComponent<Mesh>()->texture = std::make_shared<Texture2D>(currentObject.GetComponent<Texture2D>());
-
-		std::string meshName = filePath;
-		eraseBeforeDelimiter(meshName);
-
-		currentObject.GetComponent<Mesh>()->setName(meshName);
-
+		std::string meshName = fileName;
 		deleteSubstring(meshName, ".fbx");
 		int currentCopies = checkNameAvailability(meshName);
 		if (currentCopies > 0) {
@@ -307,10 +291,23 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 			meshName.append(copiesToString);
 			meshName.append(")");
 		}
-
 		currentObject.name = meshName;
 		gameObjectList.push_back(currentObject);
+
+		gameObjectList.back().AddComponent(std::make_unique<Texture2D>(&gameObjectList.back(), texture_paths_vector.at(i)));
+
+		gameObjectList.back().AddComponent(std::make_unique<Mesh>(&gameObjectList.back(), mesh));
+
+		gameObjectList.back().GetComponent<Mesh>()->setName(fileName);
+		gameObjectList.back().GetComponent<Mesh>()->texture = gameObjectList.back().GetComponent<Texture2D>();
 		i++;
+
+
+		logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(mesh._numFaces) + " faces, "
+			+ std::to_string(mesh._numFaces) + " indexs, "
+			+ std::to_string(mesh._numNormals) + " normals, "
+			+ std::to_string(mesh._numTexCoords) + " tex coords, and "
+			+ std::to_string(mesh._numVerts) + " vertexs.");
 	}
 }
 
@@ -318,29 +315,22 @@ void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 {
 	GameObject currentObject;
 
-	MeshInfo info(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
-
-	currentObject.AddComponent(std::make_unique<Mesh>(currentObject, info));
-
 	std::string meshName = shape->GetType();
 	currentObject.GetComponent<Mesh>()->setName(meshName);
 
-	int currentCopies = checkNameAvailability(meshName);
+	std::string goName = meshName;
+	int currentCopies = checkNameAvailability(goName);
 	if (currentCopies > 0) {
-		meshName.append("(");
+		goName.append("(");
 		std::string copiesToString = std::to_string(currentCopies);
-		meshName.append(copiesToString);
-		meshName.append(")");
+		goName.append(copiesToString);
+		goName.append(")");
 	}
-
-	currentObject.name = meshName;
+	currentObject.name = goName;
 	gameObjectList.push_back(currentObject);
-}
 
-void Engine_ModuleRenderer3D::applyTextureToGameObject(GameObject * gameObject, std::string filePath)
-{
-	auto texture_vector = MeshLoader::loadTextureFromFile(*gameObject, filePath);
-	logHistory.push_back("[Engine] Texture loaded with path " + filePath);
+	MeshInfo info(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
+	gameObjectList.back().AddComponent(std::make_unique<Mesh>(&gameObjectList.back(), info));
 }
 
 void Engine_ModuleRenderer3D::SwapDepthTest()

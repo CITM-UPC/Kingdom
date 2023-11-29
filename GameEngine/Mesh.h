@@ -20,7 +20,7 @@ public:
 	struct V3T2 { vec3f v; vec2f t; };
 
 	bool usingTexture = true;
-	std::shared_ptr<Texture2D> texture;
+	Texture2D* texture;
 
 	bool drawVertexNormals = false;
 	bool drawFaceNormals = false;

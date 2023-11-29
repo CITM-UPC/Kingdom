@@ -81,9 +81,9 @@ public:
 		return meshInfoVec;
 	}
 
-	static std::vector<std::unique_ptr<Texture2D>> loadTextureFromFile(GameObject& parentGO, const std::string& path)
+	static std::vector<std::string> loadTextureFromFile(const std::string& path)
 	{
-		std::vector<std::unique_ptr<Texture2D>> texture_ptrs;
+		std::vector<std::string> texture_paths;
 
 		auto scene = aiImportFile(path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
 		for (size_t m = 0; m < scene->mNumMeshes; ++m) {
@@ -98,23 +98,11 @@ public:
 			std::string folder_path = (slash_pos != std::string::npos) ? path.substr(0, slash_pos + 1) : "./";
 			std::string texPath = folder_path + aiScene::GetShortFilename(aiPath.C_Str());
 
-			auto texture_ptr = std::make_unique<Texture2D>(parentGO, texPath);
-			texture_ptr->path = path;
-
-			if (scene->HasTextures()) {
-				texture_ptr->height = scene->mTextures[0]->mHeight;
-				texture_ptr->width = scene->mTextures[0]->mWidth;
-			}
-			else {
-				texture_ptr->height = 1024; // assumption
-				texture_ptr->width = 1024;
-			}
-
-			texture_ptrs.push_back(texture_ptr);
+			texture_paths.push_back(texPath);
 		}
 
 		aiReleaseImport(scene);
 
-		return texture_ptrs;
+		return texture_paths;
 	}
 };

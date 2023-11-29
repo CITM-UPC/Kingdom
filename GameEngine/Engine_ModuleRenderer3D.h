@@ -48,8 +48,6 @@ public:
 
 	void addGameObject(Primitive* shape);
 
-	void applyTextureToGameObject(GameObject* gameObject, std::string filePath);
-
 	void deleteSubstring(std::string& mainString, const std::string& substringToDelete) {
 		size_t pos = mainString.find(substringToDelete);
 
