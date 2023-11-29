@@ -12,7 +12,7 @@ public:
 		GLOBAL,
 	};
 
-	Transform(std::shared_ptr<GameObject> owner);
+	Transform(GameObject* owner);
 	~Transform();
 
 	//Moves the object to 'position'.

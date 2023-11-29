@@ -6,7 +6,7 @@
 class Camera : public Component
 {
 public:
-	Camera(GameObject& owner);
+	Camera(GameObject* owner);
 	~Camera();
 	void Update() override;
 	Type getType() const override {

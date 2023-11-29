@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-Transform::Transform(std::shared_ptr<GameObject> owner) : Component(owner)
+Transform::Transform(GameObject* owner) : Component(owner)
 {
 	//position = vec3(0, 0, 0);
 	_position = vec3(0, 0, 0);

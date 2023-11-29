@@ -13,11 +13,11 @@ private:
 	unsigned int _id_checker;
 
 public:
-	Texture2D(std::shared_ptr<GameObject> owner) : Component(owner), _id(0), _id_checker(0) {}
+	Texture2D(GameObject* owner) : Component(owner), _id(0), _id_checker(0) {}
 
 	Texture2D();
 
-	explicit Texture2D(std::shared_ptr<GameObject> owner, const std::string& path);
+	explicit Texture2D(GameObject* owner, const std::string& path);
 	Texture2D(Texture2D&& tex) noexcept; //move constructor (the one used when you call std::move)
 	void bind() const;
 	void unbind() const;
