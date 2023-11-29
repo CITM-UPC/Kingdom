@@ -143,10 +143,10 @@ void ModuleUI::SetSelectedObjectTexture(string filePath)
 			gameObjSelected->RemoveComponent(Component::Type::TEXTURE2D);
 		}
 
-		auto texture_ptr = std::make_shared<Texture2D>(*gameObjSelected, filePath);
+		auto texture_ptr = std::make_unique<Texture2D>(gameObjSelected, filePath);
 		texture_ptr->path = filePath;
 
-		gameObjSelected->AddComponent(texture_ptr);
+		gameObjSelected->AddComponent(std::move(texture_ptr));
 
 		if (gameObjSelected->GetComponent<Mesh>()->texture)
 		{
@@ -283,7 +283,7 @@ void ModuleUI::InspectorWindow()
 			ImGui::SetNextItemWidth(100.0f);
 			if (ImGui::BeginCombo("Layer", "Default", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
 
-			for (auto& component : gameObjSelected->GetComponents()) {
+			for (auto& component : *gameObjSelected->GetComponents()) {
 				if (component.get()->getType() == Component::Type::TRANSFORM) {
 					Transform* transform = dynamic_cast<Transform*>(component.get());
 					if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_None))

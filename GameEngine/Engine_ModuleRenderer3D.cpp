@@ -268,6 +268,9 @@ void Engine_ModuleRenderer3D::addGameObject()
 
 void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 {
+	//In this method, I would first read from the file, and then first create the game object, set its name and directly push it to the gameObject list,
+	//and after that, get the object with GO_List.back() and push the components to it, passing as parent the GO_List.back() object directly. No address mismatches or workarounds.
+
 	GameObject tmpGO;
 	logHistory.push_back("[Engine] Add GameObject with path " + filePath);
 	auto mesh_vector = MeshLoader::loadMeshFromFile(filePath);
@@ -285,7 +288,7 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 			+ std::to_string(mesh._numTexCoords) + " tex coords, and "
 			+ std::to_string(mesh._numVerts) + " vertexs.");
 
-		currentObject.AddComponent(std::make_unique<Mesh>(currentObject, mesh));
+		currentObject.AddComponent(std::make_unique<Mesh>(&currentObject, mesh));
 			
 		currentObject.AddComponent(std::move(texture_vector.at(i)));
 
