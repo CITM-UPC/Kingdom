@@ -77,7 +77,7 @@ public:
 		int count = 0;
 
 		for (const auto& vector : gameObjectList) {
-			detectAndIncrement(vector.get()->name, name, count);
+			detectAndIncrement(vector.name, name, count);
 		}
 
 		return count;

@@ -174,7 +174,7 @@ engine_status Engine_ModuleRenderer3D::PostUpdate()
 #pragma endregion
 
 	for (auto& vector : gameObjectList) {
-		vector.get()->UpdateComponents();
+		vector.UpdateComponents();
 	}
 
 	GLenum error = glGetError();
@@ -263,14 +263,14 @@ void Engine_ModuleRenderer3D::addGameObject()
 
 	currentObject.get()->name = meshName;
 	logHistory.push_back("[Engine] Add GameObject");
-	gameObjectList.push_back(currentObject);
+	gameObjectList.push_back(std::move(*currentObject));
 }
 
 void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 {
 	GameObject tmpGO;
 	logHistory.push_back("[Engine] Add GameObject with path " + filePath);
-	auto mesh_vector = MeshLoader::loadMeshFromFile(tmpGO, filePath);
+	auto mesh_vector = MeshLoader::loadMeshFromFile(filePath);
 
 	auto texture_vector = MeshLoader::loadTextureFromFile(tmpGO, filePath);
 
@@ -279,13 +279,14 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 	{
 		std::shared_ptr<GameObject> currentObject = std::make_shared<GameObject>();
 
-		logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(mesh.get()->getNumFaces()) + " faces, "
-			+ std::to_string(mesh.get()->getNumIndexs()) + " indexs, "
-			+ std::to_string(mesh.get()->getNumNormals()) + " normals, "
-			+ std::to_string(mesh.get()->getNumTexCoords()) + " tex coords, and "
-			+ std::to_string(mesh.get()->getNumVerts()) + " vertexs.");
+		logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(mesh._numFaces) + " faces, "
+			+ std::to_string(mesh._numFaces) + " indexs, "
+			+ std::to_string(mesh._numNormals) + " normals, "
+			+ std::to_string(mesh._numTexCoords) + " tex coords, and "
+			+ std::to_string(mesh._numVerts) + " vertexs.");
 
-		currentObject.get()->AddComponent(std::move(mesh));
+		currentObject.get()->AddComponent(std::move(Mesh(currentObject, mesh)));
+			
 		currentObject.get()->AddComponent(std::move(texture_vector.at(i)));
 
 		mesh->texture = currentObject->GetComponent<Texture2D>();
@@ -305,7 +306,7 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 		}
 
 		currentObject.get()->name = meshName;
-		gameObjectList.push_back(currentObject);
+		gameObjectList.push_back(std::move(*currentObject));
 		i++;
 	}
 }
@@ -332,7 +333,7 @@ void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 	}
 
 	currentObject.get()->name = meshName;
-	gameObjectList.push_back(currentObject);
+	gameObjectList.push_back(std::move(*currentObject));
 }
 
 void Engine_ModuleRenderer3D::applyTextureToGameObject(GameObject * gameObject, std::string filePath)

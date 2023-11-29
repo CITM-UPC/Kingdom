@@ -44,17 +44,18 @@ public:
 				index_data.push_back(faces[f].mIndices[2]);
 			}
 
-			auto mesh_ptr = std::make_unique<MeshInfo>(Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size(), numTexCoords, numNormals, numFaces);
+			auto meshInfo_ptr = std::make_unique<MeshInfo>(Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size(), numTexCoords, numNormals, numFaces);
+
 			for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
 				aiVector3D normal = mesh->mNormals[i];
 				vec3f glmNormal(normal.x, normal.y, normal.z);
-				mesh_ptr->mNormals.push_back(glmNormal);
+				meshInfo_ptr->mNormals.push_back(glmNormal);
 			}
 
 			for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
 				aiVector3D vert = mesh->mVertices[i];
 				vec3f glmNormal(vert.x, vert.y, vert.z);
-				mesh_ptr->mVertices.push_back(glmNormal);
+				meshInfo_ptr->mVertices.push_back(glmNormal);
 			}
 
 			for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
@@ -66,13 +67,13 @@ public:
 
 				vec3f faceNormal = glm::cross(v1 - v0, v2 - v0);
 				faceNormal = glm::normalize(faceNormal);
-				mesh_ptr->mFaceNormals.push_back(faceNormal);
+				meshInfo_ptr->mFaceNormals.push_back(faceNormal);
 
 				vec3f faceCenter = (v0 + v1 + v2) / 3.0f;
-				mesh_ptr->mFaceCenters.push_back(faceCenter);
+				meshInfo_ptr->mFaceCenters.push_back(faceCenter);
 			}
 
-			meshInfoVec.push_back(std::move(mesh_ptr));
+			meshInfoVec.push_back(std::move(*meshInfo_ptr));
 		}
 
 		aiReleaseImport(scene);
