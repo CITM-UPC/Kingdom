@@ -294,9 +294,9 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 		currentObject.name = meshName;
 		gameObjectList.push_back(currentObject);
 
-		gameObjectList.back().AddComponent(std::make_unique<Texture2D>(&gameObjectList.back(), texture_paths_vector.at(i)));
+		gameObjectList.back().AddComponent(std::move(std::make_unique<Texture2D>(&gameObjectList.back(), texture_paths_vector.at(i))));
 
-		gameObjectList.back().AddComponent(std::make_unique<Mesh>(&gameObjectList.back(), mesh));
+		gameObjectList.back().AddComponent(std::move(std::make_unique<Mesh>(&gameObjectList.back(), mesh)));
 
 		gameObjectList.back().GetComponent<Mesh>()->setName(fileName);
 		gameObjectList.back().GetComponent<Mesh>()->texture = gameObjectList.back().GetComponent<Texture2D>();
@@ -330,7 +330,7 @@ void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 	gameObjectList.push_back(currentObject);
 
 	MeshInfo info(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
-	gameObjectList.back().AddComponent(std::make_unique<Mesh>(&gameObjectList.back(), info));
+	gameObjectList.back().AddComponent(std::move(std::make_unique<Mesh>(&gameObjectList.back(), info)));
 }
 
 void Engine_ModuleRenderer3D::SwapDepthTest()

@@ -143,7 +143,7 @@ void ModuleUI::SetSelectedObjectTexture(string filePath)
 			gameObjSelected->RemoveComponent(Component::Type::TEXTURE2D);
 		}
 
-		auto texture_ptr = std::make_unique<Texture2D>(gameObjSelected, filePath);
+		std::unique_ptr<Texture2D> texture_ptr = std::move(std::make_unique<Texture2D>(gameObjSelected, filePath));
 		texture_ptr->path = filePath;
 
 		gameObjSelected->AddComponent(std::move(texture_ptr));

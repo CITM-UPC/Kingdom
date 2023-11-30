@@ -34,16 +34,16 @@ void GameObject::AddComponent(Component::Type component)
 	switch (component)
 	{
 	case Component::Type::TRANSFORM:
-		compToAdd = std::make_unique<Transform>(this);
+		compToAdd = std::move(std::make_unique<Transform>(this));
 		break;
 	case Component::Type::MESH:
-		compToAdd = std::make_unique<Mesh>(this);
+		compToAdd = std::move(std::make_unique<Mesh>(this));
 		break;
 	case Component::Type::TEXTURE2D:
-		compToAdd = std::make_unique<Texture2D>(this);
+		compToAdd = std::move(std::make_unique<Texture2D>(this));
 		break;
 	case Component::Type::CAMERA:
-		compToAdd = std::make_unique<Camera>(this);
+		compToAdd = std::move(std::make_unique<Camera>(this));
 		break;
 	default:
 		ENGINE_LOG("Can't add component in GameObject");
