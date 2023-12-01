@@ -11,6 +11,7 @@ Texture2D::Texture2D(GameObject* owner, const std::string& path) : Component(own
 	auto img = ilGenImage();
 	ilBindImage(img);
 	ilLoadImage(path.c_str());
+	this->path = path;
 	auto width = ilGetInteger(IL_IMAGE_WIDTH);
 	this->width = static_cast<int>(width);
 	auto height = ilGetInteger(IL_IMAGE_HEIGHT);

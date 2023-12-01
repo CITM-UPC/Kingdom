@@ -143,10 +143,8 @@ void ModuleUI::SetSelectedObjectTexture(string filePath)
 			gameObjSelected->RemoveComponent(Component::Type::TEXTURE2D);
 		}
 
-		std::unique_ptr<Texture2D> texture_ptr = std::move(std::make_unique<Texture2D>(gameObjSelected, filePath));
-		texture_ptr->path = filePath;
-
-		gameObjSelected->AddComponent(std::move(texture_ptr));
+		Texture2D textureToPush(gameObjSelected, filePath);
+		gameObjSelected->AddComponent<Texture2D>(textureToPush);
 
 		if (gameObjSelected->GetComponent<Mesh>()->texture)
 		{
@@ -283,7 +281,7 @@ void ModuleUI::InspectorWindow()
 			ImGui::SetNextItemWidth(100.0f);
 			if (ImGui::BeginCombo("Layer", "Default", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
 
-			for (auto& component : *gameObjSelected->GetComponents()) {
+			/*for (auto& component : *gameObjSelected->GetComponents()) {
 				if (component.get()->getType() == Component::Type::TRANSFORM) {
 					Transform* transform = dynamic_cast<Transform*>(component.get());
 					if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_None))
@@ -371,7 +369,7 @@ void ModuleUI::InspectorWindow()
 						ImGui::SameLine(); ImGui::TextColored({ 0.920f, 0.845f, 0.0184f, 1.0f }, to_string(texture2D->width).c_str());
 					}
 				}
-			}
+			}*/
 		}
 		ImGui::EndMenu();
 	}

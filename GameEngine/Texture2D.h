@@ -14,7 +14,7 @@ private:
 
 public:
 	Texture2D(GameObject* owner) : Component(owner), _id(0), _id_checker(0) {}
-
+	Texture2D(const Texture2D&);
 	Texture2D();
 
 	explicit Texture2D(GameObject* owner, const std::string& path);
@@ -35,6 +35,5 @@ public:
 
 private:
 
-	Texture2D(const Texture2D&);
 	Texture2D operator=(const Texture2D&) = delete;
 };

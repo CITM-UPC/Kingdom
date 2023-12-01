@@ -19,7 +19,7 @@ public:
 
 private:
 
-	std::vector<std::unique_ptr<Component>> components;
+	std::list<std::unique_ptr<Component>> components;
 
 public:
 
@@ -29,10 +29,11 @@ public:
 	template <typename T> T* GetComponent();
 	//std::shared_ptr<Component> GetComponent(Component::Type componentType);
 
-	std::vector<std::unique_ptr<Component>>* GetComponents();
+	//std::list<std::unique_ptr<Component>>* GetComponents();
 
 	void AddComponent(Component::Type component);
-	void AddComponent(std::unique_ptr<Component> component);
+	//void AddComponent(std::unique_ptr<Component>& component);
+	template <typename T> void AddComponent(T& component);
 
 	void RemoveComponent(Component::Type component);
 
@@ -52,4 +53,10 @@ inline T* GameObject::GetComponent()
 		}
 	}
 	return nullptr;
+}
+
+template<typename T>
+inline void GameObject::AddComponent(T& component)
+{
+	//components.emplace_back(std::make_unique<T>(component));
 }

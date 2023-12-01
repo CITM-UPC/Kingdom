@@ -4,7 +4,8 @@
 GameObject::GameObject()
 {
 	name = "";
-	components.push_back(std::move(std::make_unique<Transform>(this)));
+	Transform transformToPush(this);
+	AddComponent<Transform>(transformToPush);
 }
 
 GameObject::~GameObject() = default;
@@ -22,52 +23,43 @@ GameObject::~GameObject() = default;
 //	return nullptr;
 //}
 
-std::vector<std::unique_ptr<Component>>* GameObject::GetComponents()
-{
-	return &components;
-}
+//std::list<std::unique_ptr<Component>>* GameObject::GetComponents()
+//{
+//	return &components;
+//}
 
 void GameObject::AddComponent(Component::Type component)
 {
-	std::unique_ptr<Component> compToAdd;
-
 	switch (component)
 	{
 	case Component::Type::TRANSFORM:
-		compToAdd = std::move(std::make_unique<Transform>(this));
+		//components.emplace_back(std::make_unique<Transform>(this));
 		break;
 	case Component::Type::MESH:
-		compToAdd = std::move(std::make_unique<Mesh>(this));
+		//components.emplace_back(std::make_unique<Mesh>(this));
 		break;
 	case Component::Type::TEXTURE2D:
-		compToAdd = std::move(std::make_unique<Texture2D>(this));
+		//components.emplace_back(std::make_unique<Texture2D>(this));
 		break;
 	case Component::Type::CAMERA:
-		compToAdd = std::move(std::make_unique<Camera>(this));
+		//components.emplace_back(std::make_unique<Camera>(this));
 		break;
 	default:
 		ENGINE_LOG("Can't add component in GameObject");
 		break;
 	}
-
-	components.push_back(std::move(compToAdd));
-}
-
-void GameObject::AddComponent(std::unique_ptr<Component> component)
-{
-	components.push_back(std::move(component));
 }
 
 void GameObject::RemoveComponent(Component::Type component)
 {
-	for (auto& comp : components)
+	/*for (auto& comp : components)
 	{
 		if (comp->getType() == component)
 		{
 			components.erase(std::remove(components.begin(), components.end(), comp));
 			break;
 		}
-	}
+	}*/
 }
 
 //GameObject* GameObject::Find(std::string name, std::list<GameObject> gameObjectList)
