@@ -75,7 +75,7 @@ public:
 		int count = 0;
 
 		for (const auto& vector : gameObjectList) {
-			detectAndIncrement(vector.name, name, count);
+			detectAndIncrement(vector->name, name, count);
 		}
 
 		return count;
@@ -93,7 +93,7 @@ public:
 	SDL_GLContext context;
 	glm::mat3x3 NormalMatrix;
 	glm::mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
-	std::list<GameObject> gameObjectList;
+	std::list<std::unique_ptr<GameObject>> gameObjectList;
 	std::list<std::string> logHistory;
 
 	bool depth_test;

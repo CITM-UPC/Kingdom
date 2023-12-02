@@ -144,7 +144,7 @@ void ModuleUI::SetSelectedObjectTexture(string filePath)
 		}
 
 		Texture2D textureToPush(gameObjSelected, filePath);
-		gameObjSelected->AddComponent<Texture2D>(textureToPush);
+		gameObjSelected->AddComponent(textureToPush);
 
 		if (gameObjSelected->GetComponent<Mesh>()->texture)
 		{
@@ -258,7 +258,8 @@ void ModuleUI::FPSGraphWindow()
 void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
-	for (auto& gameObject : App->gEngine->renderer3D->gameObjectList) {
+	for (const auto& gameObjectPtr : App->gEngine->renderer3D->gameObjectList) {
+		auto& gameObject = *gameObjectPtr;
 		if (ImGui::MenuItem(gameObject.name.c_str())) {
 			gameObjSelected = &gameObject;
 		}

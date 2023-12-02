@@ -5,10 +5,13 @@ GameObject::GameObject()
 {
 	name = "";
 	Transform transformToPush(this);
-	AddComponent<Transform>(transformToPush);
+	AddComponent(transformToPush);
 }
 
-GameObject::~GameObject() = default;
+GameObject::~GameObject() 
+{
+	components.clear();
+};
 
 //std::shared_ptr<Component> GameObject::GetComponent(Component::Type componentType)
 //{

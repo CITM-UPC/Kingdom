@@ -16,9 +16,6 @@ public:
 
 	std::string name;
 	bool isActive = true;
-
-private:
-
 	std::list<std::unique_ptr<Component>> components;
 
 public:
@@ -58,5 +55,5 @@ inline T* GameObject::GetComponent()
 template<typename T>
 inline void GameObject::AddComponent(T& component)
 {
-	//components.emplace_back(std::make_unique<T>(component));
+	components.emplace_back(std::make_unique<T>(component));
 }

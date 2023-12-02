@@ -174,7 +174,7 @@ engine_status Engine_ModuleRenderer3D::PostUpdate()
 #pragma endregion
 
 	for (auto& vector : gameObjectList) {
-		vector.UpdateComponents();
+		vector->UpdateComponents();
 	}
 
 	GLenum error = glGetError();
@@ -250,7 +250,7 @@ void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyA
 
 void Engine_ModuleRenderer3D::addGameObject()
 {
-	GameObject currentObject;
+	std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
 	std::string meshName = "GameObject";
 	int currentCopies = checkNameAvailability(meshName);
@@ -260,9 +260,9 @@ void Engine_ModuleRenderer3D::addGameObject()
 		meshName.append(copiesToString);
 		meshName.append(")");
 	}
-	currentObject.name = meshName;
+	gameObjectToAdd->name = meshName;
 
-	gameObjectList.push_back(currentObject);
+	gameObjectList.push_back(std::move(gameObjectToAdd));
 
 	logHistory.push_back("[Engine] Add GameObject");
 }
@@ -277,7 +277,7 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 	int i = 0;
 	for (auto& mesh : mesh_vector)
 	{
-		GameObject currentObject;
+		/*GameObject currentObject;
 
 		std::string fileName = filePath;
 		eraseBeforeDelimiter(fileName);
@@ -295,14 +295,14 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 		gameObjectList.push_back(currentObject);
 
 		Texture2D textureToPush(&gameObjectList.back(), texture_paths_vector.at(i));
-		gameObjectList.back().AddComponent<Texture2D>(textureToPush);
+		gameObjectList.back().AddComponent(std::move(textureToPush));
 
 		Mesh meshToPush(&gameObjectList.back(), mesh);
-		gameObjectList.back().AddComponent<Mesh>(meshToPush);
+		gameObjectList.back().AddComponent(std::move(meshToPush));
 
 		gameObjectList.back().GetComponent<Mesh>()->setName(fileName);
 		gameObjectList.back().GetComponent<Mesh>()->texture = gameObjectList.back().GetComponent<Texture2D>();
-		i++;
+		i++;*/
 
 
 		logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(mesh._numFaces) + " faces, "
@@ -315,7 +315,7 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 
 void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 {
-	GameObject currentObject;
+	/*GameObject currentObject;
 
 	std::string meshName = shape->GetType();
 	currentObject.GetComponent<Mesh>()->setName(meshName);
@@ -333,7 +333,7 @@ void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 
 	MeshInfo info(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
 	Mesh meshToPush(&gameObjectList.back(), info);
-	gameObjectList.back().AddComponent<Mesh>(meshToPush);
+	gameObjectList.back().AddComponent(std::move(meshToPush));*/
 }
 
 void Engine_ModuleRenderer3D::SwapDepthTest()
