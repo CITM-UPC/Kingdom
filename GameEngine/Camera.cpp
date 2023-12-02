@@ -7,19 +7,19 @@ Camera::Camera(GameObject* owner) : Component(owner), fov(60), aspectRatio(4.0 /
 }
 
 Camera::Camera(const Camera& other)
-    : Component(other.owner), 
-    fov(other.fov), 
-    aspectRatio(other.aspectRatio),
-    clippingPlaneViewNear(other.clippingPlaneViewNear), 
-    clippingPlaneViewFar(other.clippingPlaneViewFar),
-    lookAtPos(other.lookAtPos), 
-    camOffset(other.camOffset) 
-{  
+	: Component(other.owner),
+	fov(other.fov),
+	aspectRatio(other.aspectRatio),
+	clippingPlaneViewNear(other.clippingPlaneViewNear),
+	clippingPlaneViewFar(other.clippingPlaneViewFar),
+	lookAtPos(other.lookAtPos),
+	camOffset(other.camOffset)
+{
 }
 
 Camera::~Camera() {}
 
-void Camera::Update() 
+void Camera::Update()
 {
 	lookAtPos = this->owner->GetComponent<Transform>()->position() + this->owner->GetComponent<Transform>()->forward() * camOffset;
 }

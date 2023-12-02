@@ -25,5 +25,4 @@ public:
 
 	glm::dvec3 lookAtPos;
 	double camOffset;
-
 };

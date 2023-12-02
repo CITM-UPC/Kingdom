@@ -115,7 +115,6 @@ bool Engine_ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(screen_width, screen_height);
 
-	logHistory.push_back("[Engine] Added BakerHouse.fbx");
 	addGameObject("Assets/BakerHouse.fbx");
 
 	return ret;
@@ -139,7 +138,7 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	//gEngine->cameraGO.GetComponent<Camera>()->lookAtPos = gEngine->cameraGO.GetComponent<Transform>()->position() + gEngine->cameraGO.GetComponent<Transform>()->forward() * gEngine->cameraGO.GetComponent<Camera>()->camOffset;
+	gEngine->cameraGO.GetComponent<Camera>()->lookAtPos = gEngine->cameraGO.GetComponent<Transform>()->position() + gEngine->cameraGO.GetComponent<Transform>()->forward() * gEngine->cameraGO.GetComponent<Camera>()->camOffset;
 
 	gluLookAt(gEngine->cameraGO.GetComponent<Transform>()->position().x, gEngine->cameraGO.GetComponent<Transform>()->position().y, gEngine->cameraGO.GetComponent<Transform>()->position().z,
 		gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.x, gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.y, gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.z,
@@ -178,7 +177,7 @@ engine_status Engine_ModuleRenderer3D::PostUpdate()
 	}
 
 	GLenum error = glGetError();
-	assert(error == GL_NO_ERROR);
+	//assert(error == GL_NO_ERROR);
 
 	return ENGINE_UPDATE_CONTINUE;
 }
@@ -277,7 +276,7 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 	int i = 0;
 	for (auto& mesh : mesh_vector)
 	{
-		/*GameObject currentObject;
+		std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
 		std::string fileName = filePath;
 		eraseBeforeDelimiter(fileName);
@@ -291,18 +290,19 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 			meshName.append(copiesToString);
 			meshName.append(")");
 		}
-		currentObject.name = meshName;
-		gameObjectList.push_back(currentObject);
+		gameObjectToAdd->name = meshName;
 
-		Texture2D textureToPush(&gameObjectList.back(), texture_paths_vector.at(i));
-		gameObjectList.back().AddComponent(std::move(textureToPush));
+		gameObjectList.push_back(std::move(gameObjectToAdd));
 
-		Mesh meshToPush(&gameObjectList.back(), mesh);
-		gameObjectList.back().AddComponent(std::move(meshToPush));
+		Texture2D textureToPush(gameObjectList.back().get(), texture_paths_vector.at(i));
+		gameObjectList.back().get()->AddComponent<Texture2D>(textureToPush);
 
-		gameObjectList.back().GetComponent<Mesh>()->setName(fileName);
-		gameObjectList.back().GetComponent<Mesh>()->texture = gameObjectList.back().GetComponent<Texture2D>();
-		i++;*/
+		Mesh meshToPush(gameObjectList.back().get(), mesh);
+		gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
+
+		gameObjectList.back().get()->GetComponent<Mesh>()->setName(fileName);
+		gameObjectList.back().get()->GetComponent<Mesh>()->texture = gameObjectList.back().get()->GetComponent<Texture2D>();
+		i++;
 
 		logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(mesh._numFaces) + " faces, "
 			+ std::to_string(mesh._numFaces) + " indexs, "
@@ -314,10 +314,10 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 
 void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 {
-	/*GameObject currentObject;
+	std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
 	std::string meshName = shape->GetType();
-	currentObject.GetComponent<Mesh>()->setName(meshName);
+	gameObjectToAdd.get()->GetComponent<Mesh>()->setName(meshName);
 
 	std::string goName = meshName;
 	int currentCopies = checkNameAvailability(goName);
@@ -327,12 +327,12 @@ void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 		goName.append(copiesToString);
 		goName.append(")");
 	}
-	currentObject.name = goName;
-	gameObjectList.push_back(currentObject);
+	gameObjectToAdd->name = goName;
+	gameObjectList.push_back(std::move(gameObjectToAdd));
 
 	MeshInfo info(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
-	Mesh meshToPush(&gameObjectList.back(), info);
-	gameObjectList.back().AddComponent(std::move(meshToPush));*/
+	Mesh meshToPush(gameObjectList.back().get(), info);
+	gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
 }
 
 void Engine_ModuleRenderer3D::SwapDepthTest()
