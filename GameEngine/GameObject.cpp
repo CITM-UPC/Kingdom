@@ -8,7 +8,7 @@ GameObject::GameObject()
 	AddComponent(transformToPush);
 }
 
-GameObject::~GameObject() 
+GameObject::~GameObject()
 {
 	components.clear();
 };
@@ -36,16 +36,16 @@ void GameObject::AddComponent(Component::Type component)
 	switch (component)
 	{
 	case Component::Type::TRANSFORM:
-		//components.emplace_back(std::make_unique<Transform>(this));
+		components.emplace_back(std::make_unique<Transform>(this));
 		break;
 	case Component::Type::MESH:
-		//components.emplace_back(std::make_unique<Mesh>(this));
+		components.emplace_back(std::make_unique<Mesh>(this));
 		break;
 	case Component::Type::TEXTURE2D:
-		//components.emplace_back(std::make_unique<Texture2D>(this));
+		components.emplace_back(std::make_unique<Texture2D>(this));
 		break;
 	case Component::Type::CAMERA:
-		//components.emplace_back(std::make_unique<Camera>(this));
+		components.emplace_back(std::make_unique<Camera>(this));
 		break;
 	default:
 		ENGINE_LOG("Can't add component in GameObject");

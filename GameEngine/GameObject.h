@@ -37,7 +37,6 @@ public:
 	void UpdateComponents();
 
 	//static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);
-
 };
 
 template<typename T>

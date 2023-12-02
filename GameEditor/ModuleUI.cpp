@@ -13,13 +13,10 @@
 #include <sstream>
 #include <string>
 
-ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
-{
-}
+ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled) {}
 
 // Destructor
-ModuleUI::~ModuleUI()
-{}
+ModuleUI::~ModuleUI() {}
 
 void OsOpenInShell(const char* path)
 {
@@ -53,13 +50,13 @@ bool ModuleUI::Init()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->gEngine->renderer3D->context);
 	ImGui_ImplOpenGL3_Init();
 
-	std::ifstream file("../LICENSE"); // Open the file
+	std::ifstream file("../LICENSE");
 	std::string line;
-	if (file.is_open()) { // Check if the file is open
-		while (std::getline(file, line)) { // Read the file line by line
-			aboutContent += line + "\n"; // Append each line to the string
+	if (file.is_open()) {
+		while (std::getline(file, line)) {
+			aboutContent += line + "\n";
 		}
-		file.close(); // Close the file
+		file.close();
 	}
 	else {
 		LOG("Unable to open LICENSE file.");

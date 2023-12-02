@@ -61,6 +61,15 @@ Texture2D::Texture2D(Texture2D&& tex) noexcept : Component(tex.owner), _id(tex._
 	tex._id = 0;
 }
 
+Texture2D::Texture2D(const Texture2D& other)
+	: Component(other.owner),
+	_id(other._id),
+	_id_checker(other._id_checker),
+	path(other.path),
+	width(other.width),
+	height(other.height) {
+}
+
 Texture2D::~Texture2D() {
 	if (_id) glDeleteTextures(1, &_id);
 }

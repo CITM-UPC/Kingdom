@@ -141,9 +141,9 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 
 	//gEngine->cameraGO.GetComponent<Camera>()->lookAtPos = gEngine->cameraGO.GetComponent<Transform>()->position() + gEngine->cameraGO.GetComponent<Transform>()->forward() * gEngine->cameraGO.GetComponent<Camera>()->camOffset;
 
-	gluLookAt(	gEngine->cameraGO.GetComponent<Transform>()->position().x, gEngine->cameraGO.GetComponent<Transform>()->position().y, gEngine->cameraGO.GetComponent<Transform>()->position().z,
-				gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.x, gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.y, gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.z,
-				gEngine->cameraGO.GetComponent<Transform>()->up().x, gEngine->cameraGO.GetComponent<Transform>()->up().y, gEngine->cameraGO.GetComponent<Transform>()->up().z);
+	gluLookAt(gEngine->cameraGO.GetComponent<Transform>()->position().x, gEngine->cameraGO.GetComponent<Transform>()->position().y, gEngine->cameraGO.GetComponent<Transform>()->position().z,
+		gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.x, gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.y, gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.z,
+		gEngine->cameraGO.GetComponent<Transform>()->up().x, gEngine->cameraGO.GetComponent<Transform>()->up().y, gEngine->cameraGO.GetComponent<Transform>()->up().z);
 
 	return ENGINE_UPDATE_CONTINUE;
 }
@@ -303,7 +303,6 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 		gameObjectList.back().GetComponent<Mesh>()->setName(fileName);
 		gameObjectList.back().GetComponent<Mesh>()->texture = gameObjectList.back().GetComponent<Texture2D>();
 		i++;*/
-
 
 		logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(mesh._numFaces) + " faces, "
 			+ std::to_string(mesh._numFaces) + " indexs, "
