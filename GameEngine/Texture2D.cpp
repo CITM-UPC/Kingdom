@@ -59,18 +59,25 @@ Texture2D::Texture2D(GameObject* owner, const std::string& path) : Component(own
 
 Texture2D::Texture2D(Texture2D&& tex) noexcept : Component(tex.owner), _id(tex._id) {
 	tex._id = 0;
+	tex._id_checker = 0;
 }
 
-Texture2D::Texture2D(const Texture2D& other)
+Texture2D::Texture2D(Texture2D& other)
 	: Component(other.owner),
 	_id(other._id),
 	_id_checker(other._id_checker),
 	path(other.path),
 	width(other.width),
-	height(other.height) {
+	height(other.height) 
+{
+	other._id = 0;
+	other._id_checker = 0;
 }
 
 Texture2D::~Texture2D() {
+
+	if (_id_checker) glDeleteTextures(1, &_id_checker);
+
 	if (_id) glDeleteTextures(1, &_id);
 }
 

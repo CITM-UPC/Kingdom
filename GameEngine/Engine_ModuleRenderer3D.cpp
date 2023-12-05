@@ -177,7 +177,7 @@ engine_status Engine_ModuleRenderer3D::PostUpdate()
 	}
 
 	GLenum error = glGetError();
-	//assert(error == GL_NO_ERROR);
+	assert(error == GL_NO_ERROR);
 
 	return ENGINE_UPDATE_CONTINUE;
 }
@@ -305,7 +305,7 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 		i++;
 
 		logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(mesh._numFaces) + " faces, "
-			+ std::to_string(mesh._numFaces) + " indexs, "
+			+ std::to_string(mesh._numIndexs) + " indexs, "
 			+ std::to_string(mesh._numNormals) + " normals, "
 			+ std::to_string(mesh._numTexCoords) + " tex coords, and "
 			+ std::to_string(mesh._numVerts) + " vertexs.");

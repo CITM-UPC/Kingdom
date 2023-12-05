@@ -98,7 +98,7 @@ Mesh::Mesh(Mesh&& b) noexcept :
 	b._indexs_buffer_id = 0;
 }
 
-Mesh::Mesh(const Mesh& cpy) :
+Mesh::Mesh(Mesh& cpy) :
 	Component(cpy.owner),
 	meshName(cpy.meshName),
 	_format(cpy._format),
@@ -111,6 +111,8 @@ Mesh::Mesh(const Mesh& cpy) :
 	_numFaces(cpy._numFaces),
 	texture(cpy.texture)    // Copies the shared_ptr, so it now points to the same object
 {
+	cpy._vertex_buffer_id = 0;
+	cpy._indexs_buffer_id = 0;
 }
 
 void Mesh::draw() {
