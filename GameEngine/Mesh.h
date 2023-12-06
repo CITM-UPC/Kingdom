@@ -50,7 +50,7 @@ private:
 	const unsigned int _numFaces;
 
 public:
-	Mesh(GameObject* owner) : Component(owner), _format(Formats::F_V3), _numVerts(0), _numIndexs(0), _numTexCoords(0), _numNormals(0), _numFaces(0) {
+	Mesh(GameObject* owner) : Component(owner), _format(Formats::F_V3T2), _numVerts(0), _numIndexs(0), _numTexCoords(0), _numNormals(0), _numFaces(0) {
 	}
 
 	Mesh(GameObject* owner, const MeshInfo& meshinfo);
@@ -67,15 +67,15 @@ public:
 	std::string getName();
 	void setName(std::string name);
 
-	inline const unsigned int getNumVerts();
+	const unsigned int getNumVerts();
 
-	inline const unsigned int getNumIndexs();
+	const unsigned int getNumIndexs();
 
-	inline const unsigned int getNumTexCoords();
+	const unsigned int getNumTexCoords();
 
-	inline const unsigned int getNumNormals();
+	const unsigned int getNumNormals();
 
-	inline const unsigned int getNumFaces();
+	const unsigned int getNumFaces();
 
 	void Update() override;
 

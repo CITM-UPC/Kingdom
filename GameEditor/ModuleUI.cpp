@@ -325,15 +325,15 @@ void ModuleUI::InspectorWindow()
 						ImGui::SameLine();  ImGui::TextColored({ 0.920f, 0.845f, 0.0184f, 1.0f }, mesh->getName().c_str());
 						ImGui::Separator();
 						ImGui::Text("Indexes: ");
-						//ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumIndexs()).c_str());
+						ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumIndexs()).c_str());
 						ImGui::Text("Normals: ");
-						//ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumNormals()).c_str());
+						ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumNormals()).c_str());
 						ImGui::Text("Vertexs: ");
-						//ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumVerts()).c_str());
+						ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumVerts()).c_str());
 						ImGui::Text("Faces: ");
-						//ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumFaces()).c_str());
+						ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumFaces()).c_str());
 						ImGui::Text("Tex coords: ");
-						//ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumTexCoords()).c_str());
+						ImGui::SameLine();  ImGui::Text(std::to_string(mesh->getNumTexCoords()).c_str());
 						ImGui::Separator();
 						if (ImGui::Checkbox("Use Texture", &mesh->usingTexture)) {
 							(mesh->usingTexture) ? mesh->texture = gameObjSelected->GetComponent<Texture2D>() : mesh->texture = nullptr;
