@@ -26,7 +26,7 @@ public:
 	template <typename T> T* GetComponent();
 	//std::shared_ptr<Component> GetComponent(Component::Type componentType);
 
-	//std::list<std::unique_ptr<Component>>* GetComponents();
+	std::list<std::unique_ptr<Component>>* GetComponents();
 
 	void AddComponent(Component::Type component);
 	//void AddComponent(std::unique_ptr<Component>& component);

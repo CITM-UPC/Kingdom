@@ -68,14 +68,13 @@ Texture2D::Texture2D(Texture2D& other)
 	_id_checker(other._id_checker),
 	path(other.path),
 	width(other.width),
-	height(other.height) 
+	height(other.height)
 {
 	other._id = 0;
 	other._id_checker = 0;
 }
 
 Texture2D::~Texture2D() {
-
 	if (_id_checker) glDeleteTextures(1, &_id_checker);
 
 	if (_id) glDeleteTextures(1, &_id);

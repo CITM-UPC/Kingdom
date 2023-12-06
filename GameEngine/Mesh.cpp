@@ -53,7 +53,11 @@ Mesh::Mesh(GameObject* owner, const MeshInfo& meshinfo) :
 	_numIndexs(meshinfo._numIndexs),
 	_numNormals(meshinfo._numNormals),
 	_numTexCoords(meshinfo._numTexCoords),
-	_numFaces(meshinfo._numFaces)
+	_numFaces(meshinfo._numFaces),
+	mVertices(meshinfo.mVertices),
+	mNormals(meshinfo.mNormals),
+	mFaceCenters(meshinfo.mFaceCenters),
+	mFaceNormals(meshinfo.mFaceNormals)
 {
 	glGenBuffers(1, &_vertex_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer_id);
@@ -92,7 +96,11 @@ Mesh::Mesh(Mesh&& b) noexcept :
 	_numTexCoords(b._numTexCoords),
 	_numNormals(b._numNormals),
 	_numFaces(b._numFaces),
-	texture(b.texture)
+	texture(b.texture),
+	mVertices(b.mVertices),
+	mNormals(b.mNormals),
+	mFaceCenters(b.mFaceCenters),
+	mFaceNormals(b.mFaceNormals)
 {
 	b._vertex_buffer_id = 0;
 	b._indexs_buffer_id = 0;
@@ -109,7 +117,11 @@ Mesh::Mesh(Mesh& cpy) :
 	_numTexCoords(cpy._numTexCoords),
 	_numNormals(cpy._numNormals),
 	_numFaces(cpy._numFaces),
-	texture(cpy.texture)    // Copies the shared_ptr, so it now points to the same object
+	texture(cpy.texture),    // Copies the shared_ptr, so it now points to the same object
+	mVertices(cpy.mVertices),
+	mNormals(cpy.mNormals),
+	mFaceCenters(cpy.mFaceCenters),
+	mFaceNormals(cpy.mFaceNormals)
 {
 	cpy._vertex_buffer_id = 0;
 	cpy._indexs_buffer_id = 0;

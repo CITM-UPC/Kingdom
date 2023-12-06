@@ -26,10 +26,10 @@ GameObject::~GameObject()
 //	return nullptr;
 //}
 
-//std::list<std::unique_ptr<Component>>* GameObject::GetComponents()
-//{
-//	return &components;
-//}
+std::list<std::unique_ptr<Component>>* GameObject::GetComponents()
+{
+	return &components;
+}
 
 void GameObject::AddComponent(Component::Type component)
 {
