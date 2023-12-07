@@ -57,13 +57,20 @@ Texture2D::Texture2D(GameObject* owner, const std::string& path) : Component(own
 		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
 }
 
-Texture2D::Texture2D(Texture2D&& tex) noexcept : Component(tex.owner), _id(tex._id) {
+Texture2D::Texture2D(Texture2D&& tex) noexcept :
+	Component(tex.owner),
+	_id(tex._id),
+	_id_checker(tex._id_checker),
+	path(tex.path),
+	width(tex.width),
+	height(tex.height)
+{
 	tex._id = 0;
 	tex._id_checker = 0;
 }
 
-Texture2D::Texture2D(Texture2D& other)
-	: Component(other.owner),
+Texture2D::Texture2D(Texture2D& other) :
+	Component(other.owner),
 	_id(other._id),
 	_id_checker(other._id_checker),
 	path(other.path),

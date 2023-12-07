@@ -1,5 +1,6 @@
 #include "Mesh.h"
 #include <GL/glew.h>
+#include <iostream>
 
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
@@ -203,8 +204,10 @@ void Mesh::draw() {
 }
 
 Mesh::~Mesh() {
-	if (_vertex_buffer_id) glDeleteBuffers(1, &_vertex_buffer_id);
-	if (_indexs_buffer_id) glDeleteBuffers(1, &_indexs_buffer_id);
+	if (_vertex_buffer_id)
+		glDeleteBuffers(1, &_vertex_buffer_id);
+	if (_indexs_buffer_id)
+		glDeleteBuffers(1, &_indexs_buffer_id);
 }
 
 void Mesh::setName(std::string name) {

@@ -6,7 +6,7 @@ class MeshInfo
 {
 public:
 
-	inline MeshInfo(const void* vertex_data, unsigned int numVerts,
+	MeshInfo(const void* vertex_data, unsigned int numVerts,
 		const unsigned int* index_data = nullptr, unsigned int numIndexs = 0,
 		const unsigned int numTexCoords = 0, unsigned int numNormals = 0, unsigned int numFaces = 0) :
 		_vertex_data(vertex_data),

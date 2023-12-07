@@ -155,23 +155,6 @@ engine_status Engine_ModuleRenderer3D::Update()
 // PostUpdate present buffer to screen
 engine_status Engine_ModuleRenderer3D::PostUpdate()
 {
-#pragma region TriangleTest
-
-	/*glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glColor4ub(255, 0, 0, 255);
-	glBegin(GL_TRIANGLES);
-	glVertex3d(-0.25, 0, 0);
-	glVertex3d(0.25, 0, 0);
-	glVertex3d(0, 0.5, 0);
-	glEnd();*/
-
-#pragma endregion
-
 	for (auto& vector : gameObjectList) {
 		vector->UpdateComponents();
 	}
@@ -254,10 +237,7 @@ void Engine_ModuleRenderer3D::addGameObject()
 	std::string meshName = "GameObject";
 	int currentCopies = checkNameAvailability(meshName);
 	if (currentCopies > 0) {
-		meshName.append("(");
-		std::string copiesToString = std::to_string(currentCopies);
-		meshName.append(copiesToString);
-		meshName.append(")");
+		meshName.append("(" + std::to_string(currentCopies) + ")");
 	}
 	gameObjectToAdd->name = meshName;
 
@@ -270,11 +250,11 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 {
 	logHistory.push_back("[Engine] Add GameObject with path " + filePath);
 
-	auto mesh_vector = MeshLoader::loadMeshFromFile(filePath);
+	auto meshInfo_vector = MeshLoader::loadMeshFromFile(filePath);
 	auto texture_paths_vector = MeshLoader::loadTextureFromFile(filePath);
 
 	int i = 0;
-	for (auto& mesh : mesh_vector)
+	for (const auto& meshInfo : meshInfo_vector)
 	{
 		std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
@@ -285,10 +265,7 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 		deleteSubstring(meshName, ".fbx");
 		int currentCopies = checkNameAvailability(meshName);
 		if (currentCopies > 0) {
-			meshName.append("(");
-			std::string copiesToString = std::to_string(currentCopies);
-			meshName.append(copiesToString);
-			meshName.append(")");
+			meshName.append("(" + std::to_string(currentCopies) + ")");
 		}
 		gameObjectToAdd->name = meshName;
 
@@ -297,18 +274,18 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 		Texture2D textureToPush(gameObjectList.back().get(), texture_paths_vector.at(i));
 		gameObjectList.back().get()->AddComponent<Texture2D>(textureToPush);
 
-		Mesh meshToPush(gameObjectList.back().get(), mesh);
+		Mesh meshToPush(gameObjectList.back().get(), meshInfo);
 		gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
 
 		gameObjectList.back().get()->GetComponent<Mesh>()->setName(fileName);
 		gameObjectList.back().get()->GetComponent<Mesh>()->texture = gameObjectList.back().get()->GetComponent<Texture2D>();
 		i++;
 
-		logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(mesh._numFaces) + " faces, "
-			+ std::to_string(mesh._numIndexs) + " indexs, "
-			+ std::to_string(mesh._numNormals) + " normals, "
-			+ std::to_string(mesh._numTexCoords) + " tex coords, and "
-			+ std::to_string(mesh._numVerts) + " vertexs.");
+		logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(meshInfo._numFaces) + " faces, "
+			+ std::to_string(meshInfo._numIndexs) + " indexs, "
+			+ std::to_string(meshInfo._numNormals) + " normals, "
+			+ std::to_string(meshInfo._numTexCoords) + " tex coords, and "
+			+ std::to_string(meshInfo._numVerts) + " vertexs.");
 	}
 }
 
@@ -322,10 +299,7 @@ void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 	std::string goName = meshName;
 	int currentCopies = checkNameAvailability(goName);
 	if (currentCopies > 0) {
-		goName.append("(");
-		std::string copiesToString = std::to_string(currentCopies);
-		goName.append(copiesToString);
-		goName.append(")");
+		goName.append("(" + std::to_string(currentCopies) + ")");
 	}
 	gameObjectToAdd->name = goName;
 	gameObjectList.push_back(std::move(gameObjectToAdd));

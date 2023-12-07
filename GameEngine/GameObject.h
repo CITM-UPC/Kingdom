@@ -30,7 +30,9 @@ public:
 
 	void AddComponent(Component::Type component);
 	//void AddComponent(std::unique_ptr<Component>& component);
-	template <typename T> void AddComponent(T& component);
+
+	template <typename T>
+	void AddComponent(T& component);
 
 	void RemoveComponent(Component::Type component);
 
@@ -54,5 +56,6 @@ inline T* GameObject::GetComponent()
 template<typename T>
 inline void GameObject::AddComponent(T& component)
 {
-	components.emplace_back(std::make_unique<T>(component));
+	T copyOfComponent = component; // Make a copy of the component
+	components.emplace_back(std::make_unique<T>(std::move(copyOfComponent)));
 }

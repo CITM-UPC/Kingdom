@@ -15,14 +15,16 @@ private:
 public:
 	Texture2D();
 	Texture2D(GameObject* owner) : Component(owner), _id(0), _id_checker(0) {}
-	Texture2D(Texture2D& other);
+	Texture2D(GameObject* owner, const std::string& path);
 
-	explicit Texture2D(GameObject* owner, const std::string& path);
+	Texture2D(Texture2D& other);
 	Texture2D(Texture2D&& tex) noexcept; //move constructor (the one used when you call std::move)
+
+	~Texture2D();
+
 	void bind() const;
 	void unbind() const;
 	void checker() const;
-	~Texture2D();
 
 	void Update() override;
 
