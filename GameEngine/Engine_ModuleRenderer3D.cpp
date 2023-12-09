@@ -304,9 +304,9 @@ void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 	gameObjectToAdd->name = goName;
 	gameObjectList.push_back(std::move(gameObjectToAdd));
 
-	MeshInfo info(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
+	/*MeshInfo info(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
 	Mesh meshToPush(gameObjectList.back().get(), info);
-	gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
+	gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);*/
 }
 
 void Engine_ModuleRenderer3D::SwapDepthTest()

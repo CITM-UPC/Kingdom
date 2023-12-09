@@ -86,4 +86,5 @@ public:
 private:
 
 	Mesh& operator=(const Mesh&) = delete;
+
 };
