@@ -294,7 +294,6 @@ void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 	std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
 	std::string meshName = shape->GetType();
-	gameObjectToAdd.get()->GetComponent<Mesh>()->setName(meshName);
 
 	std::string goName = meshName;
 	int currentCopies = checkNameAvailability(goName);
@@ -304,9 +303,17 @@ void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 	gameObjectToAdd->name = goName;
 	gameObjectList.push_back(std::move(gameObjectToAdd));
 
-	/*MeshInfo info(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
-	Mesh meshToPush(gameObjectList.back().get(), info);
-	gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);*/
+	MeshInfo meshInfo(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
+	Mesh meshToPush(gameObjectList.back().get(), meshInfo);
+
+	gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
+	gameObjectList.back().get()->GetComponent<Mesh>()->setName(meshName);
+
+	logHistory.push_back("[Engine] Mesh (" + meshName + ") loaded with " + std::to_string(meshInfo._numFaces) + " faces, "
+		+ std::to_string(meshInfo._numIndexs) + " indexs, "
+		+ std::to_string(meshInfo._numNormals) + " normals, "
+		+ std::to_string(meshInfo._numTexCoords) + " tex coords, and "
+		+ std::to_string(meshInfo._numVerts) + " vertexs.");
 }
 
 void Engine_ModuleRenderer3D::SwapDepthTest()
