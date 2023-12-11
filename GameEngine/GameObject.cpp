@@ -55,14 +55,14 @@ void GameObject::AddComponent(Component::Type component)
 
 void GameObject::RemoveComponent(Component::Type component)
 {
-	/*for (auto& comp : components)
+	for (auto& comp : components)
 	{
 		if (comp->getType() == component)
 		{
 			components.erase(std::remove(components.begin(), components.end(), comp));
 			break;
 		}
-	}*/
+	}
 }
 
 //GameObject* GameObject::Find(std::string name, std::list<GameObject> gameObjectList)
