@@ -60,7 +60,7 @@ public:
 		const unsigned int numTexCoords = 0, unsigned int numNormals = 0, unsigned int numFaces = 0);
 
 	Mesh(Mesh&& b) noexcept; //move constructor (the one used when you call std::move)
-	Mesh(Mesh& cpy);
+	Mesh(const Mesh& cpy);
 	void draw();
 	~Mesh();
 

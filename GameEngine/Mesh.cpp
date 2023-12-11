@@ -107,7 +107,7 @@ Mesh::Mesh(Mesh&& b) noexcept :
 	b._indexs_buffer_id = 0;
 }
 
-Mesh::Mesh(Mesh& cpy) :
+Mesh::Mesh(const Mesh& cpy) :
 	Component(cpy.owner),
 	meshName(cpy.meshName),
 	_format(cpy._format),
@@ -124,8 +124,8 @@ Mesh::Mesh(Mesh& cpy) :
 	mFaceCenters(cpy.mFaceCenters),
 	mFaceNormals(cpy.mFaceNormals)
 {
-	cpy._vertex_buffer_id = 0;
-	cpy._indexs_buffer_id = 0;
+	const_cast<Mesh&>(cpy)._vertex_buffer_id = 0;
+	const_cast<Mesh&>(cpy)._indexs_buffer_id = 0;
 }
 
 void Mesh::draw() {

@@ -21,6 +21,7 @@ public:
 public:
 
 	Component(GameObject* gameObject) : owner(gameObject) {}
+	virtual ~Component() = default;
 
 	virtual void Update() = 0;
 	//virtual void Render() = 0;

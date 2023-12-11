@@ -69,16 +69,16 @@ Texture2D::Texture2D(Texture2D&& tex) noexcept :
 	tex._id_checker = 0;
 }
 
-Texture2D::Texture2D(Texture2D& other) :
-	Component(other.owner),
-	_id(other._id),
-	_id_checker(other._id_checker),
-	path(other.path),
-	width(other.width),
-	height(other.height)
+Texture2D::Texture2D(const Texture2D& cpy) :
+	Component(cpy.owner),
+	_id(cpy._id),
+	_id_checker(cpy._id_checker),
+	path(cpy.path),
+	width(cpy.width),
+	height(cpy.height)
 {
-	other._id = 0;
-	other._id_checker = 0;
+	const_cast<Texture2D&>(cpy)._id = 0;
+	const_cast<Texture2D&>(cpy)._id_checker = 0;
 }
 
 Texture2D::~Texture2D() {
