@@ -53,7 +53,7 @@ public:
 	Mesh(GameObject* owner) : Component(owner), _format(Formats::F_V3T2), _numVerts(0), _numIndexs(0), _numTexCoords(0), _numNormals(0), _numFaces(0) {
 	}
 
-	Mesh(GameObject* owner, const MeshInfo& meshinfo);
+	Mesh(GameObject* owner, const MeshInfo& meshinfo, Formats format);
 
 	Mesh(GameObject* owner, Formats format, const void* vertex_data, unsigned int numVerts,
 		const unsigned int* indexs_data = nullptr, unsigned int numIndexs = 0,

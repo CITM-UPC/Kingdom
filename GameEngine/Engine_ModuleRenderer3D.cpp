@@ -277,7 +277,7 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 		Texture2D textureToPush(gameObjectList.back().get(), texture_paths_vector.at(i));
 		gameObjectList.back().get()->AddComponent<Texture2D>(textureToPush);
 
-		Mesh meshToPush(gameObjectList.back().get(), meshInfo);
+		Mesh meshToPush(gameObjectList.back().get(), meshInfo, Mesh::Formats::F_V3T2);
 		gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
 
 		gameObjectList.back().get()->GetComponent<Mesh>()->setName(fileName);
@@ -292,7 +292,7 @@ void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
 	}
 }
 
-void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
+void Engine_ModuleRenderer3D::addGameObject(Primitive* shape)
 {
 	std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
@@ -307,7 +307,7 @@ void Engine_ModuleRenderer3D::addGameObject(Primitive * shape)
 	gameObjectList.push_back(std::move(gameObjectToAdd));
 
 	MeshInfo meshInfo(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
-	Mesh meshToPush(gameObjectList.back().get(), meshInfo);
+	Mesh meshToPush(gameObjectList.back().get(), meshInfo, Mesh::Formats::F_V3);
 
 	gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
 	gameObjectList.back().get()->GetComponent<Mesh>()->setName(meshName);

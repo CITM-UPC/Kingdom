@@ -47,9 +47,9 @@ Mesh::Mesh(GameObject* owner, Formats format, const void* vertex_data, unsigned 
 	}
 }
 
-Mesh::Mesh(GameObject* owner, const MeshInfo& meshinfo) :
+Mesh::Mesh(GameObject* owner, const MeshInfo& meshinfo, Formats format) :
 	Component(owner),
-	_format(Formats::F_V3T2),
+	_format(format),
 	_numVerts(meshinfo._numVerts),
 	_numIndexs(meshinfo._numIndexs),
 	_numNormals(meshinfo._numNormals),
