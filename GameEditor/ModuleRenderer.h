@@ -29,5 +29,5 @@ public:
 
 private:
 
-	double camSpeed = 1.0;
+	double camSpeed = 0.05;
 };

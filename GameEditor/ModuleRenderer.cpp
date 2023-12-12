@@ -21,6 +21,8 @@ bool ModuleRenderer::Init()
 	ret = App->gEngine->renderer3D->Init();
 	vsync = VSYNC;
 
+	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(-30, vec3(0, 1, 0), Transform::Space::GLOBAL);
+	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(25, vec3(1, 0, 0));
 	FocusCamera();
 
 	return ret;
@@ -74,7 +76,7 @@ void ModuleRenderer::DoCameraInput()
 		keysInputFPS();
 		mouseInputFPS();
 	}
-	if (App->input->GetKey(SDL_SCANCODE_LALT))
+	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
 	{
 		if (App->input->GetMouseButton(SDL_BUTTON_LEFT))
 		{
@@ -94,7 +96,7 @@ void ModuleRenderer::DoCameraInput()
 void ModuleRenderer::keysInputFPS()
 {
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN) { camSpeed = 0.2; }
-	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) { camSpeed = 0.1; }
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) { camSpeed = 0.05; }
 
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 	{
@@ -123,26 +125,26 @@ void ModuleRenderer::keysInputFPS()
 }
 void ModuleRenderer::mouseInputFPS()
 {
-	float sensitivity = 0.1;
+	double sensitivity = 0.05;
 
-	int dx = App->input->GetMouseXMotion();
-	int dy = -App->input->GetMouseYMotion();
+	int dx = -App->input->GetMouseXMotion();
+	int dy = App->input->GetMouseYMotion();
 
-	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(glm::vec3(0, dx * sensitivity, 0), Transform::Space::GLOBAL);
-	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(glm::vec3(dy * sensitivity, 0, 0));
+	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(dx * sensitivity, glm::vec3(0, 1, 0), Transform::Space::GLOBAL);
+	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(dy * sensitivity, glm::vec3(1, 0, 0));
 }
 
 void ModuleRenderer::mouseCamOrbit()
 {
-	float sensitivity = 0.2;
+	double sensitivity = 0.1;
 
-	int dx = App->input->GetMouseXMotion();
-	int dy = -App->input->GetMouseYMotion();
+	int dx = -App->input->GetMouseXMotion();
+	int dy = App->input->GetMouseYMotion();
 
 	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(App->gEngine->cameraGO.GetComponent<Camera>()->lookAtPos);
 
-	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(vec3(0, dx * sensitivity, 0), Transform::Space::GLOBAL);
-	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(vec3(dy * sensitivity, 0, 0));
+	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(dx * sensitivity, vec3(0, 1, 0), Transform::Space::GLOBAL);
+	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(dy * sensitivity, vec3(1, 0, 0));
 
 	vec3 finalPos = App->gEngine->cameraGO.GetComponent<Transform>()->position() - (App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->camOffset);
 	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(finalPos);

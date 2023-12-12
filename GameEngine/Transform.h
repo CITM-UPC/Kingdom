@@ -16,16 +16,16 @@ public:
 	~Transform();
 
 	//Moves the object to 'position'.
-	void MoveTo(vec3 position, Space referenceFrame = Space::GLOBAL);
+	void MoveTo(vec3 position);
 
 	//Moves the object in 'displacement' increments.
 	void Move(vec3 displacement, Space referenceFrame = Space::LOCAL);
 
 	//Rotates the object for its rotation to be the one given by 'axis'.
-	void RotateTo(vec3f axis);
+	void RotateTo(double angle, vec3 axis);
 
 	//Rotates the object in 'axis' increments.
-	void Rotate(vec3 axis, Space referenceFrame = Space::LOCAL);
+	void Rotate(double angle, vec3 axis, Space referenceFrame = Space::LOCAL);
 
 	void Update() override;
 
@@ -47,18 +47,9 @@ public:
 	};
 
 public:
-	//vec3 position;
-	vec3 rotation;
-	vec3 scale;
-
-	//vec3 forward;
-	//vec3 right;
-	//vec3 up;
-
-	//glm::mat3x3 referenceFrameMat;
 
 	inline const mat4& transform() const { return _transformationMatrix; }
-	inline vec3& position() { return _position; }
+	inline const vec3& position() const { return _position; }
 	inline const vec3& pos() const { return _position; }
 
 	inline const vec3& right() const { return _right; }
