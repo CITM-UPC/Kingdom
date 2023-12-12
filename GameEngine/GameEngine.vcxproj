@@ -187,6 +187,7 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Cone.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="Engine_Globals.h" />

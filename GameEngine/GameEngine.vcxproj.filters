@@ -107,5 +107,8 @@
     <ClInclude Include="MeshInfo.h">
       <Filter>Tools</Filter>
     </ClInclude>
+    <ClInclude Include="Cone.h">
+      <Filter>Primitives</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
