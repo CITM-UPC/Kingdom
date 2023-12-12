@@ -57,6 +57,9 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Engine_ModuleScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -109,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="Cone.h">
       <Filter>Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine_ModuleScene.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,9 +4,11 @@ GameEngine::GameEngine()
 {
 	//input = new ModuleInput(this);
 	renderer3D = new Engine_ModuleRenderer3D(this);
+	scene = new Engine_ModuleScene(this);
 
 	//AddModule(input);
 	AddModule(renderer3D);
+	AddModule(scene);
 
 	cameraGO.AddComponent(Component::Type::CAMERA);
 }

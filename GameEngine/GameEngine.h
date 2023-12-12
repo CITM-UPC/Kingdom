@@ -5,6 +5,7 @@
 #include "Engine_Module.h"
 //#include "ModuleInput.h"
 #include "Engine_ModuleRenderer3D.h"
+#include "Engine_ModuleScene.h"
 //#include "ModuleAudio.h"
 #include <IL/il.h>
 
@@ -15,6 +16,7 @@ class GameEngine
 public:
 	//ModuleInput* input;
 	Engine_ModuleRenderer3D* renderer3D;
+	Engine_ModuleScene* scene;
 	//ModuleAudio* audio;
 
 	GameObject cameraGO;
