@@ -8,6 +8,7 @@
 #include "Engine_Globals.h"
 #include "Graphic.h"
 #include "Texture2D.h"
+#include "MeshInfo.h"
 
 class Mesh : public Graphic, public Component
 {
@@ -20,6 +21,16 @@ public:
 
 	bool usingTexture = true;
 	Texture2D* texture = nullptr;
+
+	bool drawVertexNormals = false;
+	bool drawFaceNormals = false;
+
+	bool useChecker = false;
+
+	std::vector<vec3f> mVertices;
+	std::vector<vec3f> mNormals;
+	std::vector<vec3f> mFaceCenters;
+	std::vector<vec3f> mFaceNormals;
 
 private:
 
@@ -39,19 +50,12 @@ private:
 	const unsigned int _numFaces;
 
 public:
-	Mesh(GameObject& owner) : Component(owner), _format(Formats::F_V3), _numVerts(0), _numIndexs(0), _numTexCoords(0), _numNormals(0), _numFaces(0) {
+	Mesh(GameObject* owner) : Component(owner), _format(Formats::F_V3T2), _numVerts(0), _numIndexs(0), _numTexCoords(0), _numNormals(0), _numFaces(0) {
 	}
 
-	bool drawVertexNormals = false;
-	bool drawFaceNormals = false;
+	Mesh(GameObject* owner, const MeshInfo& meshinfo, Formats format);
 
-	bool useChecker = false;
-
-	std::vector<vec3f> mVertices;
-	std::vector<vec3f> mNormals;
-	std::vector<vec3f> mFaceCenters;
-	std::vector<vec3f> mFaceNormals;
-	Mesh(GameObject& owner, Formats format, const void* vertex_data, unsigned int numVerts,
+	Mesh(GameObject* owner, Formats format, const void* vertex_data, unsigned int numVerts,
 		const unsigned int* indexs_data = nullptr, unsigned int numIndexs = 0,
 		const unsigned int numTexCoords = 0, unsigned int numNormals = 0, unsigned int numFaces = 0);
 
@@ -82,4 +86,5 @@ public:
 private:
 
 	Mesh& operator=(const Mesh&) = delete;
+
 };

@@ -13,13 +13,10 @@
 #include <sstream>
 #include <string>
 
-ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
-{
-}
+ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled) {}
 
 // Destructor
-ModuleUI::~ModuleUI()
-{}
+ModuleUI::~ModuleUI() {}
 
 void OsOpenInShell(const char* path)
 {
@@ -53,13 +50,13 @@ bool ModuleUI::Init()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->gEngine->renderer3D->context);
 	ImGui_ImplOpenGL3_Init();
 
-	std::ifstream file("../LICENSE"); // Open the file
+	std::ifstream file("../LICENSE");
 	std::string line;
-	if (file.is_open()) { // Check if the file is open
-		while (std::getline(file, line)) { // Read the file line by line
-			aboutContent += line + "\n"; // Append each line to the string
+	if (file.is_open()) {
+		while (std::getline(file, line)) {
+			aboutContent += line + "\n";
 		}
-		file.close(); // Close the file
+		file.close();
 	}
 	else {
 		LOG("Unable to open LICENSE file.");
@@ -132,22 +129,21 @@ void ModuleUI::RenderUI()
 vec3 ModuleUI::GetSelectedObjectPos()
 {
 	if (gameObjSelected != nullptr)
-		return gameObjSelected->GetComponent<Transform>()->position;
+		return gameObjSelected->GetComponent<Transform>()->position();
+
+	return vec3(0, 0, 0);
 }
 
 void ModuleUI::SetSelectedObjectTexture(string filePath)
 {
 	if (gameObjSelected != nullptr) {
-
 		if (gameObjSelected->GetComponent<Texture2D>() != nullptr)
 		{
 			gameObjSelected->RemoveComponent(Component::Type::TEXTURE2D);
 		}
 
-		auto texture_ptr = std::make_shared<Texture2D>(*gameObjSelected, filePath);
-		texture_ptr->path = filePath;
-
-		gameObjSelected->AddComponent(texture_ptr);
+		Texture2D textureToPush(gameObjSelected, filePath);
+		gameObjSelected->AddComponent(textureToPush);
 
 		if (gameObjSelected->GetComponent<Mesh>()->texture)
 		{
@@ -261,7 +257,8 @@ void ModuleUI::FPSGraphWindow()
 void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
-	for (auto& gameObject : App->gEngine->renderer3D->gameObjectList) {
+	for (const auto& gameObjectPtr : App->gEngine->renderer3D->gameObjectList) {
+		auto& gameObject = *gameObjectPtr;
 		if (ImGui::MenuItem(gameObject.name.c_str())) {
 			gameObjSelected = &gameObject;
 		}
@@ -284,7 +281,7 @@ void ModuleUI::InspectorWindow()
 			ImGui::SetNextItemWidth(100.0f);
 			if (ImGui::BeginCombo("Layer", "Default", ImGuiComboFlags_HeightSmall)) { ImGui::EndCombo(); }
 
-			for (auto& component : gameObjSelected->GetComponents()) {
+			for (auto& component : *gameObjSelected->GetComponents()) {
 				if (component.get()->getType() == Component::Type::TRANSFORM) {
 					Transform* transform = dynamic_cast<Transform*>(component.get());
 					if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_None))
@@ -301,21 +298,21 @@ void ModuleUI::InspectorWindow()
 
 							ImGui::TableSetColumnIndex(1);
 							ImGui::Text("X");
-							ImGui::Text(std::to_string(transform->position.x).c_str());
-							ImGui::Text(std::to_string(transform->rotation.x).c_str());
-							ImGui::Text(std::to_string(transform->scale.x).c_str());
+							ImGui::Text(std::to_string(transform->position().x).c_str());
+							//ImGui::Text(std::to_string(transform->rotation.x).c_str());	//PENDING TO IMPLEMENT AFTER TRANSFORM REWORK
+							//ImGui::Text(std::to_string(transform->scale.x).c_str());		//PENDING TO IMPLEMENT AFTER TRANSFORM REWORK
 
 							ImGui::TableSetColumnIndex(2);
 							ImGui::Text("Y");
-							ImGui::Text(std::to_string(transform->position.y).c_str());
-							ImGui::Text(std::to_string(transform->rotation.y).c_str());
-							ImGui::Text(std::to_string(transform->scale.y).c_str());
+							ImGui::Text(std::to_string(transform->position().y).c_str());
+							//ImGui::Text(std::to_string(transform->rotation.y).c_str());	//PENDING TO IMPLEMENT AFTER TRANSFORM REWORK
+							//ImGui::Text(std::to_string(transform->scale.y).c_str());		//PENDING TO IMPLEMENT AFTER TRANSFORM REWORK
 
 							ImGui::TableSetColumnIndex(3);
 							ImGui::Text("Z");
-							ImGui::Text(std::to_string(transform->position.z).c_str());
-							ImGui::Text(std::to_string(transform->rotation.z).c_str());
-							ImGui::Text(std::to_string(transform->scale.z).c_str());
+							ImGui::Text(std::to_string(transform->position().z).c_str());
+							//ImGui::Text(std::to_string(transform->rotation.z).c_str());	//PENDING TO IMPLEMENT AFTER TRANSFORM REWORK
+							//ImGui::Text(std::to_string(transform->scale.z).c_str());		//PENDING TO IMPLEMENT AFTER TRANSFORM REWORK
 
 							ImGui::EndTable();
 						}
@@ -348,7 +345,7 @@ void ModuleUI::InspectorWindow()
 						if (ImGui::IsItemHovered()) {
 							ImGui::SetTooltip("Use Texture must be checked in order to see the checker texture.");
 						}
-            if (mesh->getName().find("Cube") == std::string::npos && mesh->getName().find("Pyramid") == std::string::npos)
+						if (mesh->getName().find("Cube") == std::string::npos && mesh->getName().find("Pyramid") == std::string::npos)
 						{
 							ImGui::Checkbox("Draw vertex normals", &mesh->drawVertexNormals);
 							ImGui::Checkbox("Draw face normals", &mesh->drawFaceNormals);
@@ -553,21 +550,22 @@ void ModuleUI::OptionsWindow()
 void ModuleUI::CamDebugWindow()
 {
 	ImGui::Begin("Cam Debug", &camDebug);
-	ImGui::Text("Camera Position x: %f", App->gEngine->cameraGO.GetComponent<Transform>()->position.x);
-	ImGui::Text("Camera Position y: %f", App->gEngine->cameraGO.GetComponent<Transform>()->position.y);
-	ImGui::Text("Camera Position z: %f", App->gEngine->cameraGO.GetComponent<Transform>()->position.z);
+	ImGui::Text("Camera Position x: %f", App->gEngine->cameraGO.GetComponent<Transform>()->position().x);
+	ImGui::Text("Camera Position y: %f", App->gEngine->cameraGO.GetComponent<Transform>()->position().y);
+	ImGui::Text("Camera Position z: %f", App->gEngine->cameraGO.GetComponent<Transform>()->position().z);
 	ImGui::Separator();
 	ImGui::Text("LookAt Pos x: %f", App->gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.x);
 	ImGui::Text("LookAt Pos y: %f", App->gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.y);
 	ImGui::Text("LookAt Pos z: %f", App->gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.z);
 	ImGui::Separator();
-	ImGui::Text("Forward: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->forward.x, App->gEngine->cameraGO.GetComponent<Transform>()->forward.y, App->gEngine->cameraGO.GetComponent<Transform>()->forward.z);
-	ImGui::Text("Right: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->right.x, App->gEngine->cameraGO.GetComponent<Transform>()->right.y, App->gEngine->cameraGO.GetComponent<Transform>()->right.z);
-	ImGui::Text("Up: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->up.x, App->gEngine->cameraGO.GetComponent<Transform>()->up.y, App->gEngine->cameraGO.GetComponent<Transform>()->up.z);
+	ImGui::Text("Forward: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->forward().x, App->gEngine->cameraGO.GetComponent<Transform>()->forward().y, App->gEngine->cameraGO.GetComponent<Transform>()->forward().z);
+	ImGui::Text("Right: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->right().x, App->gEngine->cameraGO.GetComponent<Transform>()->right().y, App->gEngine->cameraGO.GetComponent<Transform>()->right().z);
+	ImGui::Text("Up: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->up().x, App->gEngine->cameraGO.GetComponent<Transform>()->up().y, App->gEngine->cameraGO.GetComponent<Transform>()->up().z);
 	ImGui::Separator();
-	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[0][0], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[0][1], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[0][2]);
-	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[1][0], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[1][1], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[1][2]);
-	ImGui::Text("RotMat: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[2][0], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[2][1], App->gEngine->cameraGO.GetComponent<Transform>()->referenceFrameMat[2][2]);
+	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[0][0], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[0][1], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[0][2], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[0][3]);
+	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[1][0], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[1][1], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[1][2], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[1][3]);
+	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[2][0], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[2][1], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[2][2], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[2][3]);
+	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[3][0], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[3][1], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[3][2], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[3][3]);
 	ImGui::End();
 }
 

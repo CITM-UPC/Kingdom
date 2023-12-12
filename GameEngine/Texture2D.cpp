@@ -6,11 +6,12 @@
 
 using namespace std;
 
-Texture2D::Texture2D(GameObject& owner, const std::string& path) : Component(owner) {
+Texture2D::Texture2D(GameObject* owner, const std::string& path) : Component(owner) {
 	//load image data using devil
 	auto img = ilGenImage();
 	ilBindImage(img);
 	ilLoadImage(path.c_str());
+	this->path = path;
 	auto width = ilGetInteger(IL_IMAGE_WIDTH);
 	this->width = static_cast<int>(width);
 	auto height = ilGetInteger(IL_IMAGE_HEIGHT);
@@ -56,11 +57,33 @@ Texture2D::Texture2D(GameObject& owner, const std::string& path) : Component(own
 		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
 }
 
-Texture2D::Texture2D(Texture2D&& tex) noexcept : Component(tex.gameObject), _id(tex._id) {
+Texture2D::Texture2D(Texture2D&& tex) noexcept :
+	Component(tex.owner),
+	_id(tex._id),
+	_id_checker(tex._id_checker),
+	path(tex.path),
+	width(tex.width),
+	height(tex.height)
+{
 	tex._id = 0;
+	tex._id_checker = 0;
+}
+
+Texture2D::Texture2D(const Texture2D& cpy) :
+	Component(cpy.owner),
+	_id(cpy._id),
+	_id_checker(cpy._id_checker),
+	path(cpy.path),
+	width(cpy.width),
+	height(cpy.height)
+{
+	const_cast<Texture2D&>(cpy)._id = 0;
+	const_cast<Texture2D&>(cpy)._id_checker = 0;
 }
 
 Texture2D::~Texture2D() {
+	if (_id_checker) glDeleteTextures(1, &_id_checker);
+
 	if (_id) glDeleteTextures(1, &_id);
 }
 

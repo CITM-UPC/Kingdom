@@ -72,5 +72,5 @@ private:
 
 	// Hardware information
 	InfrastructureInfo info;
-	GameObject* gameObjSelected;
+	GameObject* gameObjSelected = nullptr;
 };

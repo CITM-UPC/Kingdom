@@ -21,7 +21,6 @@ protected:
 
 	std::string type;
 
-
 public:
 	std::vector<Mesh::V3>* getVertexData() { return &vertex_data; }
 	std::vector<unsigned int>* getIndexData() { return &index_data; }

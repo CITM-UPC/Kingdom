@@ -4,7 +4,7 @@
 #include <string>
 
 #include "GameObject.h"
-#include "Mesh.h"
+#include "MeshInfo.h"
 #include "Texture2D.h"
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
@@ -14,9 +14,9 @@ class MeshLoader
 {
 public:
 
-	static std::vector<std::shared_ptr<Mesh>> loadMeshFromFile(GameObject& parentGO, const std::string& path)
+	static std::vector<MeshInfo> loadMeshFromFile(const std::string& path)
 	{
-		std::vector<std::shared_ptr<Mesh>> mesh_ptrs;
+		std::vector<MeshInfo> meshInfoVec;
 
 		auto scene = aiImportFile(path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
 		for (size_t m = 0; m < scene->mNumMeshes; ++m) {
@@ -44,17 +44,24 @@ public:
 				index_data.push_back(faces[f].mIndices[2]);
 			}
 
-			auto mesh_ptr = std::make_shared<Mesh>(parentGO, Mesh::Formats::F_V3T2, vertex_data.data(), vertex_data.size(), index_data.data(), index_data.size(), numTexCoords, numNormals, numFaces);
+			Mesh::V3T2* vertex_data_ptr = new Mesh::V3T2[vertex_data.size()];
+			std::copy(vertex_data.begin(), vertex_data.end(), vertex_data_ptr);
+
+			unsigned int* index_data_ptr = new unsigned int[index_data.size()];
+			std::copy(index_data.begin(), index_data.end(), index_data_ptr);
+
+			auto meshInfo_ptr = MeshInfo(vertex_data_ptr, vertex_data.size(), index_data_ptr, index_data.size(), numTexCoords, numNormals, numFaces);
+
 			for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
 				aiVector3D normal = mesh->mNormals[i];
 				vec3f glmNormal(normal.x, normal.y, normal.z);
-				mesh_ptr->mNormals.push_back(glmNormal);
+				meshInfo_ptr.mNormals.push_back(glmNormal);
 			}
 
 			for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
 				aiVector3D vert = mesh->mVertices[i];
 				vec3f glmNormal(vert.x, vert.y, vert.z);
-				mesh_ptr->mVertices.push_back(glmNormal);
+				meshInfo_ptr.mVertices.push_back(glmNormal);
 			}
 
 			for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
@@ -66,23 +73,23 @@ public:
 
 				vec3f faceNormal = glm::cross(v1 - v0, v2 - v0);
 				faceNormal = glm::normalize(faceNormal);
-				mesh_ptr->mFaceNormals.push_back(faceNormal);
+				meshInfo_ptr.mFaceNormals.push_back(faceNormal);
 
 				vec3f faceCenter = (v0 + v1 + v2) / 3.0f;
-				mesh_ptr->mFaceCenters.push_back(faceCenter);
+				meshInfo_ptr.mFaceCenters.push_back(faceCenter);
 			}
 
-			mesh_ptrs.push_back(mesh_ptr);
+			meshInfoVec.push_back(meshInfo_ptr);
 		}
 
 		aiReleaseImport(scene);
 
-		return mesh_ptrs;
+		return meshInfoVec;
 	}
 
-	static std::vector<std::shared_ptr<Texture2D>> loadTextureFromFile(GameObject& parentGO, const std::string& path)
+	static std::vector<std::string> loadTextureFromFile(const std::string& path)
 	{
-		std::vector<std::shared_ptr<Texture2D>> texture_ptrs;
+		std::vector<std::string> texture_paths;
 
 		auto scene = aiImportFile(path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
 		for (size_t m = 0; m < scene->mNumMeshes; ++m) {
@@ -97,23 +104,11 @@ public:
 			std::string folder_path = (slash_pos != std::string::npos) ? path.substr(0, slash_pos + 1) : "./";
 			std::string texPath = folder_path + aiScene::GetShortFilename(aiPath.C_Str());
 
-			auto texture_ptr = std::make_shared<Texture2D>(parentGO, texPath);
-			texture_ptr->path = path;
-
-			if (scene->HasTextures()) {
-				texture_ptr->height = scene->mTextures[0]->mHeight;
-				texture_ptr->width = scene->mTextures[0]->mWidth;
-			}
-			else {
-				texture_ptr->height = 1024; // assumption
-				texture_ptr->width = 1024;
-			}
-
-			texture_ptrs.push_back(texture_ptr);
+			texture_paths.push_back(texPath);
 		}
 
 		aiReleaseImport(scene);
 
-		return texture_ptrs;
+		return texture_paths;
 	}
 };

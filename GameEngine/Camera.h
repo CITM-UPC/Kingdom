@@ -6,14 +6,18 @@
 class Camera : public Component
 {
 public:
-	Camera(GameObject& owner);
+
+	Camera(GameObject* owner);
+	Camera(const Camera& other);
 	~Camera();
+
 	void Update() override;
 	Type getType() const override {
 		return Type::CAMERA;
 	}
 
 public:
+
 	double fov;
 	double aspectRatio;
 	double clippingPlaneViewNear;

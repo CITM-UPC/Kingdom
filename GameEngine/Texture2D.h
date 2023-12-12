@@ -13,16 +13,18 @@ private:
 	unsigned int _id_checker;
 
 public:
-	Texture2D(GameObject& owner) : Component(owner), _id(0), _id_checker(0) {}
-
 	Texture2D();
+	Texture2D(GameObject* owner) : Component(owner), _id(0), _id_checker(0) {}
+	Texture2D(GameObject* owner, const std::string& path);
 
-	explicit Texture2D(GameObject& owner, const std::string& path);
+	Texture2D(const Texture2D& cpy);
 	Texture2D(Texture2D&& tex) noexcept; //move constructor (the one used when you call std::move)
+
+	~Texture2D();
+
 	void bind() const;
 	void unbind() const;
 	void checker() const;
-	~Texture2D();
 
 	void Update() override;
 
@@ -35,6 +37,5 @@ public:
 
 private:
 
-	Texture2D(const Texture2D&);
 	Texture2D operator=(const Texture2D&) = delete;
 };
