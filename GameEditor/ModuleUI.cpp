@@ -257,14 +257,17 @@ void ModuleUI::FPSGraphWindow()
 void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
-	for (const auto& gameObjectPtr : App->gEngine->scene->gameObjectList) {
-		for (auto& child : gameObjectPtr.get()->childs)
+	for (const auto& gOparentPtr : App->gEngine->scene->gameObjectList)
+	{
+		if (ImGui::TreeNode(gOparentPtr->name.c_str()))
 		{
-			if (ImGui::MenuItem(gameObject.name.c_str()))
-		}
-		auto& gameObject = *gameObjectPtr;
-		if (ImGui::MenuItem(gameObject.name.c_str())) {
-			gameObjSelected = &gameObject;
+			for (auto& childPtr : gOparentPtr.get()->childs)
+			{
+				if (ImGui::MenuItem(childPtr->name.c_str()))
+				{
+					gameObjSelected = childPtr.get();
+				}
+			}
 		}
 	}
 	ImGui::EndMenu();

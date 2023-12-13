@@ -27,7 +27,7 @@ engine_status Engine_ModuleScene::PostUpdate()
 	{
 		for (auto& childs : vector.get()->childs)
 		{
-			vector->UpdateComponents();
+			childs->UpdateComponents();
 		}
 	}
 
@@ -61,6 +61,8 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 	auto meshInfo_vector = MeshLoader::loadMeshFromFile(filePath);
 	auto texture_paths_vector = MeshLoader::loadTextureFromFile(filePath);
 
+	std::string parentName;
+
 	int i = 0;
 	for (const auto& meshInfo : meshInfo_vector)
 	{
@@ -71,7 +73,10 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 
 		std::string meshName = fileName;
 		deleteSubstring(meshName, ".fbx");
-		int currentCopies = checkNameAvailability(meshName);
+
+		parentName = meshName;
+
+		int currentCopies = checkNameAvailability(meshName, gOparent.get());
 		if (currentCopies > 0) {
 			meshName.append("(" + std::to_string(currentCopies) + ")");
 		}
@@ -95,6 +100,11 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 			+ std::to_string(meshInfo._numTexCoords) + " tex coords, and "
 			+ std::to_string(meshInfo._numVerts) + " vertexs.");
 	}
+	int parentCopies = checkNameAvailability(parentName);
+	if (parentCopies > 0) {
+		parentName.append("(" + std::to_string(parentCopies) + ")");
+	}
+	gOparent.get()->name = parentName;
 
 	gameObjectList.push_back(std::move(gOparent));
 }

@@ -55,6 +55,15 @@ public:
 		}
 	}
 
+	int checkNameAvailability(std::string name, GameObject* parent) {
+		int count = 0;
+
+		for (const auto& vector : parent->childs) {
+			detectAndIncrement(vector->name, name, count);
+		}
+
+		return count;
+	}
 	int checkNameAvailability(std::string name) {
 		int count = 0;
 
@@ -64,6 +73,7 @@ public:
 
 		return count;
 	}
+
 public:
 	std::list<std::unique_ptr<GameObject>> gameObjectList;
 
