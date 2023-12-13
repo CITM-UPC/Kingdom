@@ -258,6 +258,10 @@ void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
 	for (const auto& gameObjectPtr : App->gEngine->scene->gameObjectList) {
+		for (auto& child : gameObjectPtr.get()->childs)
+		{
+			if (ImGui::MenuItem(gameObject.name.c_str()))
+		}
 		auto& gameObject = *gameObjectPtr;
 		if (ImGui::MenuItem(gameObject.name.c_str())) {
 			gameObjSelected = &gameObject;

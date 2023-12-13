@@ -23,8 +23,12 @@ engine_status Engine_ModuleScene::Update() { return ENGINE_UPDATE_CONTINUE; }
 
 engine_status Engine_ModuleScene::PostUpdate()
 {
-	for (auto& vector : gameObjectList) {
-		vector->UpdateComponents();
+	for (auto& vector : gameObjectList)
+	{
+		for (auto& childs : vector.get()->childs)
+		{
+			vector->UpdateComponents();
+		}
 	}
 
 	return ENGINE_UPDATE_CONTINUE;
@@ -52,6 +56,8 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 {
 	gEngine->logHistory.push_back("[Engine] Add GameObject with path " + filePath);
 
+	std::unique_ptr<GameObject> gOparent = std::make_unique<GameObject>();
+
 	auto meshInfo_vector = MeshLoader::loadMeshFromFile(filePath);
 	auto texture_paths_vector = MeshLoader::loadTextureFromFile(filePath);
 
@@ -71,16 +77,16 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 		}
 		gameObjectToAdd->name = meshName;
 
-		gameObjectList.push_back(std::move(gameObjectToAdd));
+		gOparent->childs.push_back(std::move(gameObjectToAdd));
 
-		Texture2D textureToPush(gameObjectList.back().get(), texture_paths_vector.at(i));
-		gameObjectList.back().get()->AddComponent<Texture2D>(textureToPush);
+		Texture2D textureToPush(gOparent->childs.back().get(), texture_paths_vector.at(i));
+		gOparent->childs.back().get()->AddComponent<Texture2D>(textureToPush);
 
-		Mesh meshToPush(gameObjectList.back().get(), meshInfo, Mesh::Formats::F_V3T2);
-		gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
+		Mesh meshToPush(gOparent->childs.back().get(), meshInfo, Mesh::Formats::F_V3T2);
+		gOparent->childs.back().get()->AddComponent<Mesh>(meshToPush);
 
-		gameObjectList.back().get()->GetComponent<Mesh>()->setName(fileName);
-		gameObjectList.back().get()->GetComponent<Mesh>()->texture = gameObjectList.back().get()->GetComponent<Texture2D>();
+		gOparent->childs.back().get()->GetComponent<Mesh>()->setName(fileName);
+		gOparent->childs.back().get()->GetComponent<Mesh>()->texture = gOparent->childs.back().get()->GetComponent<Texture2D>();
 		i++;
 
 		gEngine->logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(meshInfo._numFaces) + " faces, "
@@ -89,6 +95,8 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 			+ std::to_string(meshInfo._numTexCoords) + " tex coords, and "
 			+ std::to_string(meshInfo._numVerts) + " vertexs.");
 	}
+
+	gameObjectList.push_back(std::move(gOparent));
 }
 
 void Engine_ModuleScene::addGameObject(Primitive * shape)

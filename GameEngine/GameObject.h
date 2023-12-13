@@ -18,6 +18,9 @@ public:
 	bool isActive = true;
 	std::list<std::unique_ptr<Component>> components;
 
+	std::list<std::unique_ptr<GameObject>> childs;
+
+	GameObject* parent;
 public:
 
 	GameObject();
