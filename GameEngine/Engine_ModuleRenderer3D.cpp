@@ -116,7 +116,6 @@ bool Engine_ModuleRenderer3D::Init()
 	OnResize(screen_width, screen_height);
 
 	addGameObject("Assets/BakerHouse.fbx");
-	gameObjectList.back()->GetComponent<Transform>()->Move(vec3(-4, 0, 0), Transform::Space::GLOBAL);
 
 	return ret;
 }
@@ -150,8 +149,6 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 
 engine_status Engine_ModuleRenderer3D::Update()
 {
-	gameObjectList.front()->GetComponent<Transform>()->Rotate(0.2, vec3(1, 0, 0), Transform::Space::GLOBAL);
-	gameObjectList.back()->GetComponent<Transform>()->Rotate(0.1, vec3(0, 1, 0), Transform::Space::GLOBAL);
 	return ENGINE_UPDATE_CONTINUE;
 }
 

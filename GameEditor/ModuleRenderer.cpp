@@ -41,6 +41,46 @@ update_status ModuleRenderer::Update()
 	App->gEngine->renderer3D->Update();
 	DoCameraInput();
 
+	App->gEngine->renderer3D->gameObjectList.front()->GetComponent<Transform>()->Rotate(0.2, vec3(1, 0, 0), Transform::Space::GLOBAL);
+	//App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->Rotate(0.1, vec3(0, 1, 0), Transform::Space::GLOBAL);
+
+
+	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
+	{
+		App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->Move(vec3(0, 0, 0.1), Transform::Space::GLOBAL);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT)
+	{
+		App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->Move(vec3(0, 0, -0.1), Transform::Space::GLOBAL);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_REPEAT)
+	{
+		App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->Move(vec3(0.1, 0, 0), Transform::Space::GLOBAL);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_REPEAT)
+	{
+		App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->Move(vec3(-0.1, 0, 0), Transform::Space::GLOBAL);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_U) == KEY_REPEAT)
+	{
+		App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->Move(vec3(0, 0.1, 0), Transform::Space::GLOBAL);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_REPEAT)
+	{
+		App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->Move(vec3(0, -0.1, 0), Transform::Space::GLOBAL);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
+	{
+		double sensitivity = 0.5;
+
+		int dx = -App->input->GetMouseXMotion();
+		int dy = App->input->GetMouseYMotion();
+
+		App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->Rotate(dx * sensitivity, glm::vec3(0, 1, 0), Transform::Space::GLOBAL);
+		App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->Rotate(dy * sensitivity, glm::vec3(1, 0, 0));
+	}
+
 	return UPDATE_CONTINUE;
 }
 
