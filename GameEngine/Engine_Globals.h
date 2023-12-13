@@ -6,7 +6,7 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
-#define ENGINE_LOG(format, ...) engineLog(__FILE__, __LINE__, format, __VA_ARGS__);
+#define ENGINE_LOG(format, ...) engineLog(__FILE__, __LINE__, format __VA_OPT__(, __VA_ARGS__))
 
 void engineLog(const char file[], int line, const char* format, ...);
 

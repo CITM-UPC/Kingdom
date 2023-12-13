@@ -116,6 +116,7 @@ bool Engine_ModuleRenderer3D::Init()
 	OnResize(screen_width, screen_height);
 
 	addGameObject("Assets/BakerHouse.fbx");
+	gameObjectList.back()->GetComponent<Transform>()->Move(vec3(-2, 0, 0), Transform::Space::GLOBAL);
 
 	return ret;
 }
