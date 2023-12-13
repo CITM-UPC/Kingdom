@@ -116,6 +116,7 @@ bool Engine_ModuleRenderer3D::Init()
 	OnResize(screen_width, screen_height);
 
 	addGameObject("Assets/BakerHouse.fbx");
+	gameObjectList.back()->GetComponent<Transform>()->Move(vec3(-4, 0, 0), Transform::Space::GLOBAL);
 
 	return ret;
 }
@@ -149,6 +150,8 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 
 engine_status Engine_ModuleRenderer3D::Update()
 {
+	gameObjectList.front()->GetComponent<Transform>()->Rotate(0.2, vec3(1, 0, 0), Transform::Space::GLOBAL);
+	gameObjectList.back()->GetComponent<Transform>()->Rotate(0.1, vec3(0, 1, 0), Transform::Space::GLOBAL);
 	return ENGINE_UPDATE_CONTINUE;
 }
 
@@ -171,7 +174,7 @@ engine_status Engine_ModuleRenderer3D::PostUpdate()
 // Called before quitting
 bool Engine_ModuleRenderer3D::CleanUp()
 {
-	ENGINE_LOG("Destroying 3D Renderer");
+	//ENGINE_LOG("Destroying 3D Renderer");
 
 	SDL_GL_DeleteContext(context);
 	targetWindow = nullptr;

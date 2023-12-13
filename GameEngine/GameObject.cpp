@@ -78,45 +78,11 @@ void GameObject::RemoveComponent(Component::Type component)
 //	return nullptr;
 //}
 
-void GameObject::UpdateComponents()
-{
-	for (auto& comp : components)
-	{
-		comp->Update();
-
-		drawAABBox(computeAABB());
-	}
-}
-
-AABBox GameObject::computeAABB()
-{
-	AABBox aabbox;
-
-	Mesh* meshComponent = GetComponent<Mesh>();
-
-	if (meshComponent != nullptr) aabbox = meshComponent->aabb;
-
-	//To implement with tree structure
-	/*
-	else if (children().empty())
-	{
-		aabbox.min = vec3(0);
-		aabbox.max = vec3(0);
-	}
-
-	for (const auto& child : children())
-	{
-		const auto child_aabb = (child.transform() * child.aabb()).AABB();
-		aabbox.min = glm::min(aabbox.min, child_aabb.min);
-		aabbox.max = glm::max(aabbox.max, child_aabb.max);
-	}
-	*/
-	return aabbox;
-}
-
 static inline void glVec3(const vec3& v) { glVertex3dv(&v.x); }
 
 static void drawAABBox(const AABBox& aabb) {
+	
+	//glColor3ub(255, 0, 0);
 	glLineWidth(2);
 	glBegin(GL_LINE_STRIP);
 
@@ -141,4 +107,45 @@ static void drawAABBox(const AABBox& aabb) {
 	glVec3(aabb.g());
 	glVec3(aabb.c());
 	glEnd();
+}
+
+void GameObject::UpdateComponents()
+{
+	for (auto& comp : components)
+	{
+		comp->Update();
+	}
+
+	drawAABBox(computeAABB());
+}
+
+AABBox GameObject::computeAABB()
+{
+	AABBox aabbox;
+
+	Mesh* meshComponent = GetComponent<Mesh>();
+
+	if (meshComponent != nullptr) aabbox = meshComponent->getAABB();
+	
+	const auto obBox = GetComponent<Transform>()->_transformationMatrix * aabbox;
+
+	aabbox.min = glm::min(aabbox.min, obBox.AABB().min);
+	aabbox.max = glm::max(aabbox.max, obBox.AABB().max);
+
+	//To implement with tree structure
+	/*
+	else if (children().empty())
+	{
+		aabbox.min = vec3(0);
+		aabbox.max = vec3(0);
+	}
+
+	for (const auto& child : children())
+	{
+		const auto child_aabb = (child.transform() * child.aabb()).AABB();
+		aabbox.min = glm::min(aabbox.min, child_aabb.min);
+		aabbox.max = glm::max(aabbox.max, child_aabb.max);
+	}
+	*/
+	return aabbox;
 }

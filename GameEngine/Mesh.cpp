@@ -70,22 +70,22 @@ Mesh::Mesh(GameObject* owner, const MeshInfo& meshinfo, Formats format) :
 	case Formats::F_V3:
 		glBufferData(GL_ARRAY_BUFFER, sizeof(V3) * meshinfo._numVerts, meshinfo._vertex_data, GL_STATIC_DRAW);
 		for (const auto& v : span((V3*)meshinfo._vertex_data, meshinfo._numVerts)) {
-			aabb.min = glm::min(aabb.min, vec3(v.v));
-			aabb.max = glm::max(aabb.max, vec3(v.v));
+			_aabb.min = glm::min(_aabb.min, vec3(v.v));
+			_aabb.max = glm::max(_aabb.max, vec3(v.v));
 		}
 		break;
 	case Formats::F_V3C4:
 		glBufferData(GL_ARRAY_BUFFER, sizeof(V3C4) * meshinfo._numVerts, meshinfo._vertex_data, GL_STATIC_DRAW);
 		for (const auto& v : span((V3C4*)meshinfo._vertex_data, meshinfo._numVerts)) {
-			aabb.min = glm::min(aabb.min, vec3(v.v));
-			aabb.max = glm::max(aabb.max, vec3(v.v));
+			_aabb.min = glm::min(_aabb.min, vec3(v.v));
+			_aabb.max = glm::max(_aabb.max, vec3(v.v));
 		}
 		break;
 	case Formats::F_V3T2:
 		glBufferData(GL_ARRAY_BUFFER, sizeof(V3T2) * meshinfo._numVerts, meshinfo._vertex_data, GL_STATIC_DRAW);
 		for (const auto& v : span((V3T2*)meshinfo._vertex_data, meshinfo._numVerts)) {
-			aabb.min = glm::min(aabb.min, vec3(v.v));
-			aabb.max = glm::max(aabb.max, vec3(v.v));
+			_aabb.min = glm::min(_aabb.min, vec3(v.v));
+			_aabb.max = glm::max(_aabb.max, vec3(v.v));
 		}
 		break;
 	}
@@ -116,7 +116,8 @@ Mesh::Mesh(Mesh&& b) noexcept :
 	mVertices(b.mVertices),
 	mNormals(b.mNormals),
 	mFaceCenters(b.mFaceCenters),
-	mFaceNormals(b.mFaceNormals)
+	mFaceNormals(b.mFaceNormals),
+	_aabb(b._aabb)
 {
 	b._vertex_buffer_id = 0;
 	b._indexs_buffer_id = 0;
@@ -137,7 +138,8 @@ Mesh::Mesh(const Mesh& cpy) :
 	mVertices(cpy.mVertices),
 	mNormals(cpy.mNormals),
 	mFaceCenters(cpy.mFaceCenters),
-	mFaceNormals(cpy.mFaceNormals)
+	mFaceNormals(cpy.mFaceNormals),
+	_aabb(cpy._aabb)
 {
 	const_cast<Mesh&>(cpy)._vertex_buffer_id = 0;
 	const_cast<Mesh&>(cpy)._indexs_buffer_id = 0;
@@ -257,6 +259,10 @@ const unsigned int Mesh::getNumNormals() {
 
 const unsigned int Mesh::getNumFaces() {
 	return _numFaces;
+}
+
+AABBox Mesh::getAABB(){
+	return _aabb;
 }
 
 void Mesh::Update()

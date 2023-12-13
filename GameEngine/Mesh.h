@@ -33,8 +33,6 @@ public:
 	std::vector<vec3f> mFaceCenters;
 	std::vector<vec3f> mFaceNormals;
 
-	AABBox aabb;
-
 private:
 
 	std::string meshName;
@@ -51,6 +49,8 @@ private:
 	const unsigned int _numNormals;
 
 	const unsigned int _numFaces;
+
+	AABBox _aabb;
 
 public:
 	Mesh(GameObject* owner) : Component(owner), _format(Formats::F_V3T2), _numVerts(0), _numIndexs(0), _numTexCoords(0), _numNormals(0), _numFaces(0) {
@@ -79,6 +79,8 @@ public:
 	const unsigned int getNumNormals();
 
 	const unsigned int getNumFaces();
+
+	AABBox getAABB();
 
 	void Update() override;
 
