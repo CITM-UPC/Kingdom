@@ -268,7 +268,9 @@ void ModuleUI::HierarchyWindow()
 					gameObjSelected = childPtr.get();
 				}
 			}
+			ImGui::TreePop();
 		}
+		ImGui::Separator();
 	}
 	ImGui::EndMenu();
 }
