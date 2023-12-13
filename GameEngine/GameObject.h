@@ -39,6 +39,8 @@ public:
 	void UpdateComponents();
 
 	//static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);
+
+	AABBox computeAABB();
 };
 
 template<typename T>

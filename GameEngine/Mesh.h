@@ -9,6 +9,7 @@
 #include "Graphic.h"
 #include "Texture2D.h"
 #include "MeshInfo.h"
+#include "BoundingBox.hpp"
 
 class Mesh : public Graphic, public Component
 {
@@ -31,6 +32,8 @@ public:
 	std::vector<vec3f> mNormals;
 	std::vector<vec3f> mFaceCenters;
 	std::vector<vec3f> mFaceNormals;
+
+	AABBox aabb;
 
 private:
 
