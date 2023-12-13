@@ -42,9 +42,9 @@ bool ModuleUI::Init()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;		// Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;		// Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// IF using Docking Branch
 	io.Fonts->AddFontFromFileTTF("Fonts/DroidSans.ttf", 14);
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->gEngine->renderer3D->context);
@@ -261,6 +261,7 @@ void ModuleUI::HierarchyWindow()
 	{
 		if (ImGui::TreeNode(gOparentPtr->name.c_str()))
 		{
+			gameObjSelected = gOparentPtr.get();
 			for (auto& childPtr : gOparentPtr.get()->childs)
 			{
 				if (ImGui::MenuItem(childPtr->name.c_str()))
