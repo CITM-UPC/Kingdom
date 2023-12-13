@@ -211,13 +211,13 @@ update_status ModuleUI::MainMenuBar()
 		}
 		if (ImGui::BeginMenu("GameObjects")) {
 			if (ImGui::BeginMenu("Create...")) {
-				if (ImGui::MenuItem("Create Empty")) { App->gEngine->renderer3D->addGameObject(); }
+				if (ImGui::MenuItem("Create Empty")) { App->gEngine->scene->addGameObject(); }
 				if (ImGui::MenuItem("Plane", "Not implemented")) {}
-				if (ImGui::MenuItem("Cube")) { Cube cube; App->gEngine->renderer3D->addGameObject(&cube); }
-				if (ImGui::MenuItem("Pyramid")) { Pyramid pyramid; App->gEngine->renderer3D->addGameObject(&pyramid); }
+				if (ImGui::MenuItem("Cube")) { Cube cube; App->gEngine->scene->addGameObject(&cube); }
+				if (ImGui::MenuItem("Pyramid")) { Pyramid pyramid; App->gEngine->scene->addGameObject(&pyramid); }
 				if (ImGui::MenuItem("Sphere", "Not implemented")) {}
 				if (ImGui::MenuItem("Cylinder", "Not implemented")) {}
-				if (ImGui::MenuItem("Cone")) { Cone cone(16); App->gEngine->renderer3D->addGameObject(&cone); }
+				if (ImGui::MenuItem("Cone")) { Cone cone(16); App->gEngine->scene->addGameObject(&cone); }
 				if (ImGui::MenuItem("Torus", "Not implemented")) {}
 				ImGui::EndMenu();
 			}
@@ -257,7 +257,7 @@ void ModuleUI::FPSGraphWindow()
 void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
-	for (const auto& gameObjectPtr : App->gEngine->renderer3D->gameObjectList) {
+	for (const auto& gameObjectPtr : App->gEngine->scene->gameObjectList) {
 		auto& gameObject = *gameObjectPtr;
 		if (ImGui::MenuItem(gameObject.name.c_str())) {
 			gameObjSelected = &gameObject;
@@ -345,7 +345,7 @@ void ModuleUI::InspectorWindow()
 						if (ImGui::IsItemHovered()) {
 							ImGui::SetTooltip("Use Texture must be checked in order to see the checker texture.");
 						}
-						if (mesh->getName().find("Cube") == std::string::npos && 
+						if (mesh->getName().find("Cube") == std::string::npos &&
 							mesh->getName().find("Pyramid") == std::string::npos &&
 							mesh->getName().find("Cone") == std::string::npos)
 						{

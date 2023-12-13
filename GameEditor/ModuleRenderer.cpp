@@ -19,6 +19,8 @@ bool ModuleRenderer::Init()
 	bool ret = true;
 
 	ret = App->gEngine->renderer3D->Init();
+	ret = App->gEngine->scene->Init();
+
 	vsync = VSYNC;
 
 	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(-30, vec3(0, 1, 0), Transform::Space::GLOBAL);
@@ -32,6 +34,7 @@ bool ModuleRenderer::Init()
 update_status ModuleRenderer::PreUpdate()
 {
 	App->gEngine->renderer3D->PreUpdate();
+	App->gEngine->scene->PreUpdate();
 
 	return UPDATE_CONTINUE;
 }
@@ -39,6 +42,7 @@ update_status ModuleRenderer::PreUpdate()
 update_status ModuleRenderer::Update()
 {
 	App->gEngine->renderer3D->Update();
+	App->gEngine->scene->Update();
 	DoCameraInput();
 
 	return UPDATE_CONTINUE;
@@ -50,6 +54,9 @@ update_status ModuleRenderer::PostUpdate()
 	App->gEngine->renderer3D->DrawGrid(100, 1, true);
 
 	App->gEngine->renderer3D->PostUpdate();
+
+	App->gEngine->scene->PostUpdate();
+
 	App->ui->RenderUI();
 
 	SDL_GL_SwapWindow(App->window->window);
@@ -62,6 +69,7 @@ bool ModuleRenderer::CleanUp()
 {
 	LOG("Destroying Renderer");
 
+	App->gEngine->scene->CleanUp();
 	App->gEngine->renderer3D->CleanUp();
 
 	return true;

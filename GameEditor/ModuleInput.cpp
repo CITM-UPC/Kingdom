@@ -117,7 +117,7 @@ update_status ModuleInput::PreUpdate()
 			if (filePath.substr(filePath.find_last_of(".") + 1) == "fbx") {
 				App->logHistory.push_back("[Editor] .fbx detected with path " + filePath);
 				LOG(".fbx file detected");
-				App->gEngine->renderer3D->addGameObject(filePath);
+				App->gEngine->scene->addGameObject(filePath);
 			}
 			// Check if the dropped file has the .png extension
 			if (filePath.substr(filePath.find_last_of(".") + 1) == "png") {

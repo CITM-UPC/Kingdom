@@ -19,7 +19,7 @@ Engine_ModuleRenderer3D::~Engine_ModuleRenderer3D() = default;
 // Called before render is available
 bool Engine_ModuleRenderer3D::Init()
 {
-	logHistory.push_back("[Engine] Creating 3D Renderer context");
+	gEngine->logHistory.push_back("[Engine] Creating 3D Renderer context");
 	ENGINE_LOG("Creating 3D Renderer context");
 	bool ret = true;
 
@@ -40,11 +40,11 @@ bool Engine_ModuleRenderer3D::Init()
 	if (ret == true)
 	{
 		// Initialize DevIL
-		logHistory.push_back("[Engine] Initializing DevIL");
+		gEngine->logHistory.push_back("[Engine] Initializing DevIL");
 		ilInit();
 
 		// Initialize glew
-		logHistory.push_back("[Engine] Initializing OpenGL");
+		gEngine->logHistory.push_back("[Engine] Initializing OpenGL");
 		glewInit();
 
 		//Use Vsync
@@ -115,8 +115,6 @@ bool Engine_ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(screen_width, screen_height);
 
-	addGameObject("Assets/BakerHouse.fbx");
-
 	return ret;
 }
 
@@ -155,10 +153,6 @@ engine_status Engine_ModuleRenderer3D::Update()
 // PostUpdate present buffer to screen
 engine_status Engine_ModuleRenderer3D::PostUpdate()
 {
-	for (auto& vector : gameObjectList) {
-		vector->UpdateComponents();
-	}
-
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
 		std::cerr << "OpenGL Error: " << error << std::endl;
@@ -231,92 +225,6 @@ void Engine_ModuleRenderer3D::DrawGrid(int size, int step, bool xzAxis, bool xyA
 	//drawCubeTest();
 
 	drawAxis();
-}
-
-void Engine_ModuleRenderer3D::addGameObject()
-{
-	std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
-
-	std::string meshName = "GameObject";
-	int currentCopies = checkNameAvailability(meshName);
-	if (currentCopies > 0) {
-		meshName.append("(" + std::to_string(currentCopies) + ")");
-	}
-	gameObjectToAdd->name = meshName;
-
-	gameObjectList.push_back(std::move(gameObjectToAdd));
-
-	logHistory.push_back("[Engine] Add GameObject");
-}
-
-void Engine_ModuleRenderer3D::addGameObject(const std::string & filePath)
-{
-	logHistory.push_back("[Engine] Add GameObject with path " + filePath);
-
-	auto meshInfo_vector = MeshLoader::loadMeshFromFile(filePath);
-	auto texture_paths_vector = MeshLoader::loadTextureFromFile(filePath);
-
-	int i = 0;
-	for (const auto& meshInfo : meshInfo_vector)
-	{
-		std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
-
-		std::string fileName = filePath;
-		eraseBeforeDelimiter(fileName);
-
-		std::string meshName = fileName;
-		deleteSubstring(meshName, ".fbx");
-		int currentCopies = checkNameAvailability(meshName);
-		if (currentCopies > 0) {
-			meshName.append("(" + std::to_string(currentCopies) + ")");
-		}
-		gameObjectToAdd->name = meshName;
-
-		gameObjectList.push_back(std::move(gameObjectToAdd));
-
-		Texture2D textureToPush(gameObjectList.back().get(), texture_paths_vector.at(i));
-		gameObjectList.back().get()->AddComponent<Texture2D>(textureToPush);
-
-		Mesh meshToPush(gameObjectList.back().get(), meshInfo, Mesh::Formats::F_V3T2);
-		gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
-
-		gameObjectList.back().get()->GetComponent<Mesh>()->setName(fileName);
-		gameObjectList.back().get()->GetComponent<Mesh>()->texture = gameObjectList.back().get()->GetComponent<Texture2D>();
-		i++;
-
-		logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(meshInfo._numFaces) + " faces, "
-			+ std::to_string(meshInfo._numIndexs) + " indexs, "
-			+ std::to_string(meshInfo._numNormals) + " normals, "
-			+ std::to_string(meshInfo._numTexCoords) + " tex coords, and "
-			+ std::to_string(meshInfo._numVerts) + " vertexs.");
-	}
-}
-
-void Engine_ModuleRenderer3D::addGameObject(Primitive* shape)
-{
-	std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
-
-	std::string meshName = shape->GetType();
-
-	std::string goName = meshName;
-	int currentCopies = checkNameAvailability(goName);
-	if (currentCopies > 0) {
-		goName.append("(" + std::to_string(currentCopies) + ")");
-	}
-	gameObjectToAdd->name = goName;
-	gameObjectList.push_back(std::move(gameObjectToAdd));
-
-	MeshInfo meshInfo(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
-	Mesh meshToPush(gameObjectList.back().get(), meshInfo, Mesh::Formats::F_V3);
-
-	gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
-	gameObjectList.back().get()->GetComponent<Mesh>()->setName(meshName);
-
-	logHistory.push_back("[Engine] Mesh (" + meshName + ") loaded with " + std::to_string(meshInfo._numFaces) + " faces, "
-		+ std::to_string(meshInfo._numIndexs) + " indexs, "
-		+ std::to_string(meshInfo._numNormals) + " normals, "
-		+ std::to_string(meshInfo._numTexCoords) + " tex coords, and "
-		+ std::to_string(meshInfo._numVerts) + " vertexs.");
 }
 
 void Engine_ModuleRenderer3D::SwapDepthTest()

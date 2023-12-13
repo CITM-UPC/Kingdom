@@ -106,9 +106,9 @@ update_status Application::Update()
 	// Replace oldest data in the history
 	if (fpsHistory.size() > 100) fpsHistory.erase(fpsHistory.begin());
 
-	logHistory.insert(logHistory.end(), gEngine->renderer3D->logHistory.begin(), gEngine->renderer3D->logHistory.end());
+	logHistory.insert(logHistory.end(), gEngine->logHistory.begin(), gEngine->logHistory.end());
 
-	gEngine->renderer3D->logHistory.clear();
+	gEngine->logHistory.clear();
 
 	return ret;
 }

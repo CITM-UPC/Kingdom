@@ -21,6 +21,8 @@ public:
 
 	GameObject cameraGO;
 
+	std::list<std::string> logHistory;
+
 private:
 
 	std::list<Engine_Module*> list_modules;
