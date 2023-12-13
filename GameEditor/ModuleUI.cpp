@@ -261,7 +261,6 @@ void ModuleUI::HierarchyWindow()
 	{
 		if (ImGui::TreeNode(gOparentPtr->name.c_str()))
 		{
-			gameObjSelected = gOparentPtr.get();
 			for (auto& childPtr : gOparentPtr.get()->childs)
 			{
 				if (ImGui::MenuItem(childPtr->name.c_str()))
