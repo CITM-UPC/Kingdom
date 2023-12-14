@@ -150,6 +150,13 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 
 engine_status Engine_ModuleRenderer3D::Update()
 {
+	glLineWidth(3.0);
+	glBegin(GL_LINES);
+	glColor3ub(255, 255, 0);
+	glVertex3d(0, 0, 0);
+	glVertex3d(0, 0, -100);
+	glEnd();
+
 	return ENGINE_UPDATE_CONTINUE;
 }
 

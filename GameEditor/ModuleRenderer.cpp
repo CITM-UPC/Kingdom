@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRenderer.h"
+#include "..\GameEngine\Physics.hpp"
 
 ModuleRenderer::ModuleRenderer(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -41,6 +42,21 @@ update_status ModuleRenderer::Update()
 	App->gEngine->renderer3D->Update();
 	DoCameraInput();
 
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	{
+		Ray ray;
+		ray.origin = vec3(0, 0, 0);
+		ray.direction = vec3(0, 0, -1);
+
+		if (RayAABBIntersection(ray, App->gEngine->renderer3D->gameObjectList.back()->computeAABB()))
+		{
+			LOG("Hit something");
+		}
+		else
+		{
+			LOG("Hit nothing");
+		}
+	}
 	App->gEngine->renderer3D->gameObjectList.front()->GetComponent<Transform>()->Rotate(0.2, vec3(1, 0, 0), Transform::Space::GLOBAL);
 	App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->Rotate(0.2, vec3(0, 1, 0), Transform::Space::GLOBAL);
 

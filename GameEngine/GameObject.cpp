@@ -129,9 +129,6 @@ AABBox GameObject::computeAABB()
 	
 	const auto obBox = GetComponent<Transform>()->_transformationMatrix * aabbox;
 
-	//aabbox.min = glm::min(GetComponent<Transform>()->position() + aabbox.min, obBox.AABB().min);
-	//aabbox.max = glm::max(GetComponent<Transform>()->position() + aabbox.max, obBox.AABB().max);
-
 	//To implement with tree structure
 	/*
 	else if (children().empty())
