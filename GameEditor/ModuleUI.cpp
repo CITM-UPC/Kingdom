@@ -254,23 +254,32 @@ void ModuleUI::FPSGraphWindow()
 	ImGui::End();
 }
 
+void ModuleUI::HierarchyRecursive(GameObject* gO)
+{
+	ImGuiTreeNodeFlags TreeNodeFlags = ImGuiTreeNodeFlags_OpenOnArrow;
+	if (gO->childs.empty())		TreeNodeFlags |= ImGuiTreeNodeFlags_Leaf;
+	if (gameObjSelected == gO)	TreeNodeFlags |= ImGuiTreeNodeFlags_Selected;
+
+	bool isOpen = ImGui::TreeNodeEx(gO->name.c_str(), TreeNodeFlags);
+
+	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())	gameObjSelected = gO;
+
+	if (isOpen)
+	{
+		for (auto& child : gO->childs)
+		{
+			HierarchyRecursive(child.get());
+		}
+		ImGui::TreePop();
+	}
+}
+
 void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
 	for (const auto& gOparentPtr : App->gEngine->scene->gameObjectList)
 	{
-		if (ImGui::TreeNode(gOparentPtr->name.c_str()))
-		{
-			for (auto& childPtr : gOparentPtr.get()->childs)
-			{
-				if (ImGui::MenuItem(childPtr->name.c_str()))
-				{
-					gameObjSelected = childPtr.get();
-				}
-			}
-			ImGui::TreePop();
-		}
-		ImGui::Separator();
+		HierarchyRecursive(gOparentPtr.get());
 	}
 	ImGui::EndMenu();
 }

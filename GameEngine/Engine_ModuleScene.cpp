@@ -111,7 +111,7 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 	gameObjectList.push_back(std::move(gOparent));*/
 }
 
-void Engine_ModuleScene::addGameObject(Primitive * shape)
+void Engine_ModuleScene::addGameObject(Primitive* shape)
 {
 	std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 

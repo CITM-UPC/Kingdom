@@ -51,6 +51,7 @@ private:
 	void CamDebugWindow();
 	void AboutWindow();
 
+	void HierarchyRecursive(GameObject* gO);
 	void GetInfrastructureInfo();
 
 private:
