@@ -9,6 +9,10 @@ class MeshInfo
 {
 public:
 
+	struct V3 { vec3f v; };
+	struct V3C4 { vec3f v; vec4f c; };
+	struct V3T2 { vec3f v; vec2f t; };
+
 	MeshInfo(const void* vertex_data, unsigned int numVerts,
 		const unsigned int* index_data = nullptr, unsigned int numIndexs = 0,
 		const unsigned int numTexCoords = 0, unsigned int numNormals = 0, unsigned int numFaces = 0) :
@@ -34,13 +38,23 @@ public:
 	std::vector<vec3f> mFaceNormals;
 
 	ostream& serialize(ostream& os) const {
-		//size_t vLength = vertex_data.size();
-		//os.write((char*)&vLength, sizeof(vLength));
-		//os.write((char*)vertex_data.data(), vertex_data.size() * sizeof(VertexV3T2));
+	
+		os.write((char*)&_numVerts, sizeof(_numVerts));
+		os.write((char*)_vertex_data, _numVerts * sizeof(V3T2)); // we need to control this somehow
 
-		//size_t iLength = index_data.size();
-		//os.write((char*)&iLength, sizeof(iLength));
-		//os.write((char*)index_data.data(), index_data.size() * sizeof(uint));
+		os.write((char*)&_numIndexs, sizeof(_numIndexs));
+		os.write((char*)_index_data, _numIndexs * sizeof(uint));
+
+		os.write((char*)&_numTexCoords, sizeof(_numTexCoords));
+
+		os.write((char*)mVertices.data(), _numVerts * sizeof(vec3f));
+
+		os.write((char*)&_numNormals, sizeof(_numNormals));
+		os.write((char*)mNormals.data(), _numNormals * sizeof(vec3f));
+
+		os.write((char*)&_numFaces, sizeof(_numFaces));
+		os.write((char*)mFaceNormals.data(), _numFaces * sizeof(vec3f));
+		os.write((char*)mFaceCenters.data(), _numFaces * sizeof(vec3f));
 
 		return os;
 	}
@@ -48,12 +62,12 @@ public:
 	istream& deserialize(istream& is) {
 		//size_t temp = 0;
 		//is.read((char*)&temp, sizeof(temp));
-		//vertex_data.resize(temp); // allocates temp amount of cells and changes the length of the vector
-		//is.read((char*)vertex_data.data(), temp * sizeof(VertexV3T2));
+		//_vertex_data.resize(temp); // allocates temp amount of cells and changes the length of the vector
+		//is.read((char*)_vertex_data.data(), temp * sizeof(V3T2));
 
 		//is.read((char*)&temp, sizeof(temp));
-		//index_data.resize(temp);
-		//is.read((char*)index_data.data(), temp * sizeof(uint));
+		//_index_data.resize(temp);
+		//is.read((char*)_index_data.data(), temp * sizeof(uint));
 
 		return is;
 	}
