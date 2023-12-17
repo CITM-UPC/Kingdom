@@ -15,17 +15,14 @@ public:
 	engine_status PostUpdate();
 	bool CleanUp();
 
+	void recursiveObjectRendering(GameObject* GoToRender);
+
+	// add UUID functions to solve scene save/load pointers
 	void SaveScene();
 	void LoadScene();
 
 public:
-	// GameObject list and its methods:
-	// list<unique_ptr<GameObject>> gameObjectList;
-	// addGameObject()
-	// addGameObject(const std::string& filePath)
-	// addGameObject(Primitive* shape)
-	// -------------------------------
-	// add UUID functions to solve scene save/load pointers
+
 	void addGameObject();
 
 	void addGameObject(const std::string& filePath);

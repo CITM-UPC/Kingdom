@@ -23,18 +23,28 @@ engine_status Engine_ModuleScene::Update() { return ENGINE_UPDATE_CONTINUE; }
 
 engine_status Engine_ModuleScene::PostUpdate()
 {
-	for (auto& vector : gameObjectList)
+	for (auto& GO : gameObjectList)
 	{
-		for (auto& gO : vector.get()->childs)
-		{
-			gO->UpdateComponents();
-		}
+		recursiveObjectRendering(GO.get());
 	}
 
 	return ENGINE_UPDATE_CONTINUE;
 }
 
 bool Engine_ModuleScene::CleanUp() { return true; }
+
+void Engine_ModuleScene::recursiveObjectRendering(GameObject* GoToRender)
+{
+	GoToRender->UpdateComponents();
+
+	if (!GoToRender->childs.empty())
+	{
+		for (auto& child : GoToRender->childs)
+		{
+			recursiveObjectRendering(child.get());
+		}
+	}
+}
 
 void Engine_ModuleScene::addGameObject()
 {
