@@ -71,7 +71,7 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 	/*std::string parentName;*/
 
 	int i = 0;
-	for (const auto& meshInfo : meshInfo_vector)
+	for (auto& meshInfo : meshInfo_vector)
 	{
 		std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
@@ -92,13 +92,12 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 
 		string folderName = "Library/Meshes/";
 		fs::create_directories(folderName);
-		ofstream oFile(folderName + meshName, ios::binary);
-		oFile << meshInfo; //mesh.serialize(oFile);
+		ofstream oFile(folderName + meshName + ".bin", ios::binary);
+		oFile << meshInfo;
 		oFile.close();
 
 		folderName = "Library/Materials/";
 		fs::create_directories(folderName);
-		// implement save texture data
 
 		Texture2D textureToPush(gOparent->childs.back().get(), texture_paths_vector.at(i));
 		gOparent->childs.back().get()->AddComponent<Texture2D>(textureToPush);
