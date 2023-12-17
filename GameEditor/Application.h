@@ -10,6 +10,7 @@
 #include "ModuleInput.h"
 #include "ModuleRenderer.h"
 #include "ModuleUI.h"
+#include "ModuleResources.h"
 
 #include "..\GameEngine\GameEngine.h"
 
@@ -22,6 +23,7 @@ public:
 	ModuleWindow* window;
 	ModuleInput* input;
 	ModuleRenderer* renderer;
+	ModuleResources* resources;
 	ModuleUI* ui;
 
 	GameEngine* gEngine;

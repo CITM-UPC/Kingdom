@@ -8,6 +8,7 @@ Application::Application()
 	input = new ModuleInput(this);
 	renderer = new ModuleRenderer(this);
 	ui = new ModuleUI(this);
+	resources = new ModuleResources(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -17,6 +18,7 @@ Application::Application()
 	AddModule(window);
 	AddModule(input);
 	AddModule(renderer);
+	AddModule(resources);
 	AddModule(ui);
 }
 
