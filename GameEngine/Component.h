@@ -18,6 +18,8 @@ public:
 	bool isActive = true;
 	GameObject* owner;
 
+	unsigned long UID;
+
 public:
 
 	Component(GameObject* gameObject) : owner(gameObject) {}

@@ -21,6 +21,9 @@ public:
 	std::list<std::unique_ptr<GameObject>> childs;
 
 	GameObject* parent;
+
+	unsigned long UID;
+
 public:
 
 	GameObject();
