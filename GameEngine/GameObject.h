@@ -31,6 +31,9 @@ public:
 
 	std::list<std::unique_ptr<Component>>* GetComponents();
 
+	void Move(GameObject* newParent);
+	void removeChild(GameObject* childToRemove);
+
 	void AddComponent(Component::Type component);
 	//void AddComponent(std::unique_ptr<Component>& component);
 

@@ -52,6 +52,9 @@ private:
 	void AboutWindow();
 
 	void HierarchyRecursive(GameObject* gO);
+	void GameObjectOptions();
+	void ReparentMenu();
+
 	void GetInfrastructureInfo();
 
 private:
@@ -66,12 +69,22 @@ private:
 	bool camDebug = false;
 	bool about = false;
 	bool demo = false;
+	bool reparentMenu = false;
 
 	bool autoScrollLog = true;
+
+	bool reparentThis = true;
+	bool reparentTo = false;
 
 	std::string aboutContent;
 
 	// Hardware information
 	InfrastructureInfo info;
 	GameObject* gameObjSelected = nullptr;
+
+	// Game Object which parent will be changed
+	GameObject* toParent = nullptr;
+
+	// Objective Parent that will adopt the child
+	GameObject* adopter = nullptr;
 };

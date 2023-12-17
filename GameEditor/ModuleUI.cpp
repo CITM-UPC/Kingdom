@@ -92,6 +92,14 @@ update_status ModuleUI::PreUpdate()
 	if (hierarchy)	HierarchyWindow();
 	if (demo)       ImGui::ShowDemoWindow(&demo);
 
+	if (reparentMenu) ReparentMenu();
+
+	ImGuiIO& io = ImGui::GetIO();
+	if (!io.WantCaptureMouse && App->input->GetMouseButton(SDL_BUTTON_LEFT))
+	{
+		gameObjSelected = nullptr;
+	}
+
 #pragma region ImGui_Windows_Test
 
 	/*ImGui::Begin("Inspector");
@@ -222,6 +230,7 @@ update_status ModuleUI::MainMenuBar()
 				ImGui::EndMenu();
 			}
 			if (ImGui::MenuItem("Draw Mode")) {}
+			GameObjectOptions();
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Help"))
@@ -235,6 +244,52 @@ update_status ModuleUI::MainMenuBar()
 	}
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleUI::GameObjectOptions()
+{
+	bool goIsSelected;
+	gameObjSelected != NULL ? goIsSelected = true : goIsSelected = false;
+
+	ImGui::MenuItem("Move", "Reparent GameObject", &reparentMenu, goIsSelected);
+	ImGui::MenuItem("Delete", "Remove GameObject", false, goIsSelected);
+}
+
+void ModuleUI::ReparentMenu()
+{
+	static ImGuiWindowFlags menuFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize;
+	ImGui::Begin("Reparent GameObject", &reparentMenu, menuFlags);
+
+	ImGui::MenuItem("Reparent: ", "", false, false);
+
+	toParent == nullptr ? ImGui::Selectable("...", &reparentThis) : ImGui::Selectable(toParent->name.c_str(), &reparentThis);
+
+	if (reparentThis) {
+		reparentTo = false;
+		toParent = gameObjSelected;
+	}
+
+	ImGui::Separator();
+
+	ImGui::MenuItem("To: ", "", false, false);
+
+	adopter == nullptr ? ImGui::Selectable("...", &reparentTo) : ImGui::Selectable(adopter->name.c_str(), &reparentTo);
+
+	if (reparentTo) {
+		reparentThis = false;
+		adopter = gameObjSelected;
+	}
+
+	if (ImGui::MenuItem("Confirm") && adopter != nullptr && toParent != nullptr)
+	{
+		toParent->Move(adopter);
+	}
+	else
+	{
+		App->logHistory.push_back("ERROR: Select both GameObjects in order to Reparent");
+	}
+
+	ImGui::End();
 }
 
 void ModuleUI::FPSGraphWindow()

@@ -84,3 +84,30 @@ void GameObject::UpdateComponents()
 		comp->Update();
 	}
 }
+
+void GameObject::Move(GameObject* newParent)
+{
+	auto it = std::find_if(parent->childs.begin(), parent->childs.end(), [this](const std::unique_ptr<GameObject>& child) {
+		return child.get() == this;
+		});
+
+	if (it != parent->childs.end()) {
+		// Move the child to the new list
+		newParent->childs.push_back(std::move(*it));
+		parent->childs.erase(it);
+
+		// Update the parent pointer of the moved child
+		parent = newParent;
+	}
+}
+
+void GameObject::removeChild(GameObject* child)
+{
+	for (auto& childit : childs)
+	{
+		if (childit.get() == child)
+		{
+			childit.release();
+		}
+	}
+}
