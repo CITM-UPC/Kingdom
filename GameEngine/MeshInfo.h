@@ -60,9 +60,9 @@ public:
 	}
 
 	istream& deserialize(istream& is) {
-		//size_t temp = 0;
-		//is.read((char*)&temp, sizeof(temp));
-		//_vertex_data.resize(temp); // allocates temp amount of cells and changes the length of the vector
+		size_t temp = 0;
+		is.read((char*)&temp, sizeof(temp));
+		//_vertex_data.resize(temp); 
 		//is.read((char*)_vertex_data.data(), temp * sizeof(V3T2));
 
 		//is.read((char*)&temp, sizeof(temp));

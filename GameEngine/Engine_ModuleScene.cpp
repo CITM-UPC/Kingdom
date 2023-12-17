@@ -2,6 +2,11 @@
 #include "GameEngine.h"
 #include "Engine_ModuleScene.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 Engine_ModuleScene::Engine_ModuleScene(GameEngine* gEngine, bool start_enabled) : Engine_Module(gEngine, start_enabled)
 {
@@ -72,7 +77,6 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 
 		std::string fileName = filePath;
 		eraseBeforeDelimiter(fileName);
-
 		std::string meshName = fileName;
 		deleteSubstring(meshName, ".fbx");
 
@@ -96,6 +100,16 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 		gOparent->childs.back().get()->GetComponent<Mesh>()->texture = gOparent->childs.back().get()->GetComponent<Texture2D>();
 		i++;
 
+		string folderName = "Library/Meshes/";
+		fs::create_directories(folderName);
+		ofstream oFile(folderName + meshName, ios::binary);
+		oFile << meshInfo; //mesh.serialize(oFile);
+		oFile.close();
+
+		folderName = "Library/Materials/";
+		fs::create_directories(folderName);
+		// implement save texture data
+
 		gEngine->logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(meshInfo._numFaces) + " faces, "
 			+ std::to_string(meshInfo._numIndexs) + " indexs, "
 			+ std::to_string(meshInfo._numNormals) + " normals, "
@@ -111,7 +125,7 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 	gameObjectList.push_back(std::move(gOparent));*/
 }
 
-void Engine_ModuleScene::addGameObject(Primitive* shape)
+void Engine_ModuleScene::addGameObject(Primitive * shape)
 {
 	std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
