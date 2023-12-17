@@ -250,9 +250,11 @@ void ModuleUI::GameObjectOptions()
 {
 	bool goIsSelected;
 	gameObjSelected != NULL ? goIsSelected = true : goIsSelected = false;
-
+	bool a = false;
 	ImGui::MenuItem("Move", "Reparent GameObject", &reparentMenu, goIsSelected);
-	ImGui::MenuItem("Delete", "Remove GameObject", false, goIsSelected);
+	if (ImGui::MenuItem("Delete", "Remove GameObject", a, goIsSelected))
+	{
+	}
 }
 
 void ModuleUI::ReparentMenu()
@@ -283,6 +285,7 @@ void ModuleUI::ReparentMenu()
 	if (ImGui::MenuItem("Confirm") && adopter != nullptr && toParent != nullptr)
 	{
 		toParent->Move(adopter);
+		App->logHistory.push_back("Moved " + toParent->name + " to " + adopter->name);
 	}
 	else
 	{
