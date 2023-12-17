@@ -1,7 +1,7 @@
 #include "Texture2D.h"
 #include <GL/glew.h>
 #include <IL/il.h>
-
+#include <iostream>
 #include <algorithm>
 
 using namespace std;
@@ -29,6 +29,16 @@ Texture2D::Texture2D(GameObject* owner, const std::string& path) : Component(own
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	size_t lastOf = path.find_last_of('/');
+	std::string fileName = path.substr(lastOf + 1);
+	lastOf = fileName.find_last_of('.');
+	fileName = fileName.substr(0, lastOf);
+	fileName = "Library/Materials/" + fileName + ".dds";
+
+
+	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);
+	ilSave(IL_DDS, fileName.c_str());
 
 	//now we can delete image from RAM
 	ilDeleteImage(img);

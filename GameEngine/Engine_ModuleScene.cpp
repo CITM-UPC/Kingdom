@@ -90,16 +90,6 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 
 		gOparent->childs.push_back(std::move(gameObjectToAdd));
 
-		Texture2D textureToPush(gOparent->childs.back().get(), texture_paths_vector.at(i));
-		gOparent->childs.back().get()->AddComponent<Texture2D>(textureToPush);
-
-		Mesh meshToPush(gOparent->childs.back().get(), meshInfo, Mesh::Formats::F_V3T2);
-		gOparent->childs.back().get()->AddComponent<Mesh>(meshToPush);
-
-		gOparent->childs.back().get()->GetComponent<Mesh>()->setName(fileName);
-		gOparent->childs.back().get()->GetComponent<Mesh>()->texture = gOparent->childs.back().get()->GetComponent<Texture2D>();
-		i++;
-
 		string folderName = "Library/Meshes/";
 		fs::create_directories(folderName);
 		ofstream oFile(folderName + meshName, ios::binary);
@@ -109,6 +99,16 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 		folderName = "Library/Materials/";
 		fs::create_directories(folderName);
 		// implement save texture data
+
+		Texture2D textureToPush(gOparent->childs.back().get(), texture_paths_vector.at(i));
+		gOparent->childs.back().get()->AddComponent<Texture2D>(textureToPush);
+
+		Mesh meshToPush(gOparent->childs.back().get(), meshInfo, Mesh::Formats::F_V3T2);
+		gOparent->childs.back().get()->AddComponent<Mesh>(meshToPush);
+
+		gOparent->childs.back().get()->GetComponent<Mesh>()->setName(fileName);
+		gOparent->childs.back().get()->GetComponent<Mesh>()->texture = gOparent->childs.back().get()->GetComponent<Texture2D>();
+		i++;
 
 		gEngine->logHistory.push_back("[Engine] Mesh loaded with " + std::to_string(meshInfo._numFaces) + " faces, "
 			+ std::to_string(meshInfo._numIndexs) + " indexs, "
