@@ -17,6 +17,9 @@ Engine_ModuleScene::~Engine_ModuleScene() = default;
 
 bool Engine_ModuleScene::Init()
 {
+	fs::create_directories("Library/Meshes/");
+	fs::create_directories("Library/Materials/");
+	
 	addGameObject("Assets/BakerHouse.fbx");
 
 	return true;
@@ -91,13 +94,10 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 		gOparent->childs.push_back(std::move(gameObjectToAdd));
 
 		string folderName = "Library/Meshes/";
-		fs::create_directories(folderName);
-		ofstream oFile(folderName + meshName + ".bin", ios::binary);
+		
+		ofstream oFile(folderName + meshName + ".mesh", ios::binary);
 		oFile << meshInfo;
 		oFile.close();
-
-		folderName = "Library/Materials/";
-		fs::create_directories(folderName);
 
 		Texture2D textureToPush(gOparent->childs.back().get(), texture_paths_vector.at(i));
 		gOparent->childs.back().get()->AddComponent<Texture2D>(textureToPush);
