@@ -174,7 +174,14 @@ update_status ModuleUI::MainMenuBar()
 			}
 			if (ImGui::MenuItem("Open Scene", "Not implemented")) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Save", "Not implemented")) {}
+			if (ImGui::MenuItem("Save"))
+			{
+				if (App->gEngine->scene->currentScene.fileName != "")
+				{
+					App->gEngine->scene->SaveScene();
+				}
+				else saveasMenu = true;
+			}
 			if (ImGui::MenuItem("Save As...", "", &saveasMenu)) {}
 			ImGui::Separator();
 			if (ImGui::MenuItem("New Project", "Not implemented")) {}

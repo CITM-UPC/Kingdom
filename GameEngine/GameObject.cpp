@@ -115,20 +115,20 @@ void GameObject::removeChild(GameObject* child)
 Json::Value GameObject::SaveInfo()
 {
 	Json::Value obj;
-	obj[name.c_str()]["Name"] = name.c_str();
-	obj[name.c_str()]["UUID"] = std::to_string(UUID).c_str();
-	obj[name.c_str()]["Active"] = std::to_string(isActive).c_str();
+	obj["GameObject"]["Name"] = name.c_str();
+	obj["GameObject"]["UUID"] = std::to_string(UUID).c_str();
+	obj["GameObject"]["Active"] = std::to_string(isActive).c_str();
 
-	if (parent) obj[name.c_str()]["Parent UUID"] = std::to_string(parent->UUID).c_str();
+	if (parent) obj["GameObject"]["Parent UUID"] = std::to_string(parent->UUID).c_str();
 
 	for (auto& go : childs)
 	{
-		obj[name.c_str()]["Childs"].append(go.get()->SaveInfo());
+		obj["GameObject"]["Child List"].append(go.get()->SaveInfo());
 	}
 
 	for (auto& comp : components)
 	{
-		obj[name.c_str()]["Components"].append(comp.get()->SaveInfo());
+		obj["GameObject"]["Component List"].append(comp.get()->SaveInfo());
 	}
 
 	return obj;

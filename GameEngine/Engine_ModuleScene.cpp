@@ -166,6 +166,16 @@ void Engine_ModuleScene::NewScene()
 
 void Engine_ModuleScene::SaveScene()
 {
+	Json::Value sceneValue;
+
+	for (auto& go : currentScene.gameObjectList)
+	{
+		sceneValue["GameObject List"].append(go.get()->SaveInfo());
+	}
+
+	ofstream("Assets/" + currentScene.fileName) << sceneValue;
+
+	gEngine->logHistory.push_back("[Engine] Scene file with name: " + currentScene.fileName + " saved");
 }
 
 void Engine_ModuleScene::SaveAsScene(string fileName)
@@ -176,13 +186,15 @@ void Engine_ModuleScene::SaveAsScene(string fileName)
 
 	for (auto& go : currentScene.gameObjectList)
 	{
-		sceneValue["GameObjects"].append(go.get()->SaveInfo());
+		sceneValue["GameObject List"].append(go.get()->SaveInfo());
 	}
 
 	currentScene.name = fileName;
 	currentScene.fileName = fileName + ".mdng";
 
-	ofstream(currentScene.fileName) << sceneValue;
+	ofstream("Assets/" + currentScene.fileName) << sceneValue;
+
+	gEngine->logHistory.push_back("[Engine] Scene file with name: " + fileName + " created");
 }
 
 void Engine_ModuleScene::LoadScene(string fileName) {}
