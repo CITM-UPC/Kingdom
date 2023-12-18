@@ -79,6 +79,12 @@ bool ModuleWindow::Init()
 	return ret;
 }
 
+update_status ModuleWindow::Update()
+{
+	SetTitle(App->gEngine->scene->currentScene.name.c_str());
+	return UPDATE_CONTINUE;
+}
+
 // Called before quitting
 bool ModuleWindow::CleanUp()
 {
