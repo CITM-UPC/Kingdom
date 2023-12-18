@@ -282,16 +282,18 @@ void ModuleUI::ReparentMenu()
 		adopter = gameObjSelected;
 	}
 
-	if (ImGui::MenuItem("Confirm") && adopter != nullptr && toParent != nullptr)
+	if (ImGui::MenuItem("Confirm"))
 	{
-		toParent->Move(adopter);
-		App->logHistory.push_back("Moved " + toParent->name + " to " + adopter->name);
+		if (adopter != nullptr && toParent != nullptr)
+		{
+			toParent->Move(adopter);
+			App->logHistory.push_back("Moved " + toParent->name + " to " + adopter->name);
+		}
+		else
+		{
+			App->logHistory.push_back("ERROR: Select both GameObjects in order to Reparent");
+		}
 	}
-	else
-	{
-		App->logHistory.push_back("ERROR: Select both GameObjects in order to Reparent");
-	}
-
 	ImGui::End();
 }
 
