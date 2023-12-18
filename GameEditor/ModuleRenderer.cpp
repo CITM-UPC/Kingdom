@@ -50,7 +50,39 @@ update_status ModuleRenderer::Update()
 
 		if (RayAABBIntersection(ray, App->gEngine->renderer3D->gameObjectList.back()->computeAABB()))
 		{
-			LOG("Hit something");
+			LOG("Hit AABB");
+
+			float closestIntersection = std::numeric_limits<float>::infinity();
+
+			for (size_t i = 0; i < App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Mesh>()->getNumFaces(); ++i)
+			{
+
+				vec4 vert0 = { App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Mesh>()->mVertices[i * 3], 1 };
+				vec4 vert1 = { App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Mesh>()->mVertices[i * 3 + 1], 1 };
+				vec4 vert2 = { App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Mesh>()->mVertices[i * 3 + 2], 1 };
+
+				// Assuming _format is F_V3 (change if necessary)
+				Triangle triangle{
+					vert0 * App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->_transformationMatrix,
+					vert1 * App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->_transformationMatrix,
+					vert2 * App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->_transformationMatrix
+				};
+
+				float currentT;
+				if (RayTriangleIntersection(ray, triangle, currentT) && currentT < closestIntersection)
+				{
+					closestIntersection = currentT;
+				}
+			}
+
+			if (closestIntersection != std::numeric_limits<float>::infinity())
+			{
+				LOG("Hit a mesh");
+			}
+			else
+			{
+				LOG("Not hit a mesh");
+			}
 		}
 		else
 		{
