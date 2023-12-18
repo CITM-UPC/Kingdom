@@ -6,6 +6,8 @@
 #include <sstream>
 #include <filesystem>
 
+#include "JSONParser.h"
+
 namespace fs = std::filesystem;
 
 Engine_ModuleScene::Engine_ModuleScene(GameEngine* gEngine, bool start_enabled) : Engine_Module(gEngine, start_enabled)
@@ -19,7 +21,7 @@ bool Engine_ModuleScene::Init()
 {
 	fs::create_directories("Library/Meshes/");
 	fs::create_directories("Library/Materials/");
-	
+
 	addGameObject("Assets/BakerHouse.fbx");
 
 	return true;
@@ -31,7 +33,7 @@ engine_status Engine_ModuleScene::Update() { return ENGINE_UPDATE_CONTINUE; }
 
 engine_status Engine_ModuleScene::PostUpdate()
 {
-	for (auto& GO : gameObjectList)
+	for (auto& GO : currentScene.gameObjectList)
 	{
 		recursiveObjectRendering(GO.get());
 	}
@@ -41,7 +43,7 @@ engine_status Engine_ModuleScene::PostUpdate()
 
 bool Engine_ModuleScene::CleanUp() { return true; }
 
-void Engine_ModuleScene::recursiveObjectRendering(GameObject* GoToRender)
+void Engine_ModuleScene::recursiveObjectRendering(GameObject * GoToRender)
 {
 	GoToRender->UpdateComponents();
 
@@ -67,18 +69,18 @@ void Engine_ModuleScene::addGameObject()
 
 	gameObjectToAdd->UID = gEngine->generateUUID32();
 
-	gameObjectList.push_back(std::move(gameObjectToAdd));
+	currentScene.gameObjectList.push_back(std::move(gameObjectToAdd));
 
 	gEngine->logHistory.push_back("[Engine] Add GameObject");
 }
 
-void Engine_ModuleScene::addGameObject(const std::string& filePath)
+void Engine_ModuleScene::addGameObject(const std::string & filePath)
 {
 	gEngine->logHistory.push_back("[Engine] Add GameObject with path " + filePath);
 
 	addGameObject();
 
-	auto& gOparent = gameObjectList.back();
+	auto& gOparent = currentScene.gameObjectList.back();
 
 	auto meshInfo_vector = MeshLoader::loadMeshFromFile(filePath);
 	auto texture_paths_vector = MeshLoader::loadTextureFromFile(filePath);
@@ -105,7 +107,7 @@ void Engine_ModuleScene::addGameObject(const std::string& filePath)
 		gOparent->childs.push_back(std::move(gameObjectToAdd));
 
 		string folderName = "Library/Meshes/";
-		
+
 		ofstream oFile(folderName + meshName + ".mesh", ios::binary);
 		oFile << meshInfo;
 		oFile.close();
@@ -140,13 +142,13 @@ void Engine_ModuleScene::addGameObject(Primitive * shape)
 		goName.append("(" + std::to_string(currentCopies) + ")");
 	}
 	gameObjectToAdd->name = goName;
-	gameObjectList.push_back(std::move(gameObjectToAdd));
+	currentScene.gameObjectList.push_back(std::move(gameObjectToAdd));
 
 	MeshInfo meshInfo(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
-	Mesh meshToPush(gameObjectList.back().get(), meshInfo, Mesh::Formats::F_V3);
+	Mesh meshToPush(currentScene.gameObjectList.back().get(), meshInfo, Mesh::Formats::F_V3);
 
-	gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
-	gameObjectList.back().get()->GetComponent<Mesh>()->setName(meshName);
+	currentScene.gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
+	currentScene.gameObjectList.back().get()->GetComponent<Mesh>()->setName(meshName);
 
 	gEngine->logHistory.push_back("[Engine] Mesh (" + meshName + ") loaded with " + std::to_string(meshInfo._numFaces) + " faces, "
 		+ std::to_string(meshInfo._numIndexs) + " indexs, "
@@ -155,17 +157,31 @@ void Engine_ModuleScene::addGameObject(Primitive * shape)
 		+ std::to_string(meshInfo._numVerts) + " vertexs.");
 }
 
+void Engine_ModuleScene::NewScene()
+{
+	currentScene.fileName = "";
+	currentScene.name = "";
+	currentScene.gameObjectList.clear();
+}
+
 void Engine_ModuleScene::SaveScene()
 {
-	for (auto& gO : gameObjectList)
-	{
-		gO->Save();
-	}
 }
 
-void Engine_ModuleScene::SaveAsScene()
+void Engine_ModuleScene::SaveAsScene(string fileName)
 {
 	// Create scene file, save and set as current scene file
+
+	Json::Value sceneValue;
+	int i = 0;
+	std::string goUID = "";
+	for (auto& go : currentScene.gameObjectList)
+	{
+		goUID = std::to_string(go.get()->UID);
+		sceneValue["go" + std::to_string(i)] = goUID;
+		i++;
+	}
+	ofstream(fileName + ".mdng") << sceneValue;
 }
 
-void Engine_ModuleScene::LoadScene() {}
+void Engine_ModuleScene::LoadScene(string fileName) {}

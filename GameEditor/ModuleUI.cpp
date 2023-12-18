@@ -166,11 +166,17 @@ update_status ModuleUI::MainMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("New Scene", "Not implemented")) {}
+			if (ImGui::MenuItem("New Scene", "Not implemented"))
+			{
+				App->gEngine->scene->NewScene();
+			}
 			if (ImGui::MenuItem("Open Scene", "Not implemented")) {}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Save", "Not implemented")) {}
-			if (ImGui::MenuItem("Save As...", "Not implemented")) {}
+			if (ImGui::MenuItem("Save As...", "Not implemented"))
+			{
+				App->gEngine->scene->SaveAsScene("papaya");
+			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("New Project", "Not implemented")) {}
 			if (ImGui::MenuItem("Open Project", "Not implemented")) {}
@@ -337,7 +343,7 @@ void ModuleUI::HierarchyRecursive(GameObject* gO)
 void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
-	for (const auto& gOparentPtr : App->gEngine->scene->gameObjectList)
+	for (const auto& gOparentPtr : App->gEngine->scene->currentScene.gameObjectList)
 	{
 		HierarchyRecursive(gOparentPtr.get());
 	}

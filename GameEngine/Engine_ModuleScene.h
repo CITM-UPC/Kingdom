@@ -3,6 +3,12 @@
 #include "Engine_Module.h"
 #include "Engine_Globals.h"
 
+struct Scene
+{
+	std::list<std::unique_ptr<GameObject>> gameObjectList;
+	string name, fileName;
+};
+
 class Engine_ModuleScene : public Engine_Module
 {
 public:
@@ -17,10 +23,16 @@ public:
 
 	void recursiveObjectRendering(GameObject* GoToRender);
 
-	// add UUID functions to solve scene save/load pointers
+	Scene currentScene;
+
+	// Create new Scene (erases all current scene variables)
+	void NewScene();
+	// Saves current scene inside its file
 	void SaveScene();
-	void SaveAsScene();
-	void LoadScene();
+	// Saves current scene inside a new file
+	void SaveAsScene(string fileName);
+	// Loads scene from a file
+	void LoadScene(string fileName);
 
 public:
 
@@ -65,15 +77,11 @@ public:
 	int checkNameAvailability(std::string name) {
 		int count = 0;
 
-		for (const auto& vector : gameObjectList) {
+		for (const auto& vector : currentScene.gameObjectList) {
 			detectAndIncrement(vector->name, name, count);
 		}
 
 		return count;
 	}
-
-public:
-	std::list<std::unique_ptr<GameObject>> gameObjectList;
-
 private:
 };
