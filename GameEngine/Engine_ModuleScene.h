@@ -19,6 +19,7 @@ public:
 
 	// add UUID functions to solve scene save/load pointers
 	void SaveScene();
+	void SaveAsScene();
 	void LoadScene();
 
 public:

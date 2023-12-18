@@ -65,6 +65,8 @@ void Engine_ModuleScene::addGameObject()
 	}
 	gameObjectToAdd->name = meshName;
 
+	gameObjectToAdd->UID = gEngine->generateUUID32();
+
 	gameObjectList.push_back(std::move(gameObjectToAdd));
 
 	gEngine->logHistory.push_back("[Engine] Add GameObject");
@@ -96,6 +98,8 @@ void Engine_ModuleScene::addGameObject(const std::string& filePath)
 			meshName.append("(" + std::to_string(currentCopies) + ")");
 		}
 		gameObjectToAdd->name = meshName;
+		gameObjectToAdd->UID = gEngine->generateUUID32();
+
 		gameObjectToAdd->parent = gOparent.get();
 
 		gOparent->childs.push_back(std::move(gameObjectToAdd));
@@ -158,4 +162,10 @@ void Engine_ModuleScene::SaveScene()
 		gO->Save();
 	}
 }
+
+void Engine_ModuleScene::SaveAsScene()
+{
+	// Create scene file, save and set as current scene file
+}
+
 void Engine_ModuleScene::LoadScene() {}
