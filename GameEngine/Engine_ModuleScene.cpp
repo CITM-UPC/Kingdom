@@ -2,6 +2,11 @@
 #include "GameEngine.h"
 #include "Engine_ModuleScene.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 Engine_ModuleScene::Engine_ModuleScene(GameEngine* gEngine, bool start_enabled) : Engine_Module(gEngine, start_enabled)
 {
@@ -12,6 +17,9 @@ Engine_ModuleScene::~Engine_ModuleScene() = default;
 
 bool Engine_ModuleScene::Init()
 {
+	fs::create_directories("Library/Meshes/");
+	fs::create_directories("Library/Materials/");
+	
 	addGameObject("Assets/BakerHouse.fbx");
 
 	return true;
@@ -74,13 +82,12 @@ void Engine_ModuleScene::addGameObject(const std::string& filePath)
 	auto texture_paths_vector = MeshLoader::loadTextureFromFile(filePath);
 
 	int i = 0;
-	for (const auto& meshInfo : meshInfo_vector)
+	for (auto& meshInfo : meshInfo_vector)
 	{
 		std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
 		std::string fileName = filePath;
 		eraseBeforeDelimiter(fileName);
-
 		std::string meshName = fileName;
 		deleteSubstring(meshName, ".fbx");
 
@@ -92,6 +99,12 @@ void Engine_ModuleScene::addGameObject(const std::string& filePath)
 		gameObjectToAdd->parent = gOparent.get();
 
 		gOparent->childs.push_back(std::move(gameObjectToAdd));
+
+		string folderName = "Library/Meshes/";
+		
+		ofstream oFile(folderName + meshName + ".mesh", ios::binary);
+		oFile << meshInfo;
+		oFile.close();
 
 		Texture2D textureToPush(gOparent->childs.back().get(), texture_paths_vector.at(i));
 		gOparent->childs.back().get()->AddComponent<Texture2D>(textureToPush);
@@ -111,7 +124,7 @@ void Engine_ModuleScene::addGameObject(const std::string& filePath)
 	}
 }
 
-void Engine_ModuleScene::addGameObject(Primitive* shape)
+void Engine_ModuleScene::addGameObject(Primitive * shape)
 {
 	std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
