@@ -4,6 +4,7 @@
 #include <list>
 #include <memory>
 
+#include "json/json.h"
 #include "Component.h"
 #include "Transform.h"
 #include "Mesh.h"
@@ -47,7 +48,7 @@ public:
 
 	void UpdateComponents();
 
-	string SaveInfo();
+	Json::Value SaveInfo();
 
 	//static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);
 };

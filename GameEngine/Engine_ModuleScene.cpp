@@ -43,7 +43,7 @@ engine_status Engine_ModuleScene::PostUpdate()
 
 bool Engine_ModuleScene::CleanUp() { return true; }
 
-void Engine_ModuleScene::recursiveObjectRendering(GameObject * GoToRender)
+void Engine_ModuleScene::recursiveObjectRendering(GameObject* GoToRender)
 {
 	GoToRender->UpdateComponents();
 
@@ -74,7 +74,7 @@ void Engine_ModuleScene::addGameObject()
 	gEngine->logHistory.push_back("[Engine] Add GameObject");
 }
 
-void Engine_ModuleScene::addGameObject(const std::string & filePath)
+void Engine_ModuleScene::addGameObject(const std::string& filePath)
 {
 	gEngine->logHistory.push_back("[Engine] Add GameObject with path " + filePath);
 
@@ -130,7 +130,7 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 	}
 }
 
-void Engine_ModuleScene::addGameObject(Primitive * shape)
+void Engine_ModuleScene::addGameObject(Primitive* shape)
 {
 	std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
@@ -173,12 +173,12 @@ void Engine_ModuleScene::SaveAsScene(string fileName)
 	// Create scene file, save and set as current scene file
 
 	Json::Value sceneValue;
-	Json::Value sceneValue2;
-	std::string goUID = "";
+
 	for (auto& go : currentScene.gameObjectList)
 	{
-		sceneValue[go.get()->name.c_str()] = go.get()->SaveInfo().c_str();
+		sceneValue["GameObjects"].append(go.get()->SaveInfo());
 	}
+
 	ofstream(fileName + ".mdng") << sceneValue;
 }
 

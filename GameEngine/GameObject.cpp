@@ -1,5 +1,4 @@
 #include "GameObject.h"
-#include "JSONParser.h"
 #include <memory>
 
 GameObject::GameObject()
@@ -113,11 +112,17 @@ void GameObject::removeChild(GameObject* child)
 	}
 }
 
-string GameObject::SaveInfo()
+Json::Value GameObject::SaveInfo()
 {
 	Json::Value obj;
 
-	obj["UUID"] = std::to_string(UUID);
+	obj[name.c_str()]["UUID"] = std::to_string(UUID).c_str();
+	if (parent) obj[name.c_str()]["Parent UUID"] = std::to_string(parent->UUID).c_str();
 
-	return obj.asString();
+	for (auto& go : childs)
+	{
+		obj[name.c_str()]["Childs"].append(go.get()->SaveInfo());
+	}
+
+	return obj;
 }
