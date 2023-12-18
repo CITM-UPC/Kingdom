@@ -56,17 +56,20 @@ update_status ModuleRenderer::Update()
 
 			for (size_t i = 0; i < App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Mesh>()->getNumFaces(); ++i)
 			{
-
 				vec4 vert0 = { App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Mesh>()->mVertices[i * 3], 1 };
 				vec4 vert1 = { App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Mesh>()->mVertices[i * 3 + 1], 1 };
 				vec4 vert2 = { App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Mesh>()->mVertices[i * 3 + 2], 1 };
 
+				vert0 = vert0 * glm::inverse(App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->_transformationMatrix);
+				vert1 = vert1 * glm::inverse(App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->_transformationMatrix);
+				vert2 = vert2 * glm::inverse(App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->_transformationMatrix);
+
+				auto tri0 = (vec3)vert0 + App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->position();
+				auto tri1 = (vec3)vert1 + App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->position();
+				auto tri2 = (vec3)vert2 + App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->position();
+
 				// Assuming _format is F_V3 (change if necessary)
-				Triangle triangle{
-					vert0 * App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->_transformationMatrix,
-					vert1 * App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->_transformationMatrix,
-					vert2 * App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->_transformationMatrix
-				};
+				Triangle triangle{ tri0, tri1, tri2 };
 
 				float currentT;
 				if (RayTriangleIntersection(ray, triangle, currentT) && currentT < closestIntersection)
