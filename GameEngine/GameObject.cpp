@@ -103,12 +103,16 @@ void GameObject::Move(GameObject* newParent)
 
 void GameObject::removeChild(GameObject* child)
 {
-	for (auto& childit : childs)
+	auto it = std::remove_if(childs.begin(), childs.end(), [child](const std::unique_ptr<GameObject>& ptr) {
+		return ptr.get() == child;
+		});
+
+	// Check if the child was found
+	if (it != childs.end())
 	{
-		if (childit.get() == child)
-		{
-			childit.release();
-		}
+		// Erase the element at the end, which was moved there by std::remove_if
+		childs.erase(it, childs.end());
+		// The unique_ptr will automatically delete the removed child
 	}
 }
 

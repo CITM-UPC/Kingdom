@@ -278,11 +278,14 @@ void ModuleUI::SaveAsMenu()
 void ModuleUI::GameObjectOptions()
 {
 	bool goIsSelected;
-	gameObjSelected != NULL ? goIsSelected = true : goIsSelected = false;
+	gameObjSelected != nullptr ? goIsSelected = true : goIsSelected = false;
 	bool a = false;
 	ImGui::MenuItem("Move", "Reparent GameObject", &reparentMenu, goIsSelected);
 	if (ImGui::MenuItem("Delete", "Remove GameObject", a, goIsSelected))
 	{
+		auto parent = gameObjSelected->parent;
+		parent->removeChild(gameObjSelected);
+		gameObjSelected = nullptr;
 	}
 }
 
