@@ -603,10 +603,7 @@ void ShowFolderContents(const fs::path& folderPath) {
 	if (ImGui::CollapsingHeader(folderPath.filename().string().c_str())) {
 		for (const auto& entry : fs::directory_iterator(folderPath)) {
 			if (fs::is_directory(entry.path())) {
-				// Create a collapsing header for each folder
-
 				ShowFolderContents(entry.path());
-
 			}
 			else if (fs::is_regular_file(entry.path())) {
 				if (ImGui::Selectable(entry.path().filename().string().c_str())) {}
