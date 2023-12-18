@@ -15,11 +15,11 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	/*UID Find(const char* file_in_assets) const; 
-	UID ImportFile(const char* new_file_in_assets); 
+	/*UID Find(const char* file_in_assets) const;
+	UID ImportFile(const char* new_file_in_assets);
 	UID GenerateNewUID();
 
-	const Resource* RequestResource(UID uid) const; 
+	const Resource* RequestResource(UID uid) const;
 	Resource* RequestResource(UID uid);
 	void ReleaseResource(UID uid);*/
 
@@ -28,6 +28,4 @@ private:
 
 private:
 	//std::map<UID, Resource*> resources;
-
 };
-

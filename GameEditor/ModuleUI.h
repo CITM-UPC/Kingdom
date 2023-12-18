@@ -50,7 +50,7 @@ private:
 	void OptionsWindow();
 	void CamDebugWindow();
 	void AboutWindow();
-
+	void FileExplorerWindow();
 	void HierarchyRecursive(GameObject* gO);
 	void GetInfrastructureInfo();
 
@@ -66,6 +66,7 @@ private:
 	bool camDebug = false;
 	bool about = false;
 	bool demo = false;
+	bool fileExplorer = true;
 
 	bool autoScrollLog = true;
 
