@@ -22,7 +22,7 @@ public:
 
 	GameObject* parent;
 
-	unsigned long UID;
+	unsigned long UUID;
 
 public:
 
@@ -47,13 +47,7 @@ public:
 
 	void UpdateComponents();
 
-	void Save()
-	{
-		for (auto& child : childs)
-		{
-			child->Save();
-		}
-	}
+	string SaveInfo();
 
 	//static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);
 };

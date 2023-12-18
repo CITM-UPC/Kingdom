@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "JSONParser.h"
 #include <memory>
 
 GameObject::GameObject()
@@ -110,4 +111,13 @@ void GameObject::removeChild(GameObject* child)
 			childit.release();
 		}
 	}
+}
+
+string GameObject::SaveInfo()
+{
+	Json::Value obj;
+
+	obj["UUID"] = std::to_string(UUID);
+
+	return obj.asString();
 }

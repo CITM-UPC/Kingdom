@@ -67,7 +67,7 @@ void Engine_ModuleScene::addGameObject()
 	}
 	gameObjectToAdd->name = meshName;
 
-	gameObjectToAdd->UID = gEngine->generateUUID32();
+	gameObjectToAdd->UUID = gEngine->generateUUID32();
 
 	currentScene.gameObjectList.push_back(std::move(gameObjectToAdd));
 
@@ -100,7 +100,7 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 			meshName.append("(" + std::to_string(currentCopies) + ")");
 		}
 		gameObjectToAdd->name = meshName;
-		gameObjectToAdd->UID = gEngine->generateUUID32();
+		gameObjectToAdd->UUID = gEngine->generateUUID32();
 
 		gameObjectToAdd->parent = gOparent.get();
 
@@ -173,13 +173,11 @@ void Engine_ModuleScene::SaveAsScene(string fileName)
 	// Create scene file, save and set as current scene file
 
 	Json::Value sceneValue;
-	int i = 0;
+	Json::Value sceneValue2;
 	std::string goUID = "";
 	for (auto& go : currentScene.gameObjectList)
 	{
-		goUID = std::to_string(go.get()->UID);
-		sceneValue["go" + std::to_string(i)] = goUID;
-		i++;
+		sceneValue[go.get()->name.c_str()] = go.get()->SaveInfo().c_str();
 	}
 	ofstream(fileName + ".mdng") << sceneValue;
 }
