@@ -47,6 +47,14 @@ public:
 
 	void UpdateComponents();
 
+	void Save()
+	{
+		for (auto& child : childs)
+		{
+			child->Save();
+		}
+	}
+
 	//static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);
 };
 

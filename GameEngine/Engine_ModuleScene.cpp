@@ -138,5 +138,11 @@ void Engine_ModuleScene::addGameObject(Primitive* shape)
 		+ std::to_string(meshInfo._numVerts) + " vertexs.");
 }
 
-void Engine_ModuleScene::SaveScene() {}
+void Engine_ModuleScene::SaveScene()
+{
+	for (auto& gO : gameObjectList)
+	{
+		gO->Save();
+	}
+}
 void Engine_ModuleScene::LoadScene() {}
