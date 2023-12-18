@@ -131,7 +131,6 @@ Mesh::Mesh(const Mesh& cpy) :
 }
 
 void Mesh::draw() {
-
 	glPushMatrix();
 	glMultMatrixd(&owner->GetComponent<Transform>()->_transformationMatrix[0].x);
 
@@ -249,4 +248,14 @@ const unsigned int Mesh::getNumFaces() {
 void Mesh::Update()
 {
 	draw();
+}
+
+Json::Value Mesh::SaveInfo()
+{
+	Json::Value obj;
+
+	obj["Mesh"]["Name"] = meshName.c_str();
+	obj["Mesh"]["Binary File"] = "";
+
+	return obj;
 }

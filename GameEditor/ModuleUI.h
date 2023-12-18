@@ -54,7 +54,7 @@ private:
 	void HierarchyRecursive(GameObject* gO);
 	void GameObjectOptions();
 	void ReparentMenu();
-
+	void SaveAsMenu();
 	void GetInfrastructureInfo();
 
 private:
@@ -70,6 +70,7 @@ private:
 	bool about = false;
 	bool demo = false;
 	bool reparentMenu = false;
+	bool saveasMenu = false;
 
 	bool autoScrollLog = true;
 

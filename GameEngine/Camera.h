@@ -16,6 +16,8 @@ public:
 		return Type::CAMERA;
 	}
 
+	Json::Value SaveInfo();
+
 public:
 
 	double fov;

@@ -23,3 +23,19 @@ void Camera::Update()
 {
 	lookAtPos = this->owner->GetComponent<Transform>()->position() + this->owner->GetComponent<Transform>()->forward() * camOffset;
 }
+
+Json::Value Camera::SaveInfo()
+{
+	Json::Value obj;
+
+	obj["Camera"]["Fov"] = fov;
+	obj["Camera"]["Aspect Ratio"] = aspectRatio;
+	obj["Camera"]["Clipping Plane View Near"] = clippingPlaneViewNear;
+	obj["Camera"]["Clipping Plane View Far"] = clippingPlaneViewFar;
+	obj["Camera"]["Look At Position"].append(lookAtPos.x);
+	obj["Camera"]["Look At Position"].append(lookAtPos.y);
+	obj["Camera"]["Look At Position"].append(lookAtPos.z);
+	obj["Camera"]["Camera Offset"] = camOffset;
+
+	return obj;
+}

@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include "json/json.h"
 
 class GameObject;
 
@@ -28,4 +29,6 @@ public:
 	virtual void Update() = 0;
 	//virtual void Render() = 0;
 	virtual Type getType() const = 0;
+
+	virtual Json::Value SaveInfo() = 0;
 };

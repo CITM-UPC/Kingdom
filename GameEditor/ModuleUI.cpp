@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
+#include "imgui_stdlib.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -93,6 +94,7 @@ update_status ModuleUI::PreUpdate()
 	if (demo)       ImGui::ShowDemoWindow(&demo);
 
 	if (reparentMenu) ReparentMenu();
+	if (saveasMenu) SaveAsMenu();
 
 	ImGuiIO& io = ImGui::GetIO();
 	if (!io.WantCaptureMouse && App->input->GetMouseButton(SDL_BUTTON_LEFT))
@@ -173,10 +175,7 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::MenuItem("Open Scene", "Not implemented")) {}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Save", "Not implemented")) {}
-			if (ImGui::MenuItem("Save As...", "Not implemented"))
-			{
-				App->gEngine->scene->SaveAsScene("papaya");
-			}
+			if (ImGui::MenuItem("Save As...", "", &saveasMenu)) {}
 			ImGui::Separator();
 			if (ImGui::MenuItem("New Project", "Not implemented")) {}
 			if (ImGui::MenuItem("Open Project", "Not implemented")) {}
@@ -250,6 +249,23 @@ update_status ModuleUI::MainMenuBar()
 	}
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleUI::SaveAsMenu()
+{
+	ImGui::Begin("Save As", &saveasMenu);
+
+	static char nameRecipient[32];
+
+	ImGui::InputText("File Name", nameRecipient, IM_ARRAYSIZE(nameRecipient));
+
+	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && nameRecipient != "")
+	{
+		App->gEngine->scene->SaveAsScene(nameRecipient);
+		saveasMenu = false;
+	}
+
+	ImGui::End();
 }
 
 void ModuleUI::GameObjectOptions()

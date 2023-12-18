@@ -32,6 +32,8 @@ public:
 		return Type::TEXTURE2D;
 	}
 
+	Json::Value SaveInfo();
+
 	std::string path;
 	int width, height;
 

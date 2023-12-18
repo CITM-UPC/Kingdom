@@ -36,7 +36,6 @@ Texture2D::Texture2D(GameObject* owner, const std::string& path) : Component(own
 	fileName = fileName.substr(0, lastOf);
 	fileName = "Library/Materials/" + fileName + ".dds";
 
-
 	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);
 	ilSave(IL_DDS, fileName.c_str());
 
@@ -112,4 +111,14 @@ void Texture2D::unbind() const {
 void Texture2D::checker() const
 {
 	glBindTexture(GL_TEXTURE_2D, _id_checker);
+}
+
+Json::Value Texture2D::SaveInfo()
+{
+	Json::Value obj;
+
+	obj["Texture"]["Name"] = path.c_str();
+	obj["Texture"]["Binary File"] = "";
+
+	return obj;
 }

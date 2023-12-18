@@ -179,7 +179,10 @@ void Engine_ModuleScene::SaveAsScene(string fileName)
 		sceneValue["GameObjects"].append(go.get()->SaveInfo());
 	}
 
-	ofstream(fileName + ".mdng") << sceneValue;
+	currentScene.name = fileName;
+	currentScene.fileName = fileName + ".mdng";
+
+	ofstream(currentScene.fileName) << sceneValue;
 }
 
 void Engine_ModuleScene::LoadScene(string fileName) {}

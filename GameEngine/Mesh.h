@@ -83,8 +83,9 @@ public:
 		return Type::MESH;
 	}
 
+	Json::Value SaveInfo();
+
 private:
 
 	Mesh& operator=(const Mesh&) = delete;
-
 };
