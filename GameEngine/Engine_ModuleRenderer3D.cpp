@@ -171,6 +171,22 @@ engine_status Engine_ModuleRenderer3D::Update()
 		glVertex3d(ends[i].x, ends[i].y, ends[i].z);
 	}
 
+	for (int i = 0; i < nearPlanes.size() / 4; i++)
+	{
+		glColor3ub(50, 150, 255);
+		glVertex3d(nearPlanes[i].x, nearPlanes[i].y, nearPlanes[i].z);
+		glVertex3d(nearPlanes[i + 1].x, nearPlanes[i + 1].y, nearPlanes[i + 1].z);
+
+		glVertex3d(nearPlanes[i + 1].x, nearPlanes[i + 1].y, nearPlanes[i + 1].z);
+		glVertex3d(nearPlanes[i + 2].x, nearPlanes[i + 2].y, nearPlanes[i + 2].z);
+
+		glVertex3d(nearPlanes[i + 2].x, nearPlanes[i + 2].y, nearPlanes[i + 2].z);
+		glVertex3d(nearPlanes[i + 3].x, nearPlanes[i + 3].y, nearPlanes[i + 3].z);
+
+		glVertex3d(nearPlanes[i + 3].x, nearPlanes[i + 3].y, nearPlanes[i + 3].z);
+		glVertex3d(nearPlanes[i].x, nearPlanes[i].y, nearPlanes[i].z);
+	}
+
 	glEnd();
 
 	return ENGINE_UPDATE_CONTINUE;

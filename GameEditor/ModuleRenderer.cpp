@@ -44,52 +44,57 @@ update_status ModuleRenderer::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
 	{
-		/*
-		double percentageX = App->input->GetMouseX() / App->window->width;
-		double percentageY = App->input->GetMouseY() / App->window->height;
-
-		float planeHeight = (glm::sin(App->gEngine->cameraGO.GetComponent<Camera>()->fov / 2) * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear) * 2;
-		float planeWidth = planeHeight * App->gEngine->cameraGO.GetComponent<Camera>()->aspectRatio;
-
-		vec4 worldPos;
-		worldPos.x = App->gEngine->cameraGO.GetComponent<Transform>()->position().x - (planeWidth / 2 - (planeWidth * percentageX));
-		worldPos.y = App->gEngine->cameraGO.GetComponent<Transform>()->position().y + (planeHeight / 2 - (planeHeight * percentageY));
-		worldPos.z = -App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
-		worldPos.w = 1;
-
-		worldPos = App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix * worldPos;
-
-		vec3 rayCastOrigin = App->gEngine->cameraGO.GetComponent<Transform>()->position() + (vec3)worldPos;
-
-		Ray ray;
-		//ray.origin = vec3(0, 0, 0);
-		//ray.direction = vec3(0, 0, -1);
-
-		ray.origin = rayCastOrigin;
-		ray.direction = glm::normalize(rayCastOrigin - App->gEngine->cameraGO.GetComponent<Transform>()->position());
-		*/
-		
-		Ray ray;
-		ray.origin = App->gEngine->cameraGO.GetComponent<Transform>()->position();
-		ray.direction = App->gEngine->cameraGO.GetComponent<Transform>()->forward();
-
-		vec2 nearPlaneSize; 
-		nearPlaneSize.y = ((glm::sin(glm::radians(App->gEngine->cameraGO.GetComponent<Camera>()->fov)) / 2) * 
-							App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear) * 2;
+		vec2 nearPlaneSize;
+		nearPlaneSize.y = glm::tan(glm::radians(App->gEngine->cameraGO.GetComponent<Camera>()->fov / 2)) * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
 		nearPlaneSize.x = nearPlaneSize.y * App->gEngine->cameraGO.GetComponent<Camera>()->aspectRatio;
 
 		vec2 finalPos; 
-		finalPos.x = (nearPlaneSize.x / App->window->width) * (App->input->GetMouseX() - App->window->width / 2); //+ nearPlaneSize.x / 2;
-		finalPos.y = (nearPlaneSize.y / App->window->height) * (App->input->GetMouseY() - App->window->height / 2); //+ nearPlaneSize.y / 2;
+		finalPos.x = (nearPlaneSize.x / App->window->width) * (App->input->GetMouseX() - App->window->width) * 2 + nearPlaneSize.x;
+		finalPos.y = (nearPlaneSize.y / App->window->height) * (App->input->GetMouseY() - App->window->height) * 2 + nearPlaneSize.y;
 
+
+		Ray ray;
+		ray.origin = App->gEngine->cameraGO.GetComponent<Transform>()->position();
 
 		ray.origin += App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
 		ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->up() * finalPos.y;
 		ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->right() * finalPos.x;
 
+		ray.direction = glm::normalize((vec3)ray.origin - App->gEngine->cameraGO.GetComponent<Transform>()->position());
+
+
+		//-----------------------------------------------------------------------------------------
+
+
 		App->gEngine->renderer3D->origins.push_back(ray.origin);	//Debug only
 		App->gEngine->renderer3D->ends.push_back((vec3)ray.origin + (vec3)ray.direction * 20.0);	//Debug only
 		App->gEngine->renderer3D->camPos.push_back(App->gEngine->cameraGO.GetComponent<Transform>()->position());	//Debug only
+
+
+		vec3 frame1 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
+					 App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+					 -App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+					 App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+
+		vec3 frame2 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
+					 App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+					 App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+					 App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+
+		vec3 frame3 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
+					 App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+					 App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+					 -App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+
+		vec3 frame4 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
+					 App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+					 -App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+					 -App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+
+		App->gEngine->renderer3D->nearPlanes.push_back(frame1);	//Debug only
+		App->gEngine->renderer3D->nearPlanes.push_back(frame2);	//Debug only
+		App->gEngine->renderer3D->nearPlanes.push_back(frame3);	//Debug only
+		App->gEngine->renderer3D->nearPlanes.push_back(frame4);	//Debug only
 
 		if (RayAABBIntersection(ray, App->gEngine->renderer3D->gameObjectList.back()->computeAABB()))
 		{
@@ -135,6 +140,15 @@ update_status ModuleRenderer::Update()
 			LOG("Hit nothing");
 		}
 	}
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+	{
+		App->gEngine->cameraGO.GetComponent<Transform>()->RotateTo(0, vec3(0, 0, 1));
+	}
+	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+	{
+		App->gEngine->cameraGO.GetComponent<Transform>()->RotateTo(270, vec3(0, 1, 0));
+	}
+
 	App->gEngine->renderer3D->gameObjectList.front()->GetComponent<Transform>()->Rotate(0.2, vec3(1, 0, 0), Transform::Space::GLOBAL);
 	App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->Rotate(0.2, vec3(0, 1, 0), Transform::Space::GLOBAL);
 
