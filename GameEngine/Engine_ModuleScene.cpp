@@ -96,6 +96,8 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 		oFile << meshInfo; //mesh.serialize(oFile);
 		oFile.close();
 
+		gEngine->logHistory.push_back("[Engine] Mesh file created as " + meshName + ".mesh in " + folderName);
+
 		folderName = "Library/Materials/";
 		fs::create_directories(folderName);
 		// implement save texture data
