@@ -191,6 +191,7 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::BeginMenu("Menus")) {
 				ImGui::MenuItem("Hierarchy", "", &hierarchy);
 				ImGui::MenuItem("Inspector", "", &inspector);
+				ImGui::MenuItem("File Explorer", "", &fileExplorer);
 				ImGui::MenuItem("Console Log", "", &logWindow);
 				ImGui::MenuItem("FPS Graph", "", &FPSgraph);
 				ImGui::EndMenu();
