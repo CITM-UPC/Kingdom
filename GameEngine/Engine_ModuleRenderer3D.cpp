@@ -150,11 +150,26 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 
 engine_status Engine_ModuleRenderer3D::Update()
 {
+	//Temporary, only debug
 	glLineWidth(3.0);
 	glBegin(GL_LINES);
-	glColor3ub(255, 255, 0);
-	glVertex3d(0, 0, 0);
-	glVertex3d(0, 0, -100);
+
+	for (int i = 0; i < origins.size(); i++)
+	{
+		glColor3ub(0, 255, 0);
+		glVertex3d(camPos[i].x, camPos[i].y, camPos[i].z - 0.5);
+		glVertex3d(camPos[i].x, camPos[i].y, camPos[i].z + 0.5);
+		glVertex3d(camPos[i].x, camPos[i].y - 0.5, camPos[i].z);
+		glVertex3d(camPos[i].x, camPos[i].y + 0.5, camPos[i].z);
+		glVertex3d(camPos[i].x - 0.5, camPos[i].y, camPos[i].z);
+		glVertex3d(camPos[i].x + 0.5, camPos[i].y, camPos[i].z);
+
+		glColor3ub(255, 255, 0);
+		glVertex3d(origins[i].x, origins[i].y, origins[i].z);
+		glColor3ub(255, 255, 255);
+		glVertex3d(ends[i].x, ends[i].y, ends[i].z);
+	}
+
 	glEnd();
 
 	return ENGINE_UPDATE_CONTINUE;

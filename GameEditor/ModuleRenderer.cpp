@@ -44,9 +44,34 @@ update_status ModuleRenderer::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
+		double percentageX = App->input->GetMouseX() / App->window->width;
+		double percentageY = App->input->GetMouseY() / App->window->height;
+
+		float planeHeight = (glm::sin(App->gEngine->cameraGO.GetComponent<Camera>()->fov / 2) * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear) * 2;
+		float planeWidth = planeHeight * App->gEngine->cameraGO.GetComponent<Camera>()->aspectRatio;
+
+		vec4 worldPos;
+		worldPos.x = App->gEngine->cameraGO.GetComponent<Transform>()->position().x - (planeWidth / 2 - (planeWidth * percentageX));
+		worldPos.y = App->gEngine->cameraGO.GetComponent<Transform>()->position().y + (planeHeight / 2 - (planeHeight * percentageY));
+		worldPos.z = -App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
+		worldPos.w = 1;
+
+		worldPos = App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix * worldPos;
+
+		vec3 rayCastOrigin = App->gEngine->cameraGO.GetComponent<Transform>()->position() + (vec3)worldPos;
+
 		Ray ray;
-		ray.origin = vec3(0, 0, 0);
-		ray.direction = vec3(0, 0, -1);
+		//ray.origin = vec3(0, 0, 0);
+		//ray.direction = vec3(0, 0, -1);
+
+		ray.origin = rayCastOrigin;
+		ray.direction = glm::normalize(rayCastOrigin - App->gEngine->cameraGO.GetComponent<Transform>()->position());
+
+		App->gEngine->renderer3D->origins.push_back(rayCastOrigin);	//Debug only
+		App->gEngine->renderer3D->ends.push_back(rayCastOrigin + (vec3)ray.direction * 20.0);	//Debug only
+		App->gEngine->renderer3D->camPos.push_back(App->gEngine->cameraGO.GetComponent<Transform>()->position());	//Debug only
+
+
 
 		if (RayAABBIntersection(ray, App->gEngine->renderer3D->gameObjectList.back()->computeAABB()))
 		{

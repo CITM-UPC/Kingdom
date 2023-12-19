@@ -91,6 +91,8 @@ public:
 
 public:
 
+	std::vector<vec3> origins, ends, camPos; //temporary, only debug
+
 	SDL_GLContext context;
 	glm::mat3x3 NormalMatrix;
 	glm::mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
