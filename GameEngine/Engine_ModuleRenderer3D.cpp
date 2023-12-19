@@ -154,15 +154,16 @@ engine_status Engine_ModuleRenderer3D::Update()
 	glLineWidth(3.0);
 	glBegin(GL_LINES);
 
+	double size = 0.05;
 	for (int i = 0; i < origins.size(); i++)
 	{
 		glColor3ub(0, 255, 0);
-		glVertex3d(camPos[i].x, camPos[i].y, camPos[i].z - 0.5);
-		glVertex3d(camPos[i].x, camPos[i].y, camPos[i].z + 0.5);
-		glVertex3d(camPos[i].x, camPos[i].y - 0.5, camPos[i].z);
-		glVertex3d(camPos[i].x, camPos[i].y + 0.5, camPos[i].z);
-		glVertex3d(camPos[i].x - 0.5, camPos[i].y, camPos[i].z);
-		glVertex3d(camPos[i].x + 0.5, camPos[i].y, camPos[i].z);
+		glVertex3d(camPos[i].x, camPos[i].y, camPos[i].z - size);
+		glVertex3d(camPos[i].x, camPos[i].y, camPos[i].z + size);
+		glVertex3d(camPos[i].x, camPos[i].y - size, camPos[i].z);
+		glVertex3d(camPos[i].x, camPos[i].y + size, camPos[i].z);
+		glVertex3d(camPos[i].x - size, camPos[i].y, camPos[i].z);
+		glVertex3d(camPos[i].x + size, camPos[i].y, camPos[i].z);
 
 		glColor3ub(255, 255, 0);
 		glVertex3d(origins[i].x, origins[i].y, origins[i].z);

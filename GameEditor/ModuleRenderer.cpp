@@ -42,8 +42,9 @@ update_status ModuleRenderer::Update()
 	App->gEngine->renderer3D->Update();
 	DoCameraInput();
 
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
 	{
+		/*
 		double percentageX = App->input->GetMouseX() / App->window->width;
 		double percentageY = App->input->GetMouseY() / App->window->height;
 
@@ -66,12 +67,29 @@ update_status ModuleRenderer::Update()
 
 		ray.origin = rayCastOrigin;
 		ray.direction = glm::normalize(rayCastOrigin - App->gEngine->cameraGO.GetComponent<Transform>()->position());
+		*/
+		
+		Ray ray;
+		ray.origin = App->gEngine->cameraGO.GetComponent<Transform>()->position();
+		ray.direction = App->gEngine->cameraGO.GetComponent<Transform>()->forward();
 
-		App->gEngine->renderer3D->origins.push_back(rayCastOrigin);	//Debug only
-		App->gEngine->renderer3D->ends.push_back(rayCastOrigin + (vec3)ray.direction * 20.0);	//Debug only
+		vec2 nearPlaneSize; 
+		nearPlaneSize.y = ((glm::sin(glm::radians(App->gEngine->cameraGO.GetComponent<Camera>()->fov)) / 2) * 
+							App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear) * 2;
+		nearPlaneSize.x = nearPlaneSize.y * App->gEngine->cameraGO.GetComponent<Camera>()->aspectRatio;
+
+		vec2 finalPos; 
+		finalPos.x = (nearPlaneSize.x / App->window->width) * (App->input->GetMouseX() - App->window->width / 2); //+ nearPlaneSize.x / 2;
+		finalPos.y = (nearPlaneSize.y / App->window->height) * (App->input->GetMouseY() - App->window->height / 2); //+ nearPlaneSize.y / 2;
+
+
+		ray.origin += App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
+		ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->up() * finalPos.y;
+		ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->right() * finalPos.x;
+
+		App->gEngine->renderer3D->origins.push_back(ray.origin);	//Debug only
+		App->gEngine->renderer3D->ends.push_back((vec3)ray.origin + (vec3)ray.direction * 20.0);	//Debug only
 		App->gEngine->renderer3D->camPos.push_back(App->gEngine->cameraGO.GetComponent<Transform>()->position());	//Debug only
-
-
 
 		if (RayAABBIntersection(ray, App->gEngine->renderer3D->gameObjectList.back()->computeAABB()))
 		{

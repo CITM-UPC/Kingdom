@@ -8,7 +8,14 @@
 
 #define ENGINE_LOG(format, ...) engineLog(__FILE__, __LINE__, format __VA_OPT__(, __VA_ARGS__))
 
+
 void engineLog(const char file[], int line, const char* format, ...);
+
+//This approach could be interesting to investigate to solve the intellisense errors and remove the legacy code.
+//template <typename... Args>
+//inline void ENGINE_LOG(Args... args) { engineLog(__FILE__, __LINE__, format, ...args)); }
+
+
 
 #define CAP(n) ((n <= 0.0f) ? n=0.0f : (n >= 1.0f) ? n=1.0f : n=n)
 
