@@ -37,3 +37,4 @@ No previous installations is required to use the engine, just download and execu
 
 + [Jonathan Cacay Llanes](https://github.com/xGauss05)
 + [Ethan Martín Parra](https://github.com/Ethanm-0371)
++ [Pau Fusco Zamora](https://github.com/PauFusco)

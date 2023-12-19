@@ -17,6 +17,9 @@ Engine_ModuleScene::~Engine_ModuleScene() = default;
 
 bool Engine_ModuleScene::Init()
 {
+	fs::create_directories("Library/Meshes/");
+	fs::create_directories("Library/Materials/");
+	
 	addGameObject("Assets/BakerHouse.fbx");
 
 	return true;
@@ -71,7 +74,7 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 	/*std::string parentName;*/
 
 	int i = 0;
-	for (const auto& meshInfo : meshInfo_vector)
+	for (auto& meshInfo : meshInfo_vector)
 	{
 		std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
@@ -91,16 +94,12 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 		gOparent->childs.push_back(std::move(gameObjectToAdd));
 
 		string folderName = "Library/Meshes/";
-		fs::create_directories(folderName);
-		ofstream oFile(folderName + meshName, ios::binary);
-		oFile << meshInfo; //mesh.serialize(oFile);
+		
+		ofstream oFile(folderName + meshName + ".mesh", ios::binary);
+		oFile << meshInfo;
 		oFile.close();
 
 		gEngine->logHistory.push_back("[Engine] Mesh file created as " + meshName + ".mesh in " + folderName);
-
-		folderName = "Library/Materials/";
-		fs::create_directories(folderName);
-		// implement save texture data
 
 		Texture2D textureToPush(gOparent->childs.back().get(), texture_paths_vector.at(i));
 		gOparent->childs.back().get()->AddComponent<Texture2D>(textureToPush);

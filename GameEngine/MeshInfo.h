@@ -60,14 +60,37 @@ public:
 	}
 
 	istream& deserialize(istream& is) {
-		size_t temp = 0;
-		is.read((char*)&temp, sizeof(temp));
-		//_vertex_data.resize(temp); 
-		//is.read((char*)_vertex_data.data(), temp * sizeof(V3T2));
+		is.read((char*)&_numVerts, sizeof(_numVerts));
 
-		//is.read((char*)&temp, sizeof(temp));
-		//_index_data.resize(temp);
-		//is.read((char*)_index_data.data(), temp * sizeof(uint));
+		// Allocate memory for _vertex_data and read the data
+		_vertex_data = new V3T2[_numVerts];
+		is.read((char*)_vertex_data, _numVerts * sizeof(V3T2));
+
+		is.read((char*)&_numIndexs, sizeof(_numIndexs));
+
+		// Allocate memory for _index_data and read the data
+		_index_data = new uint[_numIndexs];
+		is.read((char*)_index_data, _numIndexs * sizeof(uint));
+
+		is.read((char*)&_numTexCoords, sizeof(_numTexCoords));
+
+		// Read mVertices
+		mVertices.resize(_numVerts);
+		is.read((char*)mVertices.data(), _numVerts * sizeof(vec3f));
+
+		is.read((char*)&_numNormals, sizeof(_numNormals));
+
+		// Read mNormals
+		mNormals.resize(_numNormals);
+		is.read((char*)mNormals.data(), _numNormals * sizeof(vec3f));
+
+		is.read((char*)&_numFaces, sizeof(_numFaces));
+
+		// Read mFaceNormals and mFaceCenters
+		mFaceNormals.resize(_numFaces);
+		mFaceCenters.resize(_numFaces);
+		is.read((char*)mFaceNormals.data(), _numFaces * sizeof(vec3f));
+		is.read((char*)mFaceCenters.data(), _numFaces * sizeof(vec3f));
 
 		return is;
 	}
