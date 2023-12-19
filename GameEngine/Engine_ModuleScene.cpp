@@ -159,6 +159,26 @@ void Engine_ModuleScene::addGameObject(Primitive* shape)
 		+ std::to_string(meshInfo._numVerts) + " vertexs.");
 }
 
+void Engine_ModuleScene::addGameObject(string name, unsigned long UUID, bool active, unsigned long parentUUID)
+{
+	std::unique_ptr<GameObject> createdGO = std::make_unique<GameObject>();
+
+	createdGO->name = name;
+	createdGO->UUID = UUID;
+	createdGO->isActive = active;
+
+	// Add parent pointer if existent
+	if (parentUUID)
+	{
+		for (auto& go : currentScene.gameObjectList)
+		{
+			createdGO->parent = findGameObjectfromUUID(go.get(), parentUUID);
+		}
+
+		if (createdGO == nullptr) gEngine->logHistory.push_back("[Engine] ERROR: Parent of object not found when loading scene");
+	}
+}
+
 void Engine_ModuleScene::removeGameObject(GameObject* GOtoDelete)
 {
 	auto it = std::find_if(currentScene.gameObjectList.begin(), currentScene.gameObjectList.end(), [GOtoDelete](const std::unique_ptr<GameObject>& GO) {
@@ -169,6 +189,18 @@ void Engine_ModuleScene::removeGameObject(GameObject* GOtoDelete)
 	{
 		currentScene.gameObjectList.erase(it);
 	}
+}
+
+GameObject* Engine_ModuleScene::findGameObjectfromUUID(GameObject* parent, unsigned long UUID)
+{
+	if (parent->UUID == UUID)	return parent;
+
+	for (auto& child : parent->childs)
+	{
+		findGameObjectfromUUID(child.get(), UUID);
+	}
+
+	return nullptr;
 }
 
 void Engine_ModuleScene::NewScene()
@@ -198,6 +230,7 @@ void Engine_ModuleScene::SaveAsScene(string fileName)
 
 	Json::Value sceneValue;
 
+	sceneValue["Name"] = fileName.c_str();
 	for (auto& go : currentScene.gameObjectList)
 	{
 		sceneValue["GameObject List"].append(go.get()->SaveInfo());
@@ -213,7 +246,30 @@ void Engine_ModuleScene::SaveAsScene(string fileName)
 
 void Engine_ModuleScene::LoadScene(string fileName)
 {
-	currentScene.gameObjectList.clear();
+	NewScene();
 
-	Json::Value sceneToLoad = GetJsonFile(currentScene.fileName);
+	Json::Value sceneToLoad = GetFile(currentScene.fileName);
+
+	currentScene.name = sceneToLoad["Name"].asString();
+	currentScene.fileName = fileName;
+
+	for (auto GOtoLoad : sceneToLoad["GameObject List"])
+	{
+		LoadGameObject(GOtoLoad);
+	}
+}
+
+void Engine_ModuleScene::LoadGameObject(Json::Value GOjsValue)
+{
+	std::string tempName = GOjsValue["Name"].asString();
+	unsigned long tempUUID = GOjsValue["UUID"].asInt();
+	bool tempActive = GOjsValue["Active"].asBool();
+	unsigned long tempParentUUID = GOjsValue["Parent UUID"].asInt();
+
+	tempParentUUID == NULL ? addGameObject(tempName, tempUUID, tempActive) :
+		addGameObject(tempName, tempUUID, tempActive, tempParentUUID);
+
+	// Load childs
+
+	// Load components
 }

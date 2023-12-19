@@ -33,6 +33,8 @@ public:
 	void SaveAsScene(string fileName);
 	// Loads scene from a file
 	void LoadScene(string fileName);
+	// Load GameObject from a file
+	void LoadGameObject(Json::Value GOjsValue);
 
 public:
 
@@ -42,8 +44,13 @@ public:
 
 	void addGameObject(Primitive* shape);
 
+	// Add GameObject with information from scene loading
+	void addGameObject(string name, unsigned long UUID, bool active, unsigned long parentUUID = 0);
+
 	// Only used when gameobject has no parent, removes a parent from the scene
 	void removeGameObject(GameObject* GOtoDelete);
+
+	GameObject* findGameObjectfromUUID(GameObject* parent, unsigned long UUID);
 
 	void deleteSubstring(std::string& mainString, const std::string& substringToDelete) {
 		size_t pos = mainString.find(substringToDelete);

@@ -174,9 +174,10 @@ update_status ModuleUI::MainMenuBar()
 			}
 			if (ImGui::MenuItem("Save As...", "", &saveasMenu)) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("New Project", "Not implemented")) {}
-			if (ImGui::MenuItem("Open Project", "Not implemented")) {}
-			if (ImGui::MenuItem("Save Project", "Not implemented")) {}
+			if (ImGui::MenuItem("Load Scene"))
+			{
+				App->gEngine->scene->LoadScene("a.mdng");
+			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Exit", "Alt+F4")) { return UPDATE_STOP; }
 			ImGui::EndMenu();
@@ -285,6 +286,15 @@ void ModuleUI::GameObjectOptions()
 		}
 
 		gameObjSelected = nullptr;
+	}
+	if (ImGui::MenuItem("la mama de")) {
+		ImGui::BeginPopup("hola");
+		if (ImGui::BeginPopupContextItem()) // <-- This is using IsItemHovered()
+		{
+			if (ImGui::MenuItem("Close")) {}
+			ImGui::EndPopup();
+		}
+		ImGui::EndPopup();
 	}
 }
 
