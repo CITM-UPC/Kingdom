@@ -23,7 +23,7 @@ Application::Application()
 Application::~Application()
 {
 	list_modules.clear();	//If this does not yield the expected results,
-							//try using list::erase(i) traversing the list in reverse order.
+	//try using list::erase(i) traversing the list in reverse order.
 }
 
 bool Application::Init()

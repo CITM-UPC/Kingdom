@@ -35,6 +35,7 @@ public:
 	Json::Value SaveInfo();
 
 	std::string path;
+	std::string fileName;
 	int width, height;
 
 private:

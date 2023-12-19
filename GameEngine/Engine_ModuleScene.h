@@ -42,6 +42,9 @@ public:
 
 	void addGameObject(Primitive* shape);
 
+	// Only used when gameobject has no parent, removes a parent from the scene
+	void removeGameObject(GameObject* GOtoDelete);
+
 	void deleteSubstring(std::string& mainString, const std::string& substringToDelete) {
 		size_t pos = mainString.find(substringToDelete);
 

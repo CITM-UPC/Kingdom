@@ -157,6 +157,18 @@ void Engine_ModuleScene::addGameObject(Primitive* shape)
 		+ std::to_string(meshInfo._numVerts) + " vertexs.");
 }
 
+void Engine_ModuleScene::removeGameObject(GameObject* GOtoDelete)
+{
+	auto it = std::find_if(currentScene.gameObjectList.begin(), currentScene.gameObjectList.end(), [GOtoDelete](const std::unique_ptr<GameObject>& GO) {
+		return GO.get() == GOtoDelete;
+		});
+
+	if (it != currentScene.gameObjectList.end())
+	{
+		currentScene.gameObjectList.erase(it);
+	}
+}
+
 void Engine_ModuleScene::NewScene()
 {
 	currentScene.fileName = "";
@@ -197,4 +209,9 @@ void Engine_ModuleScene::SaveAsScene(string fileName)
 	gEngine->logHistory.push_back("[Engine] Scene file with name: " + fileName + " created");
 }
 
-void Engine_ModuleScene::LoadScene(string fileName) {}
+void Engine_ModuleScene::LoadScene(string fileName)
+{
+	currentScene.gameObjectList.clear();
+
+	Json::Value sceneToLoad = GetJsonFile(currentScene.fileName);
+}

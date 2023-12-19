@@ -38,7 +38,6 @@ public:
 	std::vector<vec3f> mFaceNormals;
 
 	ostream& serialize(ostream& os) const {
-	
 		os.write((char*)&_numVerts, sizeof(_numVerts));
 		os.write((char*)_vertex_data, _numVerts * sizeof(V3T2)); // we need to control this somehow
 
@@ -94,12 +93,10 @@ public:
 
 		return is;
 	}
-
 };
 
 inline ostream& operator<<(ostream& os, const MeshInfo& mesh) {
 	return mesh.serialize(os);
-
 }
 
 inline istream& operator>>(istream& is, MeshInfo& mesh) {

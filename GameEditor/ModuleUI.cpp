@@ -283,8 +283,16 @@ void ModuleUI::GameObjectOptions()
 	ImGui::MenuItem("Move", "Reparent GameObject", &reparentMenu, goIsSelected);
 	if (ImGui::MenuItem("Delete", "Remove GameObject", a, goIsSelected))
 	{
-		auto parent = gameObjSelected->parent;
-		parent->removeChild(gameObjSelected);
+		if (gameObjSelected->parent == nullptr)
+		{
+			App->gEngine->scene->removeGameObject(gameObjSelected);
+		}
+		else
+		{
+			auto parent = gameObjSelected->parent;
+			parent->removeChild(gameObjSelected);
+		}
+
 		gameObjSelected = nullptr;
 	}
 }

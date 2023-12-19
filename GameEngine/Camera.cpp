@@ -28,14 +28,16 @@ Json::Value Camera::SaveInfo()
 {
 	Json::Value obj;
 
-	obj["Camera"]["Fov"] = fov;
-	obj["Camera"]["Aspect Ratio"] = aspectRatio;
-	obj["Camera"]["Clipping Plane View Near"] = clippingPlaneViewNear;
-	obj["Camera"]["Clipping Plane View Far"] = clippingPlaneViewFar;
-	obj["Camera"]["Look At Position"].append(lookAtPos.x);
-	obj["Camera"]["Look At Position"].append(lookAtPos.y);
-	obj["Camera"]["Look At Position"].append(lookAtPos.z);
-	obj["Camera"]["Camera Offset"] = camOffset;
+	obj["Owner"] = obj["Owner"] = std::to_string(this->owner->UUID).c_str();
+
+	obj["Fov"] = fov;
+	obj["Aspect Ratio"] = aspectRatio;
+	obj["Clipping Plane View Near"] = clippingPlaneViewNear;
+	obj["Clipping Plane View Far"] = clippingPlaneViewFar;
+	obj["Look At Position"].append(lookAtPos.x);
+	obj["Look At Position"].append(lookAtPos.y);
+	obj["Look At Position"].append(lookAtPos.z);
+	obj["Camera Offset"] = camOffset;
 
 	return obj;
 }

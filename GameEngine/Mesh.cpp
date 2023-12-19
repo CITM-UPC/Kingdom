@@ -254,8 +254,10 @@ Json::Value Mesh::SaveInfo()
 {
 	Json::Value obj;
 
-	obj["Mesh"]["Name"] = meshName.c_str();
-	obj["Mesh"]["Binary File"] = "";
+	std::string bPath = "Library/Meshes/" + owner->name + ".mesh";
+	obj["Owner"] = std::to_string(this->owner->UUID).c_str();
+	obj["Binary Path"] = bPath.c_str();
+	obj["Type"] = static_cast<int>(getType());
 
 	return obj;
 }

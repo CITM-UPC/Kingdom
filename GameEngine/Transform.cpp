@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "GameEngine.h"
 
 Transform::Transform(GameObject* owner) : Component(owner)
 {
@@ -51,34 +52,32 @@ Json::Value Transform::SaveInfo()
 {
 	Json::Value obj;
 
+	obj["Owner"] = std::to_string(this->owner->UUID).c_str();
+	obj["Type"] = static_cast<int>(getType());
+
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			obj["Transform"]["Transformation Matrix"].append(_transformationMatrix[i][j]);
+			obj["Transformation Matrix"].append(_transformationMatrix[i][j]);
 		}
 	}
 
-	obj["Transform"]["Right"].append(_right.x);
-	obj["Transform"]["Right"].append(_right.y);
-	obj["Transform"]["Right"].append(_right.z);
+	obj["Right"].append(_right.x);
+	obj["Right"].append(_right.y);
+	obj["Right"].append(_right.z);
 
-	obj["Transform"]["Up"].append(_up.x);
-	obj["Transform"]["Up"].append(_up.y);
-	obj["Transform"]["Up"].append(_up.z);
+	obj["Up"].append(_up.x);
+	obj["Up"].append(_up.y);
+	obj["Up"].append(_up.z);
 
-	obj["Transform"]["Forward"].append(_forward.x);
-	obj["Transform"]["Forward"].append(_forward.y);
-	obj["Transform"]["Forward"].append(_forward.z);
+	obj["Forward"].append(_forward.x);
+	obj["Forward"].append(_forward.y);
+	obj["Forward"].append(_forward.z);
 
-	obj["Transform"]["Position"].append(_position.x);
-	obj["Transform"]["Position"].append(_position.y);
-	obj["Transform"]["Position"].append(_position.z);
-
-	obj["Transform"]["Padding 1"] = _padding1;
-	obj["Transform"]["Padding 2"] = _padding2;
-	obj["Transform"]["Padding 3"] = _padding3;
-	obj["Transform"]["Padding 4"] = _padding4;
+	obj["Position"].append(_position.x);
+	obj["Position"].append(_position.y);
+	obj["Position"].append(_position.z);
 
 	return obj;
 }
