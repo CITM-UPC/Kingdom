@@ -10,6 +10,9 @@
 #include "Texture2D.h"
 #include "Camera.h"
 
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
 class GameObject
 {
 public:
@@ -17,6 +20,12 @@ public:
 	std::string name;
 	bool isActive = true;
 	std::list<std::unique_ptr<Component>> components;
+
+	std::list<std::unique_ptr<GameObject>> childs;
+
+	GameObject* parent;
+
+	unsigned long UUID;
 
 public:
 
@@ -28,6 +37,9 @@ public:
 
 	std::list<std::unique_ptr<Component>>* GetComponents();
 
+	void Move(GameObject* newParent);
+	void removeChild(GameObject* childToRemove);
+
 	void AddComponent(Component::Type component);
 	//void AddComponent(std::unique_ptr<Component>& component);
 
@@ -37,6 +49,8 @@ public:
 	void RemoveComponent(Component::Type component);
 
 	void UpdateComponents();
+
+	json SaveInfo();
 
 	//static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);
 

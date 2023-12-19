@@ -146,7 +146,6 @@ Mesh::Mesh(const Mesh& cpy) :
 }
 
 void Mesh::draw() {
-
 	glPushMatrix();
 	glMultMatrixd(&owner->GetComponent<Transform>()->_transformationMatrix[0].x);
 
@@ -268,4 +267,17 @@ AABBox Mesh::getAABB(){
 void Mesh::Update()
 {
 	draw();
+}
+
+json Mesh::SaveInfo()
+{
+	json obj;
+
+	std::string bPath = "Library/Meshes/" + owner->name + ".mesh";
+
+	obj["Owner"] = std::to_string(owner->UUID);
+	obj["Binary Path"] = bPath;
+	obj["Type"] = static_cast<int>(getType());
+
+	return obj;
 }

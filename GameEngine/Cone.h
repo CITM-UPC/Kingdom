@@ -11,7 +11,6 @@ private:
 
 	std::vector<vec3> vertex_array;
 
-
 public:
 	Cone(int faces)
 	{
@@ -34,7 +33,6 @@ public:
 			vertex_data.push_back(Mesh::V3{ vertex_array[i] });
 		}
 
-
 		//Seting the indexes
 		for (unsigned int i = 3; i < faces + 2; ++i)
 		{
@@ -56,7 +54,6 @@ public:
 		index_data.push_back(unsigned int{ (unsigned int)2 });
 		index_data.push_back(unsigned int{ (unsigned int)1 });
 		index_data.push_back(unsigned int{ (unsigned int)faces + 1 });
-
 
 		numTexCoords = vertex_data.size();
 		numNormals = vertex_data.size();

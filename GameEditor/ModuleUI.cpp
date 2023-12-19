@@ -8,10 +8,14 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
+#include "imgui_stdlib.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled) {}
 
@@ -42,9 +46,9 @@ bool ModuleUI::Init()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;		// Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;		// Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// IF using Docking Branch
 	io.Fonts->AddFontFromFileTTF("Fonts/DroidSans.ttf", 14);
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->gEngine->renderer3D->context);
@@ -82,29 +86,25 @@ update_status ModuleUI::PreUpdate()
 		ImGui::DockSpaceOverViewport(0, dock_flags);
 	}
 
-	if (FPSgraph)   FPSGraphWindow();
-	if (logWindow)	LogConsoleWindow();
+	if (FPSgraph)		FPSGraphWindow();
+	if (logWindow)		LogConsoleWindow();
 
-	if (options)	OptionsWindow();
-	if (camDebug)	CamDebugWindow();
-	if (about)      AboutWindow();
-	if (inspector)	InspectorWindow();
-	if (hierarchy)	HierarchyWindow();
-	if (demo)       ImGui::ShowDemoWindow(&demo);
+	if (options)		OptionsWindow();
+	if (camDebug)		CamDebugWindow();
+	if (about)      	AboutWindow();
+	if (inspector)		InspectorWindow();
+	if (hierarchy)		HierarchyWindow();
+	if (fileExplorer)	FileExplorerWindow();
+	if (demo)       	ImGui::ShowDemoWindow(&demo);
 
-#pragma region ImGui_Windows_Test
+	if (saveasMenu) 	SaveAsMenu();
+	if (reparentMenu) 	ReparentMenu();
 
-	/*ImGui::Begin("Inspector");
-	ImGui::Text("First inspector test");
-	ImGui::SliderFloat3("Position", (float*)&App->gEngine->cam.transform.position, 0, 1);
-	ImGui::DragFloat("x", (float*)&App->gEngine->cam.transform.position.x);
-	ImGui::SameLine();
-	ImGui::DragFloat("y", (float*)&App->gEngine->cam.transform.position.y);
-	ImGui::SameLine();
-	ImGui::DragFloat("z", (float*)&App->gEngine->cam.transform.position.z);
-	ImGui::End();*/
-
-#pragma endregion3
+	ImGuiIO& io = ImGui::GetIO();
+	if (!io.WantCaptureMouse && App->input->GetMouseButton(SDL_BUTTON_LEFT))
+	{
+		gameObjSelected = nullptr;
+	}
 
 	return MainMenuBar();
 }
@@ -158,15 +158,27 @@ update_status ModuleUI::MainMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("New Scene", "Not implemented")) {}
+			if (ImGui::MenuItem("New Scene", "Not implemented"))
+			{
+				App->gEngine->scene->NewScene();
+			}
 			if (ImGui::MenuItem("Open Scene", "Not implemented")) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Save", "Not implemented")) {}
-			if (ImGui::MenuItem("Save As...", "Not implemented")) {}
+			if (ImGui::MenuItem("Save"))
+			{
+				if (App->gEngine->scene->currentScene.fileName != "")
+				{
+					App->gEngine->scene->SaveScene();
+				}
+				else saveasMenu = true;
+			}
+			if (ImGui::MenuItem("Save As...", "", &saveasMenu)) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("New Project", "Not implemented")) {}
-			if (ImGui::MenuItem("Open Project", "Not implemented")) {}
-			if (ImGui::MenuItem("Save Project", "Not implemented")) {}
+			if (ImGui::MenuItem("Load Scene"))
+			{
+				App->gEngine->scene->LoadScene("a.mdng");
+				gameObjSelected = nullptr;
+			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Exit", "Alt+F4")) { return UPDATE_STOP; }
 			ImGui::EndMenu();
@@ -201,6 +213,7 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::BeginMenu("Menus")) {
 				ImGui::MenuItem("Hierarchy", "", &hierarchy);
 				ImGui::MenuItem("Inspector", "", &inspector);
+				ImGui::MenuItem("File Explorer", "", &fileExplorer);
 				ImGui::MenuItem("Console Log", "", &logWindow);
 				ImGui::MenuItem("FPS Graph", "", &FPSgraph);
 				ImGui::EndMenu();
@@ -211,17 +224,18 @@ update_status ModuleUI::MainMenuBar()
 		}
 		if (ImGui::BeginMenu("GameObjects")) {
 			if (ImGui::BeginMenu("Create...")) {
-				if (ImGui::MenuItem("Create Empty")) { App->gEngine->renderer3D->addGameObject(); }
+				if (ImGui::MenuItem("Create Empty")) { App->gEngine->scene->addGameObject(); }
 				if (ImGui::MenuItem("Plane", "Not implemented")) {}
-				if (ImGui::MenuItem("Cube")) { Cube cube; App->gEngine->renderer3D->addGameObject(&cube); }
-				if (ImGui::MenuItem("Pyramid")) { Pyramid pyramid; App->gEngine->renderer3D->addGameObject(&pyramid); }
+				if (ImGui::MenuItem("Cube")) { Cube cube; App->gEngine->scene->addGameObject(&cube); }
+				if (ImGui::MenuItem("Pyramid")) { Pyramid pyramid; App->gEngine->scene->addGameObject(&pyramid); }
 				if (ImGui::MenuItem("Sphere", "Not implemented")) {}
 				if (ImGui::MenuItem("Cylinder", "Not implemented")) {}
-				if (ImGui::MenuItem("Cone")) { Cone cone(16); App->gEngine->renderer3D->addGameObject(&cone); }
+				if (ImGui::MenuItem("Cone")) { Cone cone(16); App->gEngine->scene->addGameObject(&cone); }
 				if (ImGui::MenuItem("Torus", "Not implemented")) {}
 				ImGui::EndMenu();
 			}
 			if (ImGui::MenuItem("Draw Mode")) {}
+			GameObjectOptions();
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Help"))
@@ -235,6 +249,85 @@ update_status ModuleUI::MainMenuBar()
 	}
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleUI::SaveAsMenu()
+{
+	ImGui::Begin("Save As", &saveasMenu);
+
+	static char nameRecipient[32];
+
+	ImGui::InputText("File Name", nameRecipient, IM_ARRAYSIZE(nameRecipient));
+
+	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && nameRecipient != "")
+	{
+		App->gEngine->scene->SaveAsScene(nameRecipient);
+		saveasMenu = false;
+	}
+
+	ImGui::End();
+}
+
+void ModuleUI::GameObjectOptions()
+{
+	bool goIsSelected;
+	gameObjSelected != nullptr ? goIsSelected = true : goIsSelected = false;
+	bool a = false;
+	ImGui::MenuItem("Move", "Reparent GameObject", &reparentMenu, goIsSelected);
+	if (ImGui::MenuItem("Delete", "Remove GameObject", a, goIsSelected))
+	{
+		if (gameObjSelected->parent == nullptr)
+		{
+			App->gEngine->scene->removeGameObject(gameObjSelected);
+		}
+		else
+		{
+			auto parent = gameObjSelected->parent;
+			parent->removeChild(gameObjSelected);
+		}
+
+		gameObjSelected = nullptr;
+	}
+}
+
+void ModuleUI::ReparentMenu()
+{
+	static ImGuiWindowFlags menuFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize;
+	ImGui::Begin("Reparent GameObject", &reparentMenu, menuFlags);
+
+	ImGui::MenuItem("Reparent: ", "", false, false);
+
+	toParent == nullptr ? ImGui::Selectable("...", &reparentThis) : ImGui::Selectable(toParent->name.c_str(), &reparentThis);
+
+	if (reparentThis) {
+		reparentTo = false;
+		toParent = gameObjSelected;
+	}
+
+	ImGui::Separator();
+
+	ImGui::MenuItem("To: ", "", false, false);
+
+	adopter == nullptr ? ImGui::Selectable("...", &reparentTo) : ImGui::Selectable(adopter->name.c_str(), &reparentTo);
+
+	if (reparentTo) {
+		reparentThis = false;
+		adopter = gameObjSelected;
+	}
+
+	if (ImGui::MenuItem("Confirm"))
+	{
+		if (adopter != nullptr && toParent != nullptr)
+		{
+			toParent->Move(adopter);
+			App->logHistory.push_back("Moved " + toParent->name + " to " + adopter->name);
+		}
+		else
+		{
+			App->logHistory.push_back("ERROR: Select both GameObjects in order to Reparent");
+		}
+	}
+	ImGui::End();
 }
 
 void ModuleUI::FPSGraphWindow()
@@ -254,14 +347,32 @@ void ModuleUI::FPSGraphWindow()
 	ImGui::End();
 }
 
+void ModuleUI::HierarchyRecursive(GameObject* gO)
+{
+	ImGuiTreeNodeFlags TreeNodeFlags = ImGuiTreeNodeFlags_OpenOnArrow;
+	if (gO->childs.empty())		TreeNodeFlags |= ImGuiTreeNodeFlags_Leaf;
+	if (gameObjSelected == gO)	TreeNodeFlags |= ImGuiTreeNodeFlags_Selected;
+
+	bool isOpen = ImGui::TreeNodeEx(gO->name.c_str(), TreeNodeFlags);
+
+	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())	gameObjSelected = gO;
+
+	if (isOpen)
+	{
+		for (auto& child : gO->childs)
+		{
+			HierarchyRecursive(child.get());
+		}
+		ImGui::TreePop();
+	}
+}
+
 void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
-	for (const auto& gameObjectPtr : App->gEngine->renderer3D->gameObjectList) {
-		auto& gameObject = *gameObjectPtr;
-		if (ImGui::MenuItem(gameObject.name.c_str())) {
-			gameObjSelected = &gameObject;
-		}
+	for (const auto& gOparentPtr : App->gEngine->scene->currentScene.gameObjectList)
+	{
+		HierarchyRecursive(gOparentPtr.get());
 	}
 	ImGui::EndMenu();
 }
@@ -345,7 +456,7 @@ void ModuleUI::InspectorWindow()
 						if (ImGui::IsItemHovered()) {
 							ImGui::SetTooltip("Use Texture must be checked in order to see the checker texture.");
 						}
-						if (mesh->getName().find("Cube") == std::string::npos && 
+						if (mesh->getName().find("Cube") == std::string::npos &&
 							mesh->getName().find("Pyramid") == std::string::npos &&
 							mesh->getName().find("Cone") == std::string::npos)
 						{
@@ -588,6 +699,33 @@ void ModuleUI::AboutWindow()
 	ImGui::Bullet(); if (ImGui::Button("SDL2 2.28.3")) { OsOpenInShell("https://wiki.libsdl.org/"); }
 	ImGui::Separator();
 	if (ImGui::CollapsingHeader("License")) { ImGui::Text(aboutContent.c_str()); }
+	ImGui::End();
+}
+
+void ShowFolderContents(const fs::path& folderPath) {
+	if (ImGui::CollapsingHeader(folderPath.filename().string().c_str())) {
+		for (const auto& entry : fs::directory_iterator(folderPath)) {
+			if (fs::is_directory(entry.path())) {
+				ShowFolderContents(entry.path());
+			}
+			else if (fs::is_regular_file(entry.path())) {
+				if (ImGui::Selectable(entry.path().filename().string().c_str())) {}
+			}
+		}
+	}
+}
+
+void ModuleUI::FileExplorerWindow()
+{
+	ImGui::Begin("File Explorer", &fileExplorer);
+
+	const fs::path assetsPath = "Assets";
+	ShowFolderContents(assetsPath);
+	ImGui::Separator();
+	const fs::path libraryPath = "Library";
+	ShowFolderContents(libraryPath);
+	ImGui::Separator();
+
 	ImGui::End();
 }
 

@@ -115,9 +115,9 @@ void GameObject::UpdateComponents()
 	{
 		comp->Update();
 	}
-
-	drawAABBox(computeAABB());
+  drawAABBox(computeAABB());
 }
+
 
 AABBox GameObject::computeAABB()
 {
@@ -147,4 +147,66 @@ AABBox GameObject::computeAABB()
 
 	//return aabbox;
 	return obBox.AABB();
+}
+
+void GameObject::Move(GameObject* newParent)
+{
+	auto it = std::find_if(parent->childs.begin(), parent->childs.end(), [this](const std::unique_ptr<GameObject>& child) {
+		return child.get() == this;
+		});
+
+	if (it != parent->childs.end()) {
+		// Move the child to the new list
+		newParent->childs.push_back(std::move(*it));
+		parent->childs.erase(it);
+
+		// Update the parent pointer of the moved child
+		parent = newParent;
+	}
+}
+
+void GameObject::removeChild(GameObject* child)
+{
+	auto it = std::remove_if(childs.begin(), childs.end(), [child](const std::unique_ptr<GameObject>& ptr) {
+		return ptr.get() == child;
+		});
+
+	// Check if the child was found
+	if (it != childs.end())
+	{
+		// Erase the element at the end, which was moved there by std::remove_if
+		childs.erase(it, childs.end());
+		// The unique_ptr will automatically delete the removed child
+	}
+}
+
+json GameObject::SaveInfo()
+{
+	json obj;
+
+	if (parent) obj["Parent UUID"] = parent->UUID;
+
+	json childArray;
+
+	for (auto& go : childs)
+	{
+		childArray.push_back(go.get()->SaveInfo());
+	}
+
+	obj["Childs"] = childArray;
+
+	json compArray;
+
+	for (auto& comp : components)
+	{
+		compArray.push_back(comp.get()->SaveInfo());
+	}
+
+	obj["Components"] = compArray;
+
+	obj["Active"] = isActive;
+	obj["UUID"] = UUID;
+	obj["Name"] = name;
+
+	return obj;
 }

@@ -43,45 +43,6 @@ public:
 		vsync = active;
 	}
 
-	void addGameObject();
-
-	void addGameObject(const std::string& filePath);
-
-	void addGameObject(Primitive* shape);
-
-	void deleteSubstring(std::string& mainString, const std::string& substringToDelete) {
-		size_t pos = mainString.find(substringToDelete);
-
-		// Iterate until all occurrences are removed
-		while (pos != std::string::npos) {
-			mainString.erase(pos, substringToDelete.length());
-			pos = mainString.find(substringToDelete, pos);
-		}
-	}
-
-	void eraseBeforeDelimiter(std::string& str) {
-		size_t found = str.find_last_of("\\/");
-		if (found != std::string::npos) {
-			str.erase(0, found + 1);
-		}
-	}
-
-	void detectAndIncrement(std::string mainString, const std::string& substring, int& counter) {
-		if (mainString.find(substring) != std::string::npos) {
-			counter++;
-		}
-	}
-
-	int checkNameAvailability(std::string name) {
-		int count = 0;
-
-		for (const auto& vector : gameObjectList) {
-			detectAndIncrement(vector->name, name, count);
-		}
-
-		return count;
-	}
-
 	void SwapDepthTest();
 	void SwapCullFace();
 	void SwapLighting();
@@ -96,8 +57,6 @@ public:
 	SDL_GLContext context;
 	glm::mat3x3 NormalMatrix;
 	glm::mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
-	std::list<std::unique_ptr<GameObject>> gameObjectList;
-	std::list<std::string> logHistory;
 
 	bool depth_test;
 	bool cull_face;

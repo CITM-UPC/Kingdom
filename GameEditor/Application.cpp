@@ -8,6 +8,7 @@ Application::Application()
 	input = new ModuleInput(this);
 	renderer = new ModuleRenderer(this);
 	ui = new ModuleUI(this);
+	resources = new ModuleResources(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -17,13 +18,14 @@ Application::Application()
 	AddModule(window);
 	AddModule(input);
 	AddModule(renderer);
+	AddModule(resources);
 	AddModule(ui);
 }
 
 Application::~Application()
 {
 	list_modules.clear();	//If this does not yield the expected results,
-							//try using list::erase(i) traversing the list in reverse order.
+	//try using list::erase(i) traversing the list in reverse order.
 }
 
 bool Application::Init()
@@ -106,9 +108,9 @@ update_status Application::Update()
 	// Replace oldest data in the history
 	if (fpsHistory.size() > 100) fpsHistory.erase(fpsHistory.begin());
 
-	logHistory.insert(logHistory.end(), gEngine->renderer3D->logHistory.begin(), gEngine->renderer3D->logHistory.end());
+	logHistory.insert(logHistory.end(), gEngine->logHistory.begin(), gEngine->logHistory.end());
 
-	gEngine->renderer3D->logHistory.clear();
+	gEngine->logHistory.clear();
 
 	return ret;
 }

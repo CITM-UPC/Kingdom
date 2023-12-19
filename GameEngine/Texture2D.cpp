@@ -1,7 +1,8 @@
 #include "Texture2D.h"
+#include "GameObject.h"
 #include <GL/glew.h>
 #include <IL/il.h>
-
+#include <iostream>
 #include <algorithm>
 
 using namespace std;
@@ -29,6 +30,15 @@ Texture2D::Texture2D(GameObject* owner, const std::string& path) : Component(own
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	size_t lastOf = path.find_last_of('/');
+	this->fileName = path.substr(lastOf + 1);
+	lastOf = this->fileName.find_last_of('.');
+	this->fileName = this->fileName.substr(0, lastOf);
+	this->fileName = "Library/Materials/" + this->fileName + ".dds";
+
+	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);
+	ilSave(IL_DDS, this->fileName.c_str());
 
 	//now we can delete image from RAM
 	ilDeleteImage(img);
@@ -63,7 +73,8 @@ Texture2D::Texture2D(Texture2D&& tex) noexcept :
 	_id_checker(tex._id_checker),
 	path(tex.path),
 	width(tex.width),
-	height(tex.height)
+	height(tex.height),
+	fileName(tex.fileName)
 {
 	tex._id = 0;
 	tex._id_checker = 0;
@@ -75,7 +86,8 @@ Texture2D::Texture2D(const Texture2D& cpy) :
 	_id_checker(cpy._id_checker),
 	path(cpy.path),
 	width(cpy.width),
-	height(cpy.height)
+	height(cpy.height),
+	fileName(cpy.fileName)
 {
 	const_cast<Texture2D&>(cpy)._id = 0;
 	const_cast<Texture2D&>(cpy)._id_checker = 0;
@@ -102,4 +114,15 @@ void Texture2D::unbind() const {
 void Texture2D::checker() const
 {
 	glBindTexture(GL_TEXTURE_2D, _id_checker);
+}
+
+json Texture2D::SaveInfo()
+{
+	json obj;
+
+	obj["Owner"] = std::to_string(owner->UUID);
+	obj["Binary Path"] = fileName;
+	obj["Type"] = static_cast<int>(getType());
+
+	return obj;
 }

@@ -1,5 +1,7 @@
 #pragma once
 #include <memory>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 class GameObject;
 
@@ -18,6 +20,8 @@ public:
 	bool isActive = true;
 	GameObject* owner;
 
+	unsigned long UUID;
+
 public:
 
 	Component(GameObject* gameObject) : owner(gameObject) {}
@@ -26,4 +30,6 @@ public:
 	virtual void Update() = 0;
 	//virtual void Render() = 0;
 	virtual Type getType() const = 0;
+
+	virtual json SaveInfo() = 0;
 };
