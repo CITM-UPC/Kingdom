@@ -177,6 +177,7 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::MenuItem("Load Scene"))
 			{
 				App->gEngine->scene->LoadScene("a.mdng");
+				gameObjSelected = nullptr;
 			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Exit", "Alt+F4")) { return UPDATE_STOP; }
@@ -286,15 +287,6 @@ void ModuleUI::GameObjectOptions()
 		}
 
 		gameObjSelected = nullptr;
-	}
-	if (ImGui::MenuItem("la mama de")) {
-		ImGui::BeginPopup("hola");
-		if (ImGui::BeginPopupContextItem()) // <-- This is using IsItemHovered()
-		{
-			if (ImGui::MenuItem("Close")) {}
-			ImGui::EndPopup();
-		}
-		ImGui::EndPopup();
 	}
 }
 

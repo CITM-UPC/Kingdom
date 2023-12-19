@@ -160,28 +160,6 @@ void Engine_ModuleScene::addGameObject(Primitive* shape)
 		+ std::to_string(meshInfo._numVerts) + " vertexs.");
 }
 
-void Engine_ModuleScene::addGameObject(string name, unsigned long UUID, bool active, unsigned long parentUUID)
-{
-	std::unique_ptr<GameObject> createdGO = std::make_unique<GameObject>();
-
-	createdGO->name = name;
-	createdGO->UUID = UUID;
-	createdGO->isActive = active;
-
-	// Add parent pointer if existent
-	if (parentUUID)
-	{
-		for (auto& go : currentScene.gameObjectList)
-		{
-			createdGO->parent = findGameObjectfromUUID(go.get(), parentUUID);
-		}
-
-		if (createdGO == nullptr) gEngine->logHistory.push_back("[Engine] ERROR: Parent of object not found when loading scene");
-	}
-
-	currentScene.gameObjectList.push_back(std::move(createdGO));
-}
-
 void Engine_ModuleScene::removeGameObject(GameObject* GOtoDelete)
 {
 	auto it = std::find_if(currentScene.gameObjectList.begin(), currentScene.gameObjectList.end(), [GOtoDelete](const std::unique_ptr<GameObject>& GO) {
@@ -192,18 +170,6 @@ void Engine_ModuleScene::removeGameObject(GameObject* GOtoDelete)
 	{
 		currentScene.gameObjectList.erase(it);
 	}
-}
-
-GameObject* Engine_ModuleScene::findGameObjectfromUUID(GameObject* parent, unsigned long UUID)
-{
-	if (parent->UUID == UUID)	return parent;
-
-	for (auto& child : parent->childs)
-	{
-		findGameObjectfromUUID(child.get(), UUID);
-	}
-
-	return nullptr;
 }
 
 void Engine_ModuleScene::NewScene()
@@ -285,25 +251,140 @@ void Engine_ModuleScene::LoadScene(string fileName)
 
 		for (auto rootGO : gameObjectList)
 		{
-			LoadGameObject(rootGO);
+			CreateRootGOs(rootGO);
 		}
 	}
 }
 
-void Engine_ModuleScene::LoadGameObject(json rootGOjsValue)
+void Engine_ModuleScene::CreateRootGOs(json rootGOjsValue)
 {
 	string name = rootGOjsValue["Name"];
 
-	int tempUUID = rootGOjsValue["UUID"].is_number_unsigned();
-	unsigned long UUID = (unsigned long)tempUUID;
+	unsigned long UUID = rootGOjsValue["UUID"];
 
-	//int isActive = rootGOjsValue["Active"];
+	bool isActive = rootGOjsValue["Active"];
 
-	int tempparentUUID = 0;
-	unsigned long parentUUID = (unsigned long)tempparentUUID;
+	LoadRootGameObject(name, UUID, isActive);
 
-	if (rootGOjsValue.contains("Parent UUID"))	parentUUID = rootGOjsValue["Parent UUID"];
+	json childArray = rootGOjsValue["Childs"];
 
-	parentUUID == 0 ? addGameObject(name, UUID, true) :
-		addGameObject(name, UUID, true, parentUUID);
+	for (auto childroot : childArray)
+	{
+		LoadChildGameObjectfromjson(childroot);
+	}
+
+	json componentArray = rootGOjsValue["Components"];
+
+	for (auto comp : componentArray)
+	{
+		LoadComponentfromjson(comp);
+	}
+}
+
+void Engine_ModuleScene::LoadRootGameObject(string name, unsigned long UUID, bool active)
+{
+	std::unique_ptr<GameObject> newRootGO = std::make_unique<GameObject>();
+
+	currentScene.gameObjectList.push_back(std::move(newRootGO));
+
+	currentScene.gameObjectList.back()->name = name;
+	currentScene.gameObjectList.back()->UUID = UUID;
+	currentScene.gameObjectList.back()->isActive = active;
+}
+
+void Engine_ModuleScene::LoadChildGameObjectfromjson(json parentRoot)
+{
+	string name = parentRoot["Name"];
+	parentRoot["Active"];
+
+	unsigned long UUID = parentRoot["UUID"];
+
+	unsigned long parentUUID = parentRoot["Parent UUID"];
+
+	GameObject* parent = nullptr;
+
+	for (auto& root : currentScene.gameObjectList)
+	{
+		if (root.get()->UUID == parentUUID)
+		{
+			parent = root.get();
+		}
+		else
+		{
+			GameObject* tempParent = findGameObjectfromUUID(root.get(), parentUUID);
+
+			if (tempParent != nullptr)
+			{
+				parent = tempParent;
+				break;
+			}
+		}
+	}
+
+	std::unique_ptr<GameObject> newRootGO = std::make_unique<GameObject>();
+
+	if (parent != nullptr)
+	{
+		parent->childs.push_back(std::move(newRootGO));
+
+		parent->childs.back()->name = name;
+		parent->childs.back()->UUID = UUID;
+		parent->childs.back()->parent = parent;
+	}
+
+	json childArray = parentRoot["Childs"];
+
+	for (auto childroot : childArray)
+	{
+		LoadChildGameObjectfromjson(childroot);
+	}
+
+	json componentArray = parentRoot["Components"];
+	for (auto comp : componentArray)
+	{
+		LoadComponentfromjson(comp);
+	}
+}
+
+void Engine_ModuleScene::LoadComponentfromjson(json parentRoot)
+{
+	int itype = parentRoot["Type"];
+
+	switch (itype)
+	{
+	case 0:
+		// Call transform constructor with the node / modify transform information
+		break;
+	case 1:
+		// Call mesh constructor with the node
+		break;
+	case 2:
+		// Call texture constructor with the node
+		break;
+	case 3:
+		// Camera constructor??
+		break;
+	default:
+		gEngine->logHistory.push_back("[Engine] Could not load component: no type provided by save");
+		break;
+	}
+}
+
+GameObject* Engine_ModuleScene::findGameObjectfromUUID(GameObject* head, unsigned long UUIDtocompare)
+{
+	for (auto& child : head->childs)
+	{
+		if (child.get()->UUID == UUIDtocompare)
+		{
+			return child.get();
+		}
+
+		GameObject* tempParent = findGameObjectfromUUID(child.get(), UUIDtocompare);
+		if (tempParent != nullptr)
+		{
+			return tempParent;
+		}
+	}
+
+	return nullptr;
 }

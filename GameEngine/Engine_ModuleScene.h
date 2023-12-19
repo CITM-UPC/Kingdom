@@ -34,7 +34,7 @@ public:
 	// Loads scene from a file
 	void LoadScene(string fileName);
 	// Load GameObject from a file
-	void LoadGameObject(json rootGOjsValue);
+	void CreateRootGOs(json rootGOjsValue);
 
 public:
 
@@ -44,13 +44,19 @@ public:
 
 	void addGameObject(Primitive* shape);
 
-	// Add GameObject with information from scene loading
-	void addGameObject(string name, unsigned long UUID, bool active, unsigned long parentUUID = 0);
+	// Load GameObject with information from scene loading
+	void LoadRootGameObject(string name, unsigned long UUID, bool active);
+
+	// Load a child from the json root of a parent
+	void LoadChildGameObjectfromjson(json parentRoot);
+
+	// Load a component from the json root of a parent
+	void LoadComponentfromjson(json parentRoot);
 
 	// Only used when gameobject has no parent, removes a parent from the scene
 	void removeGameObject(GameObject* GOtoDelete);
 
-	GameObject* findGameObjectfromUUID(GameObject* parent, unsigned long UUID);
+	GameObject* findGameObjectfromUUID(GameObject* head, unsigned long UUIDtocompare);
 
 	void deleteSubstring(std::string& mainString, const std::string& substringToDelete) {
 		size_t pos = mainString.find(substringToDelete);
