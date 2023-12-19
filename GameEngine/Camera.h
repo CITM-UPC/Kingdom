@@ -16,7 +16,7 @@ public:
 		return Type::CAMERA;
 	}
 
-	Json::Value SaveInfo();
+	json SaveInfo();
 
 public:
 

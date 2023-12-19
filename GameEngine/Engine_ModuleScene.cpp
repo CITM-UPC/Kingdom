@@ -6,9 +6,10 @@
 #include <sstream>
 #include <filesystem>
 
-#include "JSONParser.h"
+#include <nlohmann/json.hpp>
 
 namespace fs = std::filesystem;
+using json = nlohmann::json;
 
 Engine_ModuleScene::Engine_ModuleScene(GameEngine* gEngine, bool start_enabled) : Engine_Module(gEngine, start_enabled)
 {
@@ -177,6 +178,8 @@ void Engine_ModuleScene::addGameObject(string name, unsigned long UUID, bool act
 
 		if (createdGO == nullptr) gEngine->logHistory.push_back("[Engine] ERROR: Parent of object not found when loading scene");
 	}
+
+	currentScene.gameObjectList.push_back(std::move(createdGO));
 }
 
 void Engine_ModuleScene::removeGameObject(GameObject* GOtoDelete)
@@ -212,12 +215,17 @@ void Engine_ModuleScene::NewScene()
 
 void Engine_ModuleScene::SaveScene()
 {
-	Json::Value sceneValue;
+	json sceneValue;
+
+	json gameobjectArray;
 
 	for (auto& go : currentScene.gameObjectList)
 	{
-		sceneValue["GameObject List"].append(go.get()->SaveInfo());
+		//gameobjectArray.push_back(go.get()->SaveInfo());
+		gameobjectArray.push_back(go.get()->UUID);
 	}
+
+	sceneValue["Game Object List"] = gameobjectArray;
 
 	ofstream("Assets/" + currentScene.fileName) << sceneValue;
 
@@ -228,13 +236,18 @@ void Engine_ModuleScene::SaveAsScene(string fileName)
 {
 	// Create scene file, save and set as current scene file
 
-	Json::Value sceneValue;
+	json sceneValue;
 
 	sceneValue["Name"] = fileName.c_str();
+
+	json gameobjectArray;
+
 	for (auto& go : currentScene.gameObjectList)
 	{
-		sceneValue["GameObject List"].append(go.get()->SaveInfo());
+		gameobjectArray.push_back(go.get()->SaveInfo());
 	}
+
+	sceneValue["Game Object List"] = gameobjectArray;
 
 	currentScene.name = fileName;
 	currentScene.fileName = fileName + ".mdng";
@@ -246,30 +259,51 @@ void Engine_ModuleScene::SaveAsScene(string fileName)
 
 void Engine_ModuleScene::LoadScene(string fileName)
 {
-	NewScene();
+	std::ifstream file("Assets/" + fileName);
 
-	Json::Value sceneToLoad = GetFile(currentScene.fileName);
+	json sceneToLoad;
+	bool parsed = true;
 
-	currentScene.name = sceneToLoad["Name"].asString();
-	currentScene.fileName = fileName;
-
-	for (auto GOtoLoad : sceneToLoad["GameObject List"])
+	// Check if parsed correctly
+	try {
+		sceneToLoad = json::parse(file);
+	}
+	catch (json::parse_error e)
 	{
-		LoadGameObject(GOtoLoad);
+		gEngine->logHistory.push_back(e.what());
+		parsed = false;
+	}
+
+	if (parsed)
+	{
+		NewScene();
+
+		currentScene.name = sceneToLoad["Name"];
+		currentScene.fileName = fileName;
+
+		const json gameObjectList = sceneToLoad["Game Object List"];
+
+		for (auto rootGO : gameObjectList)
+		{
+			LoadGameObject(rootGO);
+		}
 	}
 }
 
-void Engine_ModuleScene::LoadGameObject(Json::Value GOjsValue)
+void Engine_ModuleScene::LoadGameObject(json rootGOjsValue)
 {
-	std::string tempName = GOjsValue["Name"].asString();
-	unsigned long tempUUID = GOjsValue["UUID"].asInt();
-	bool tempActive = GOjsValue["Active"].asBool();
-	unsigned long tempParentUUID = GOjsValue["Parent UUID"].asInt();
+	string name = rootGOjsValue["Name"];
 
-	tempParentUUID == NULL ? addGameObject(tempName, tempUUID, tempActive) :
-		addGameObject(tempName, tempUUID, tempActive, tempParentUUID);
+	int tempUUID = rootGOjsValue["UUID"].is_number_unsigned();
+	unsigned long UUID = (unsigned long)tempUUID;
 
-	// Load childs
+	//int isActive = rootGOjsValue["Active"];
 
-	// Load components
+	int tempparentUUID = 0;
+	unsigned long parentUUID = (unsigned long)tempparentUUID;
+
+	if (rootGOjsValue.contains("Parent UUID"))	parentUUID = rootGOjsValue["Parent UUID"];
+
+	parentUUID == 0 ? addGameObject(name, UUID, true) :
+		addGameObject(name, UUID, true, parentUUID);
 }

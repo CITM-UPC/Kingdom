@@ -81,7 +81,16 @@ bool ModuleWindow::Init()
 
 update_status ModuleWindow::Update()
 {
-	SetTitle(App->gEngine->scene->currentScene.name.c_str());
+	std::string title;
+	if (App->gEngine->scene->currentScene.name != "")
+	{
+		title = App->gEngine->scene->currentScene.name + " - " + TITLE;
+	}
+	else
+	{
+		title = TITLE;
+	}
+	SetTitle(title.c_str());
 	return UPDATE_CONTINUE;
 }
 

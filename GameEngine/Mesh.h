@@ -83,7 +83,7 @@ public:
 		return Type::MESH;
 	}
 
-	Json::Value SaveInfo();
+	json SaveInfo();
 
 private:
 

@@ -250,13 +250,14 @@ void Mesh::Update()
 	draw();
 }
 
-Json::Value Mesh::SaveInfo()
+json Mesh::SaveInfo()
 {
-	Json::Value obj;
+	json obj;
 
 	std::string bPath = "Library/Meshes/" + owner->name + ".mesh";
-	obj["Owner"] = std::to_string(this->owner->UUID).c_str();
-	obj["Binary Path"] = bPath.c_str();
+
+	obj["Owner"] = std::to_string(owner->UUID);
+	obj["Binary Path"] = bPath;
 	obj["Type"] = static_cast<int>(getType());
 
 	return obj;

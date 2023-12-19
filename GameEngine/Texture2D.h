@@ -32,7 +32,7 @@ public:
 		return Type::TEXTURE2D;
 	}
 
-	Json::Value SaveInfo();
+	json SaveInfo();
 
 	std::string path;
 	std::string fileName;

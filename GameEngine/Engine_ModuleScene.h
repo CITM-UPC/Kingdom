@@ -34,7 +34,7 @@ public:
 	// Loads scene from a file
 	void LoadScene(string fileName);
 	// Load GameObject from a file
-	void LoadGameObject(Json::Value GOjsValue);
+	void LoadGameObject(json rootGOjsValue);
 
 public:
 

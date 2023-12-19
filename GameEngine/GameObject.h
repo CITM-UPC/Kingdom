@@ -4,12 +4,14 @@
 #include <list>
 #include <memory>
 
-#include "json/json.h"
 #include "Component.h"
 #include "Transform.h"
 #include "Mesh.h"
 #include "Texture2D.h"
 #include "Camera.h"
+
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 class GameObject
 {
@@ -48,7 +50,7 @@ public:
 
 	void UpdateComponents();
 
-	Json::Value SaveInfo();
+	json SaveInfo();
 
 	//static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);
 };

@@ -48,36 +48,48 @@ void Transform::Rotate(double angle, vec3 axis, Space referenceFrame)
 
 void Transform::Update() {}
 
-Json::Value Transform::SaveInfo()
+json Transform::SaveInfo()
 {
-	Json::Value obj;
+	json obj;
 
-	obj["Owner"] = std::to_string(this->owner->UUID).c_str();
+	obj["Owner"] = std::to_string(this->owner->UUID);
 	obj["Type"] = static_cast<int>(getType());
+
+	json transformationMatrixArray;
+	json rightArray;
+	json upArray;
+	json forwardArray;
+	json positionArray;
 
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			obj["Transformation Matrix"].append(_transformationMatrix[i][j]);
+			transformationMatrixArray.push_back(_transformationMatrix[i][j]);
 		}
 	}
 
-	obj["Right"].append(_right.x);
-	obj["Right"].append(_right.y);
-	obj["Right"].append(_right.z);
+	rightArray.push_back(_right.x);
+	rightArray.push_back(_right.y);
+	rightArray.push_back(_right.z);
 
-	obj["Up"].append(_up.x);
-	obj["Up"].append(_up.y);
-	obj["Up"].append(_up.z);
+	upArray.push_back(_up.x);
+	upArray.push_back(_up.y);
+	upArray.push_back(_up.z);
 
-	obj["Forward"].append(_forward.x);
-	obj["Forward"].append(_forward.y);
-	obj["Forward"].append(_forward.z);
+	forwardArray.push_back(_forward.x);
+	forwardArray.push_back(_forward.y);
+	forwardArray.push_back(_forward.z);
 
-	obj["Position"].append(_position.x);
-	obj["Position"].append(_position.y);
-	obj["Position"].append(_position.z);
+	positionArray.push_back(_position.x);
+	positionArray.push_back(_position.y);
+	positionArray.push_back(_position.z);
+
+	obj["Transformation Matrix"] = transformationMatrixArray;
+	obj["Right"] = rightArray;
+	obj["Up"] = upArray;
+	obj["Forward"] = forwardArray;
+	obj["Position"] = positionArray;
 
 	return obj;
 }
