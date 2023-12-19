@@ -50,7 +50,7 @@ private:
 	void OptionsWindow();
 	void CamDebugWindow();
 	void AboutWindow();
-
+	void FileExplorerWindow();
 	void HierarchyRecursive(GameObject* gO);
 	void GameObjectOptions();
 	void ReparentMenu();
@@ -71,6 +71,8 @@ private:
 	bool demo = false;
 	bool reparentMenu = false;
 	bool saveasMenu = false;
+	bool fileExplorer = true;
+
 
 	bool autoScrollLog = true;
 

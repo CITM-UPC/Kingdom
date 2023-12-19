@@ -13,6 +13,9 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled) {}
 
@@ -83,38 +86,25 @@ update_status ModuleUI::PreUpdate()
 		ImGui::DockSpaceOverViewport(0, dock_flags);
 	}
 
-	if (FPSgraph)   FPSGraphWindow();
-	if (logWindow)	LogConsoleWindow();
+	if (FPSgraph)		FPSGraphWindow();
+	if (logWindow)		LogConsoleWindow();
 
-	if (options)	OptionsWindow();
-	if (camDebug)	CamDebugWindow();
-	if (about)      AboutWindow();
-	if (inspector)	InspectorWindow();
-	if (hierarchy)	HierarchyWindow();
-	if (demo)       ImGui::ShowDemoWindow(&demo);
+	if (options)		OptionsWindow();
+	if (camDebug)		CamDebugWindow();
+	if (about)      	AboutWindow();
+	if (inspector)		InspectorWindow();
+	if (hierarchy)		HierarchyWindow();
+	if (fileExplorer)	FileExplorerWindow();
+	if (demo)       	ImGui::ShowDemoWindow(&demo);
 
-	if (reparentMenu) ReparentMenu();
-	if (saveasMenu) SaveAsMenu();
+	if (saveasMenu) 	SaveAsMenu();
+	if (reparentMenu) 	ReparentMenu();
 
 	ImGuiIO& io = ImGui::GetIO();
 	if (!io.WantCaptureMouse && App->input->GetMouseButton(SDL_BUTTON_LEFT))
 	{
 		gameObjSelected = nullptr;
 	}
-
-#pragma region ImGui_Windows_Test
-
-	/*ImGui::Begin("Inspector");
-	ImGui::Text("First inspector test");
-	ImGui::SliderFloat3("Position", (float*)&App->gEngine->cam.transform.position, 0, 1);
-	ImGui::DragFloat("x", (float*)&App->gEngine->cam.transform.position.x);
-	ImGui::SameLine();
-	ImGui::DragFloat("y", (float*)&App->gEngine->cam.transform.position.y);
-	ImGui::SameLine();
-	ImGui::DragFloat("z", (float*)&App->gEngine->cam.transform.position.z);
-	ImGui::End();*/
-
-#pragma endregion3
 
 	return MainMenuBar();
 }
@@ -221,6 +211,7 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::BeginMenu("Menus")) {
 				ImGui::MenuItem("Hierarchy", "", &hierarchy);
 				ImGui::MenuItem("Inspector", "", &inspector);
+				ImGui::MenuItem("File Explorer", "", &fileExplorer);
 				ImGui::MenuItem("Console Log", "", &logWindow);
 				ImGui::MenuItem("FPS Graph", "", &FPSgraph);
 				ImGui::EndMenu();
@@ -706,6 +697,33 @@ void ModuleUI::AboutWindow()
 	ImGui::Bullet(); if (ImGui::Button("SDL2 2.28.3")) { OsOpenInShell("https://wiki.libsdl.org/"); }
 	ImGui::Separator();
 	if (ImGui::CollapsingHeader("License")) { ImGui::Text(aboutContent.c_str()); }
+	ImGui::End();
+}
+
+void ShowFolderContents(const fs::path& folderPath) {
+	if (ImGui::CollapsingHeader(folderPath.filename().string().c_str())) {
+		for (const auto& entry : fs::directory_iterator(folderPath)) {
+			if (fs::is_directory(entry.path())) {
+				ShowFolderContents(entry.path());
+			}
+			else if (fs::is_regular_file(entry.path())) {
+				if (ImGui::Selectable(entry.path().filename().string().c_str())) {}
+			}
+		}
+	}
+}
+
+void ModuleUI::FileExplorerWindow()
+{
+	ImGui::Begin("File Explorer", &fileExplorer);
+
+	const fs::path assetsPath = "Assets";
+	ShowFolderContents(assetsPath);
+	ImGui::Separator();
+	const fs::path libraryPath = "Library";
+	ShowFolderContents(libraryPath);
+	ImGui::Separator();
+
 	ImGui::End();
 }
 

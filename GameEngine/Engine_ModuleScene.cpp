@@ -112,6 +112,8 @@ void Engine_ModuleScene::addGameObject(const std::string& filePath)
 		oFile << meshInfo;
 		oFile.close();
 
+		gEngine->logHistory.push_back("[Engine] Mesh file created as " + meshName + ".mesh in " + folderName);
+
 		Texture2D textureToPush(gOparent->childs.back().get(), texture_paths_vector.at(i));
 		gOparent->childs.back().get()->AddComponent<Texture2D>(textureToPush);
 
