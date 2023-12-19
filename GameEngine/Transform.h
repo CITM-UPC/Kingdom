@@ -50,7 +50,6 @@ public:
 
 	inline const mat4& transform() const { return _transformationMatrix; }
 	inline const vec3& position() const { return _position; }
-	inline const vec3& pos() const { return _position; }
 
 	inline const vec3& right() const { return _right; }
 	inline const vec3& up() const { return _up; }
