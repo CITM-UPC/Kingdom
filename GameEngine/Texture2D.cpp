@@ -9,8 +9,12 @@ using namespace std;
 
 Texture2D::Texture2D(GameObject* owner, const std::string& path) : Component(owner) {
 	//load image data using devil
+
 	auto img = ilGenImage();
 	ilBindImage(img);
+
+	// if path ends with .dds, [ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);]
+
 	ilLoadImage(path.c_str());
 	this->path = path;
 	auto width = ilGetInteger(IL_IMAGE_WIDTH);

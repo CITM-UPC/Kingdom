@@ -357,14 +357,11 @@ void Engine_ModuleScene::LoadChildGameObjectfromjson(json parentRoot)
 
 	std::unique_ptr<GameObject> newRootGO = std::make_unique<GameObject>();
 
-	if (parent != nullptr)
-	{
-		parent->childs.push_back(std::move(newRootGO));
+	parent->childs.push_back(std::move(newRootGO));
 
-		parent->childs.back()->name = name;
-		parent->childs.back()->UUID = UUID;
-		parent->childs.back()->parent = parent;
-	}
+	parent->childs.back()->name = name;
+	parent->childs.back()->UUID = UUID;
+	parent->childs.back()->parent = parent;
 
 	json childArray = parentRoot["Childs"];
 
@@ -377,6 +374,12 @@ void Engine_ModuleScene::LoadChildGameObjectfromjson(json parentRoot)
 	for (auto comp : componentArray)
 	{
 		LoadComponentfromjson(comp);
+	}
+
+	if (parent->childs.back().get()->GetComponent<Mesh>() != nullptr && parent->childs.back().get()->GetComponent<Texture2D>() != nullptr)
+	{
+		//newRootGO->GetComponent<Mesh>()->setName(fileName);
+		parent->childs.back().get()->GetComponent<Mesh>()->texture = parent->childs.back().get()->GetComponent<Texture2D>();
 	}
 }
 
@@ -420,7 +423,7 @@ void Engine_ModuleScene::LoadComponentfromjson(json parentRoot)
 		break;
 	case 2:
 		// Call texture constructor with the node
-
+		LoadComponentTexture(owner, path);
 		break;
 	case 3:
 		// Call mesh constructor with the file path
@@ -470,6 +473,14 @@ void Engine_ModuleScene::LoadComponentMesh(GameObject* owner, string path)
 		gEngine->logHistory.push_back("Mesh Binary File could not be open");
 
 	meshfile.close();
+}
+
+void Engine_ModuleScene::LoadComponentTexture(GameObject* owner, string path)
+{
+	size_t lastOf = path.find_last_of('/');
+	std::string fileName = path.substr(lastOf + 1);
+	Texture2D textureToPush(owner, fileName);
+	owner->AddComponent<Texture2D>(textureToPush);
 }
 
 void Engine_ModuleScene::LoadComponentTransform(GameObject* owner, json transformjsonRoot)

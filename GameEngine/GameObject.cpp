@@ -206,6 +206,8 @@ json GameObject::SaveInfo()
 		compArray.push_back(comp.get()->SaveInfo());
 	}
 
+	// Change order of compArray --> [mesh before texture]
+
 	obj["Components"] = compArray;
 
 	obj["Active"] = isActive;
