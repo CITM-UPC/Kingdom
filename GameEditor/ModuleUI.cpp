@@ -757,7 +757,12 @@ void ShowFolderContents(const fs::path& folderPath) {
 				ShowFolderContents(entry.path());
 			}
 			else if (fs::is_regular_file(entry.path())) {
-				if (ImGui::Selectable(entry.path().filename().string().c_str())) {}
+				ImGui::Text("%s", entry.path().filename().string().c_str());
+				ImGui::SameLine();
+				if (ImGui::Button(("Delete##" + entry.path().string()).c_str())) {
+					// Add code to delete the file here
+					fs::remove(entry.path());
+				}
 			}
 		}
 	}
