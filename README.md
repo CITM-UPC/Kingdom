@@ -4,10 +4,15 @@ University project made by [CITM](https://www.citm.upc.edu/ing/), Centre de la I
 
 ## Features
 * Functional UI, Window, Renderer, Input and System settings.
-* Creates empty GameObjects, Cube...
+* Creates empty GameObjects, Cube, Cone, Pyramid...
 * Able to Drag and Drop .fbx, .png and .dds files.
 * About window...
 * FPS-like camera
+* Able to Raycast and Mouse Picking. Selects the corresponding GameObject
+* Save scene as .mdng
+* Save meshes as .mesh
+* Save materials a .dds
+* File Explorer that reads Assets/ and Library/. Can delete files from there.
 
 ## Libraries Used
 * [Assimp](https://assimp-docs.readthedocs.io/)
@@ -15,12 +20,13 @@ University project made by [CITM](https://www.citm.upc.edu/ing/), Centre de la I
 * [Dear ImGui v1.73, Docking Test Branch](https://github.com/ocornut/imgui)
 * [GLM](https://glm.g-truc.net/0.9.5/index.html)
 * [glew](http://glew.sourceforge.net/)
-* [jsoncpp](https://open-source-parsers.github.io/jsoncpp-docs/doxygen/index.html)
+* [nlohmann-json](https://github.com/nlohmann/json)
 * [OpenGL](https://www.opengl.org/)
 * [SDL2](https://www.libsdl.org/](https://wiki.libsdl.org/))
+* [std:c++20](https://en.cppreference.com/w/cpp/20)
 
 ## Installation
-No previous installations is required to use the engine, just download and execute the .exe file *Kingdom* from releases.
+No previous installations are required to use the engine, just download and execute the .exe file *Kingdom* from releases.
 
 ## Camera Controls
 | Key | Description |
