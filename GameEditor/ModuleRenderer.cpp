@@ -52,10 +52,9 @@ update_status ModuleRenderer::Update()
 		nearPlaneSize.y = glm::tan(glm::radians(App->gEngine->cameraGO.GetComponent<Camera>()->fov / 2)) * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
 		nearPlaneSize.x = nearPlaneSize.y * App->gEngine->cameraGO.GetComponent<Camera>()->aspectRatio;
 
-		vec2 finalPos; 
+		vec2 finalPos;
 		finalPos.x = (nearPlaneSize.x / App->window->width) * (App->input->GetMouseX() - App->window->width) * 2 + nearPlaneSize.x;
 		finalPos.y = (nearPlaneSize.y / App->window->height) * (App->input->GetMouseY() - App->window->height) * 2 + nearPlaneSize.y;
-
 
 		Ray ray;
 		ray.origin = App->gEngine->cameraGO.GetComponent<Transform>()->position();
@@ -66,59 +65,56 @@ update_status ModuleRenderer::Update()
 
 		ray.direction = glm::normalize((vec3)ray.origin - App->gEngine->cameraGO.GetComponent<Transform>()->position());
 
-
 		//-----------------------------------------------------------------------------------------
-
 
 		App->gEngine->renderer3D->origins.push_back(ray.origin);	//Debug only
 		App->gEngine->renderer3D->ends.push_back((vec3)ray.origin + (vec3)ray.direction * 20.0);	//Debug only
 		App->gEngine->renderer3D->camPos.push_back(App->gEngine->cameraGO.GetComponent<Transform>()->position());	//Debug only
 
-
 		vec3 frame1 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-					 -App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+			App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+			-App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+			App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
 
 		vec3 frame2 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+			App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+			App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+			App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
 
 		vec3 frame3 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-					 -App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+			App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+			App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+			-App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
 
 		vec3 frame4 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-					 -App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-					 -App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+			App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+			-App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+			-App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
 
 		App->gEngine->renderer3D->nearPlanes.push_back(frame1);	//Debug only
 		App->gEngine->renderer3D->nearPlanes.push_back(frame2);	//Debug only
 		App->gEngine->renderer3D->nearPlanes.push_back(frame3);	//Debug only
 		App->gEngine->renderer3D->nearPlanes.push_back(frame4);	//Debug only
 
-		if (RayAABBIntersection(ray, App->gEngine->renderer3D->gameObjectList.back()->computeAABB()))
+		if (RayAABBIntersection(ray, App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->computeAABB()))
 		{
 			LOG("Hit AABB");
 
 			float closestIntersection = std::numeric_limits<float>::infinity();
 
-			for (size_t i = 0; i < App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Mesh>()->getNumFaces(); ++i)
+			for (size_t i = 0; i < App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->getNumFaces(); ++i)
 			{
-				vec4 vert0 = { App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Mesh>()->mVertices[i * 3], 1 };
-				vec4 vert1 = { App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Mesh>()->mVertices[i * 3 + 1], 1 };
-				vec4 vert2 = { App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Mesh>()->mVertices[i * 3 + 2], 1 };
+				vec4 vert0 = { App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->mVertices[i * 3], 1 };
+				vec4 vert1 = { App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->mVertices[i * 3 + 1], 1 };
+				vec4 vert2 = { App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->mVertices[i * 3 + 2], 1 };
 
-				vert0 = vert0 * glm::inverse(App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->_transformationMatrix);
-				vert1 = vert1 * glm::inverse(App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->_transformationMatrix);
-				vert2 = vert2 * glm::inverse(App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->_transformationMatrix);
+				vert0 = vert0 * glm::inverse(App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->_transformationMatrix);
+				vert1 = vert1 * glm::inverse(App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->_transformationMatrix);
+				vert2 = vert2 * glm::inverse(App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->_transformationMatrix);
 
-				auto tri0 = (vec3)vert0 + App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->position();
-				auto tri1 = (vec3)vert1 + App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->position();
-				auto tri2 = (vec3)vert2 + App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->position();
+				auto tri0 = (vec3)vert0 + App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->position();
+				auto tri1 = (vec3)vert1 + App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->position();
+				auto tri2 = (vec3)vert2 + App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->position();
 
 				// Assuming _format is F_V3 (change if necessary)
 				Triangle triangle{ tri0, tri1, tri2 };
@@ -153,8 +149,8 @@ update_status ModuleRenderer::Update()
 		App->gEngine->cameraGO.GetComponent<Transform>()->RotateTo(270, vec3(0, 1, 0));
 	}
 
-	App->gEngine->renderer3D->gameObjectList.front()->GetComponent<Transform>()->Rotate(0.2, vec3(1, 0, 0), Transform::Space::GLOBAL);
-	App->gEngine->renderer3D->gameObjectList.back()->GetComponent<Transform>()->Rotate(0.2, vec3(0, 1, 0), Transform::Space::GLOBAL);
+	App->gEngine->scene->currentScene.gameObjectList.back()->childs.front()->GetComponent<Transform>()->Rotate(0.2, vec3(1, 0, 0), Transform::Space::GLOBAL);
+	App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->Rotate(0.2, vec3(0, 1, 0), Transform::Space::GLOBAL);
 
 	return UPDATE_CONTINUE;
 }

@@ -26,6 +26,16 @@ public:
 	{
 	}
 
+	// Empty Constructor
+	MeshInfo() :
+		_numVerts(0),
+		_numIndexs(0),
+		_numTexCoords(0),
+		_numNormals(0),
+		_numFaces(0)
+	{
+	}
+
 	const void* _vertex_data;
 	const unsigned int* _index_data;
 

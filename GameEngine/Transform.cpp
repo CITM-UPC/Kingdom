@@ -52,7 +52,7 @@ json Transform::SaveInfo()
 {
 	json obj;
 
-	obj["Owner"] = std::to_string(this->owner->UUID);
+	obj["Owner"] = owner->UUID;
 	obj["Type"] = static_cast<int>(getType());
 
 	json transformationMatrixArray;

@@ -33,8 +33,6 @@ public:
 	void SaveAsScene(string fileName);
 	// Loads scene from a file
 	void LoadScene(string fileName);
-	// Load GameObject from a file
-	void CreateRootGOs(json rootGOjsValue);
 
 public:
 
@@ -44,6 +42,9 @@ public:
 
 	void addGameObject(Primitive* shape);
 
+	// Load GameObject from a file
+	void CreateRootGOs(json rootGOjsValue);
+
 	// Load GameObject with information from scene loading
 	void LoadRootGameObject(string name, unsigned long UUID, bool active);
 
@@ -52,6 +53,9 @@ public:
 
 	// Load a component from the json root of a parent
 	void LoadComponentfromjson(json parentRoot);
+
+	// Load Mesh Component with the fileName and an owner
+	void LoadComponentMesh(GameObject* owner, string path);
 
 	// Only used when gameobject has no parent, removes a parent from the scene
 	void removeGameObject(GameObject* GOtoDelete);

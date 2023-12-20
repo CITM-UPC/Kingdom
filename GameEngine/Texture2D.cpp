@@ -120,7 +120,7 @@ json Texture2D::SaveInfo()
 {
 	json obj;
 
-	obj["Owner"] = std::to_string(owner->UUID);
+	obj["Owner"] = owner->UUID;
 	obj["Binary Path"] = fileName;
 	obj["Type"] = static_cast<int>(getType());
 

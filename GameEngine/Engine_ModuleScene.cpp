@@ -350,22 +350,51 @@ void Engine_ModuleScene::LoadComponentfromjson(json parentRoot)
 {
 	int itype = parentRoot["Type"];
 
+	string path = "";
+
+	if (parentRoot.contains("Binary Path"))	path = parentRoot["Binary Path"];
+
+	unsigned long ownerUUID = parentRoot["Owner"];
+	GameObject* owner = nullptr;
+	for (auto& root : currentScene.gameObjectList)
+	{
+		if (root.get()->UUID == ownerUUID)
+		{
+			owner = root.get();
+		}
+		else
+		{
+			GameObject* tempParent = findGameObjectfromUUID(root.get(), ownerUUID);
+
+			if (tempParent != nullptr)
+			{
+				owner = tempParent;
+				break;
+			}
+		}
+	}
+
 	switch (itype)
 	{
 	case 0:
 		// Call transform constructor with the node / modify transform information
+		// -----------------------------------------------------------------------
 		break;
 	case 1:
 		// Call mesh constructor with the node
+		LoadComponentMesh(owner, path);
 		break;
 	case 2:
 		// Call texture constructor with the node
+
 		break;
 	case 3:
 		// Camera constructor??
+
 		break;
 	default:
 		gEngine->logHistory.push_back("[Engine] Could not load component: no type provided by save");
+
 		break;
 	}
 }
@@ -387,4 +416,22 @@ GameObject* Engine_ModuleScene::findGameObjectfromUUID(GameObject* head, unsigne
 	}
 
 	return nullptr;
+}
+
+void Engine_ModuleScene::LoadComponentMesh(GameObject* owner, string path)
+{
+	MeshInfo newinfo = MeshInfo();
+
+	std::ifstream meshfile(path);
+
+	if (meshfile.is_open())
+	{
+		meshfile >> newinfo;
+
+		Mesh newMesh(owner, newinfo, Mesh::Formats::F_V3T2);
+
+		owner->AddComponent<Mesh>(newMesh);
+	}
+	else
+		gEngine->logHistory.push_back("Mesh Binary File could not be open");
 }

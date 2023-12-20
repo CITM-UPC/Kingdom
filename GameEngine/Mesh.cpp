@@ -275,7 +275,7 @@ json Mesh::SaveInfo()
 
 	std::string bPath = "Library/Meshes/" + owner->name + ".mesh";
 
-	obj["Owner"] = std::to_string(owner->UUID);
+	obj["Owner"] = owner->UUID;
 	obj["Binary Path"] = bPath;
 	obj["Type"] = static_cast<int>(getType());
 
