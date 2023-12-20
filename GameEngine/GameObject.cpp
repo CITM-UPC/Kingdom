@@ -99,6 +99,17 @@ void GameObject::RenderComponents()
 	}
 }
 
+mat4 GameObject::getGlobalTransform()
+{
+	if (parent != nullptr) {
+		mat4 globatTransform = parent->getGlobalTransform() * GetComponent<Transform>()->_transformationMatrix;
+
+		return globatTransform;
+	}
+
+	return GetComponent<Transform>()->_transformationMatrix;
+}
+
 AABBox GameObject::computeAABB()
 {
 	AABBox aabbox;

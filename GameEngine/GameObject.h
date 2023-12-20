@@ -52,6 +52,8 @@ public:
 
 	void RenderComponents();
 
+	mat4 getGlobalTransform();
+
 	json SaveInfo();
 
 	//static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);

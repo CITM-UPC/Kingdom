@@ -315,13 +315,13 @@ Triangle ModuleRenderer::CalculateTriangle(GameObject* triObject, int iterator)
 	vec4 vert1 = { triObject->GetComponent<Mesh>()->mVertices[iterator * 3 + 1], 1 };
 	vec4 vert2 = { triObject->GetComponent<Mesh>()->mVertices[iterator * 3 + 2], 1 };
 
-	vert0 = vert0 * glm::inverse(triObject->GetComponent<Transform>()->_transformationMatrix);
-	vert1 = vert1 * glm::inverse(triObject->GetComponent<Transform>()->_transformationMatrix);
-	vert2 = vert2 * glm::inverse(triObject->GetComponent<Transform>()->_transformationMatrix);
+	vert0 = vert0 * glm::inverse(triObject->getGlobalTransform());
+	vert1 = vert1 * glm::inverse(triObject->getGlobalTransform());
+	vert2 = vert2 * glm::inverse(triObject->getGlobalTransform());
 
-	auto tri0 = (vec3)vert0 + triObject->GetComponent<Transform>()->position();
-	auto tri1 = (vec3)vert1 + triObject->GetComponent<Transform>()->position();
-	auto tri2 = (vec3)vert2 + triObject->GetComponent<Transform>()->position();
+	auto tri0 = (vec3)vert0 + (vec3)triObject->getGlobalTransform()[3];
+	auto tri1 = (vec3)vert1 + (vec3)triObject->getGlobalTransform()[3];
+	auto tri2 = (vec3)vert2 + (vec3)triObject->getGlobalTransform()[3];
 
 	// Assuming _format is F_V3 (change if necessary)
 	Triangle triangle{ tri0, tri1, tri2 };
