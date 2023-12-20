@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Engine_Globals.h"
-#include "BoundingBox.hpp"
+#include "GameObject.h"
+//#include "BoundingBox.hpp"
 
 struct Ray {
     glm::vec3 origin;
@@ -50,7 +51,10 @@ bool RayTriangleIntersection(const Ray& ray, const Triangle& triangle, float& t)
     return t > EPSILON;
 }
 
-bool RayAABBIntersection(const Ray& ray, const AABBox& box) {
+bool RayAABBIntersection(const Ray& ray, GameObject* go) {
+
+    AABBox box = go->computeAABB();
+
     float tMin = (box.min.x - ray.origin.x) / ray.direction.x;
     float tMax = (box.max.x - ray.origin.x) / ray.direction.x;
 

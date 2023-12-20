@@ -100,48 +100,99 @@ update_status ModuleRenderer::Update()
 		App->gEngine->renderer3D->nearPlanes.push_back(frame3);	//Debug only
 		App->gEngine->renderer3D->nearPlanes.push_back(frame4);	//Debug only
 
-		if (RayAABBIntersection(ray, App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->computeAABB()))
+
+
+		//-----------------------------------------------------------------------------------------
+
+		for (const auto& object : App->gEngine->scene->currentScene.gameObjectList)
 		{
-			LOG("Hit AABB");
+			//The following functions should be encapsulated and performed recursively, not in this barbaric way.
 
-			float closestIntersection = std::numeric_limits<float>::infinity();
-
-			for (size_t i = 0; i < App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->getNumFaces(); ++i)
+			if (RayAABBIntersection(ray, object.get()))
 			{
-				vec4 vert0 = { App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->mVertices[i * 3], 1 };
-				vec4 vert1 = { App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->mVertices[i * 3 + 1], 1 };
-				vec4 vert2 = { App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->mVertices[i * 3 + 2], 1 };
+				LOG("Hit AABB");
 
-				vert0 = vert0 * glm::inverse(App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->_transformationMatrix);
-				vert1 = vert1 * glm::inverse(App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->_transformationMatrix);
-				vert2 = vert2 * glm::inverse(App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->_transformationMatrix);
+				float closestIntersection = std::numeric_limits<float>::infinity();
 
-				auto tri0 = (vec3)vert0 + App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->position();
-				auto tri1 = (vec3)vert1 + App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->position();
-				auto tri2 = (vec3)vert2 + App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->position();
-
-				// Assuming _format is F_V3 (change if necessary)
-				Triangle triangle{ tri0, tri1, tri2 };
-
-				float currentT;
-				if (RayTriangleIntersection(ray, triangle, currentT) && currentT < closestIntersection)
+				//Check for a mesh in the parent
+				if (object->GetComponent<Mesh>() != nullptr)
 				{
-					closestIntersection = currentT;
+					for (size_t i = 0; i < object->GetComponent<Mesh>()->getNumFaces(); ++i)
+					{
+						vec4 vert0 = { object->GetComponent<Mesh>()->mVertices[i * 3], 1 };
+						vec4 vert1 = { object->GetComponent<Mesh>()->mVertices[i * 3 + 1], 1 };
+						vec4 vert2 = { object->GetComponent<Mesh>()->mVertices[i * 3 + 2], 1 };
+
+						vert0 = vert0 * glm::inverse(object->GetComponent<Transform>()->_transformationMatrix);
+						vert1 = vert1 * glm::inverse(object->GetComponent<Transform>()->_transformationMatrix);
+						vert2 = vert2 * glm::inverse(object->GetComponent<Transform>()->_transformationMatrix);
+
+						auto tri0 = (vec3)vert0 + object->GetComponent<Transform>()->position();
+						auto tri1 = (vec3)vert1 + object->GetComponent<Transform>()->position();
+						auto tri2 = (vec3)vert2 + object->GetComponent<Transform>()->position();
+
+						// Assuming _format is F_V3 (change if necessary)
+						Triangle triangle{ tri0, tri1, tri2 };
+
+						float currentT;
+						if (RayTriangleIntersection(ray, triangle, currentT) && currentT < closestIntersection)
+						{
+							closestIntersection = currentT;
+						}
+					}
+
+					if (closestIntersection != std::numeric_limits<float>::infinity())
+					{
+						LOG("Hit %s", object->name.c_str());
+					}
+					else
+					{
+						LOG("Not hit a mesh");
+					}
+				}
+
+				//Check for a mesh in the first layer children
+				for (const auto& child : object->childs)
+				{
+					float childClosestIntersection = std::numeric_limits<float>::infinity();
+
+					if (child->GetComponent<Mesh>() != nullptr)
+					{
+						for (size_t i = 0; i < child->GetComponent<Mesh>()->getNumFaces(); ++i)
+						{
+							vec4 vert0 = { child->GetComponent<Mesh>()->mVertices[i * 3], 1 };
+							vec4 vert1 = { child->GetComponent<Mesh>()->mVertices[i * 3 + 1], 1 };
+							vec4 vert2 = { child->GetComponent<Mesh>()->mVertices[i * 3 + 2], 1 };
+
+							vert0 = vert0 * glm::inverse(child->GetComponent<Transform>()->_transformationMatrix);
+							vert1 = vert1 * glm::inverse(child->GetComponent<Transform>()->_transformationMatrix);
+							vert2 = vert2 * glm::inverse(child->GetComponent<Transform>()->_transformationMatrix);
+
+							auto tri0 = (vec3)vert0 + child->GetComponent<Transform>()->position();
+							auto tri1 = (vec3)vert1 + child->GetComponent<Transform>()->position();
+							auto tri2 = (vec3)vert2 + child->GetComponent<Transform>()->position();
+
+							// Assuming _format is F_V3 (change if necessary)
+							Triangle triangle{ tri0, tri1, tri2 };
+
+							float currentT;
+							if (RayTriangleIntersection(ray, triangle, currentT) && currentT < childClosestIntersection)
+							{
+								childClosestIntersection = currentT;
+							}
+						}
+
+						if (childClosestIntersection != std::numeric_limits<float>::infinity())
+						{
+							LOG("Hit %s", child->name.c_str());
+						}
+						else
+						{
+							LOG("Not hit a mesh");
+						}
+					}
 				}
 			}
-
-			if (closestIntersection != std::numeric_limits<float>::infinity())
-			{
-				LOG("Hit a mesh");
-			}
-			else
-			{
-				LOG("Not hit a mesh");
-			}
-		}
-		else
-		{
-			LOG("Hit nothing");
 		}
 	}
 	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
