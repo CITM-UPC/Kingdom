@@ -24,7 +24,7 @@ public:
 	void DoZoom();
 	void FocusCamera();
 
-	void DoRayCast();
+	GameObject* DoClickRayCast();
 	Ray CalculateRay();
 	void DebugRay(Ray ray);
 	Triangle CalculateTriangle(GameObject* triObject, int iterator);

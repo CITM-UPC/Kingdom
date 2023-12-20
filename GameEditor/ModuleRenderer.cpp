@@ -45,10 +45,6 @@ update_status ModuleRenderer::Update()
 	App->gEngine->scene->Update();
 	DoCameraInput();
 
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-	{
-		DoRayCast();
-	}
 	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 	{
 		App->gEngine->cameraGO.GetComponent<Transform>()->RotateTo(0, vec3(0, 0, 1));
@@ -57,9 +53,6 @@ update_status ModuleRenderer::Update()
 	{
 		App->gEngine->cameraGO.GetComponent<Transform>()->RotateTo(270, vec3(0, 1, 0));
 	}
-
-	App->gEngine->scene->currentScene.gameObjectList.back()->childs.front()->GetComponent<Transform>()->Rotate(0.2, vec3(1, 0, 0), Transform::Space::GLOBAL);
-	App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->Rotate(0.2, vec3(0, 1, 0), Transform::Space::GLOBAL);
 
 	return UPDATE_CONTINUE;
 }
@@ -216,13 +209,8 @@ void ModuleRenderer::FocusCamera()
 	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(targetPos);
 }
 
-void ModuleRenderer::DoRayCast()
+GameObject* ModuleRenderer::DoClickRayCast()
 {
-	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
-	{
-		return;
-	}
-
 	Ray ray = CalculateRay();
 
 	DebugRay(ray);
@@ -249,8 +237,14 @@ void ModuleRenderer::DoRayCast()
 		++it;
 	}
 
-	if (hitObjectsMap.size() > 0) LOG("Closest hit object is %s", hitObjectsMap[closestHitPoint]->name.c_str());
-	else LOG("Hit nothing");
+	if (hitObjectsMap.size() > 0)
+	{
+		LOG("Closest hit object is %s", hitObjectsMap[closestHitPoint]->name.c_str());
+		return hitObjectsMap[closestHitPoint];
+	}
+	
+	LOG("Hit nothing");
+	return nullptr;
 }
 
 Ray ModuleRenderer::CalculateRay()
@@ -280,7 +274,7 @@ Ray ModuleRenderer::CalculateRay()
 void ModuleRenderer::DebugRay(Ray ray)
 {
 	App->gEngine->renderer3D->origins.push_back(ray.origin);	//Debug only
-	App->gEngine->renderer3D->ends.push_back((vec3)ray.origin + (vec3)ray.direction * 20.0);	//Debug only
+	App->gEngine->renderer3D->ends.push_back((vec3)ray.origin + (vec3)ray.direction * 100.0);	//Debug only
 	App->gEngine->renderer3D->camPos.push_back(App->gEngine->cameraGO.GetComponent<Transform>()->position());	//Debug only
 
 	/*

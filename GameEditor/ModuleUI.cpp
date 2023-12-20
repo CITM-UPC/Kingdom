@@ -101,9 +101,11 @@ update_status ModuleUI::PreUpdate()
 	if (reparentMenu) 	ReparentMenu();
 
 	ImGuiIO& io = ImGui::GetIO();
-	if (!io.WantCaptureMouse && App->input->GetMouseButton(SDL_BUTTON_LEFT))
+	if (!io.WantCaptureMouse && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
-		gameObjSelected = nullptr;
+		if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT) return MainMenuBar();
+
+		gameObjSelected = App->renderer->DoClickRayCast();
 	}
 
 	return MainMenuBar();
@@ -206,6 +208,7 @@ update_status ModuleUI::MainMenuBar()
 		if (ImGui::BeginMenu("Debug"))
 		{
 			if (ImGui::MenuItem("Camera Debug")) camDebug = true;
+			if (ImGui::MenuItem("RayCast Debug")) App->gEngine->renderer3D->debugRayCast = !App->gEngine->renderer3D->debugRayCast;
 			if (ImGui::MenuItem("Demo window")) demo = true;
 			ImGui::EndMenu();
 		}
