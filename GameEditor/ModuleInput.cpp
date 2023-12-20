@@ -5,6 +5,9 @@
 #include "imgui.h" //Testing
 #include "imgui_impl_sdl2.h"
 #include <iostream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -113,6 +116,22 @@ update_status ModuleInput::PreUpdate()
 
 			filePath = e.drop.file;
 
+			// Check if the dropped file has the .dds extension
+			if (filePath.substr(filePath.find_last_of(".") + 1) == "dds") {
+				App->logHistory.push_back("[Editor] .dds detected with path " + filePath + ". Added it in Library/Materials/");
+				LOG(".dds file detected");
+				const fs::path sourcePath(filePath);
+				const fs::path destinationPath = "Library/Materials/" + sourcePath.filename().string();
+				fs::copy_file(sourcePath, destinationPath, fs::copy_options::overwrite_existing);
+			}
+			// Check if the dropped file has the .mesh extension
+			if (filePath.substr(filePath.find_last_of(".") + 1) == "mesh") {
+				App->logHistory.push_back("[Editor] .mesh detected with path " + filePath + ". Added it in Library/Meshes/");
+				LOG(".mesh file detected");
+				const fs::path sourcePath(filePath);
+				const fs::path destinationPath = "Library/Meshes/" + sourcePath.filename().string();
+				fs::copy_file(sourcePath, destinationPath, fs::copy_options::overwrite_existing);
+			}
 			// Check if the dropped file has the .fbx extension
 			if (filePath.substr(filePath.find_last_of(".") + 1) == "fbx" || (filePath.substr(filePath.find_last_of(".") + 1) == "FBX")) {
 				App->logHistory.push_back("[Editor] .fbx detected with path " + filePath);
