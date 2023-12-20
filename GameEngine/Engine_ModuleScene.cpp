@@ -30,7 +30,26 @@ bool Engine_ModuleScene::Init()
 
 engine_status Engine_ModuleScene::PreUpdate() { return ENGINE_UPDATE_CONTINUE; }
 
-engine_status Engine_ModuleScene::Update() { return ENGINE_UPDATE_CONTINUE; }
+engine_status Engine_ModuleScene::Update()
+{
+	if (!paused)
+	{
+		for (auto& GO : currentScene.gameObjectList)
+		{
+			recursiveObjectUpdate(GO.get());
+		}
+
+		if (step)
+		{
+			step = false;
+			paused = true;
+		}
+	}
+
+	if (step && paused) paused = false;
+
+	return ENGINE_UPDATE_CONTINUE;
+}
 
 engine_status Engine_ModuleScene::PostUpdate()
 {
@@ -44,9 +63,22 @@ engine_status Engine_ModuleScene::PostUpdate()
 
 bool Engine_ModuleScene::CleanUp() { return true; }
 
+void Engine_ModuleScene::recursiveObjectUpdate(GameObject* GoToUpdate)
+{
+	GoToUpdate->UpdateComponents();
+
+	if (!GoToUpdate->childs.empty())
+	{
+		for (auto& child : GoToUpdate->childs)
+		{
+			recursiveObjectRendering(child.get());
+		}
+	}
+}
+
 void Engine_ModuleScene::recursiveObjectRendering(GameObject* GoToRender)
 {
-	GoToRender->UpdateComponents();
+	GoToRender->RenderComponents();
 
 	if (!GoToRender->childs.empty())
 	{
@@ -225,7 +257,7 @@ void Engine_ModuleScene::SaveAsScene(string fileName)
 
 void Engine_ModuleScene::LoadScene(string fileName)
 {
-	std::ifstream file("Assets/" + fileName);
+	std::ifstream file("Assets/" + fileName + ".mdng");
 
 	json sceneToLoad;
 	bool parsed = true;
@@ -236,7 +268,7 @@ void Engine_ModuleScene::LoadScene(string fileName)
 	}
 	catch (json::parse_error e)
 	{
-		gEngine->logHistory.push_back(e.what());
+		//gEngine->logHistory.push_back(e.what());
 		parsed = false;
 	}
 
@@ -254,6 +286,8 @@ void Engine_ModuleScene::LoadScene(string fileName)
 			CreateRootGOs(rootGO);
 		}
 	}
+	else
+		gEngine->logHistory.push_back("[Engine] Could not parse file");
 }
 
 void Engine_ModuleScene::CreateRootGOs(json rootGOjsValue)
@@ -350,22 +384,51 @@ void Engine_ModuleScene::LoadComponentfromjson(json parentRoot)
 {
 	int itype = parentRoot["Type"];
 
+	string path = "";
+
+	if (parentRoot.contains("Binary Path"))	path = parentRoot["Binary Path"];
+
+	unsigned long ownerUUID = parentRoot["Owner"];
+	GameObject* owner = nullptr;
+	for (auto& root : currentScene.gameObjectList)
+	{
+		if (root.get()->UUID == ownerUUID)
+		{
+			owner = root.get();
+		}
+		else
+		{
+			GameObject* tempParent = findGameObjectfromUUID(root.get(), ownerUUID);
+
+			if (tempParent != nullptr)
+			{
+				owner = tempParent;
+				break;
+			}
+		}
+	}
+
 	switch (itype)
 	{
 	case 0:
 		// Call transform constructor with the node / modify transform information
+		LoadComponentTransform(owner, parentRoot);
 		break;
 	case 1:
-		// Call mesh constructor with the node
+		// Call mesh constructor with the file path
+		LoadComponentMesh(owner, path);
 		break;
 	case 2:
 		// Call texture constructor with the node
+
 		break;
 	case 3:
-		// Camera constructor??
+		// Call mesh constructor with the file path
+		LoadComponentCamera(owner, parentRoot);
 		break;
 	default:
 		gEngine->logHistory.push_back("[Engine] Could not load component: no type provided by save");
+
 		break;
 	}
 }
@@ -387,4 +450,61 @@ GameObject* Engine_ModuleScene::findGameObjectfromUUID(GameObject* head, unsigne
 	}
 
 	return nullptr;
+}
+
+void Engine_ModuleScene::LoadComponentMesh(GameObject* owner, string path)
+{
+	MeshInfo newinfo = MeshInfo();
+
+	std::ifstream meshfile(path, ios::binary);
+
+	if (meshfile.is_open())
+	{
+		meshfile >> newinfo;
+
+		Mesh newMesh(owner, newinfo, Mesh::Formats::F_V3T2);
+
+		owner->AddComponent<Mesh>(newMesh);
+	}
+	else
+		gEngine->logHistory.push_back("Mesh Binary File could not be open");
+
+	meshfile.close();
+}
+
+void Engine_ModuleScene::LoadComponentTransform(GameObject* owner, json transformjsonRoot)
+{
+	mat4 transmatToLoad = mat4(0);
+
+	json transmatArray = transformjsonRoot["Transformation Matrix"];
+
+	int it = 0;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			transmatToLoad[i][j] = transmatArray[it];
+			it++;
+		}
+	}
+
+	// Remove Transformation component since it is created by default on every object
+	owner->RemoveComponent(Component::Type::TRANSFORM);
+
+	Transform newtransform(owner, transmatToLoad);
+	owner->AddComponent<Transform>(newtransform);
+}
+
+void Engine_ModuleScene::LoadComponentCamera(GameObject* owner, json camerajsonRoot)
+{
+	glm::dvec3 vec0 = glm::dvec3(0);
+
+	double fov, ratio, clipnear, clipfar, camoffset;
+
+	fov = camerajsonRoot["Fov"];
+	ratio = camerajsonRoot["Ratio"];
+	clipnear = camerajsonRoot["Clipping Plane View Near"];
+	clipfar = camerajsonRoot["Clipping Plane View Far"];
+	camoffset = camerajsonRoot["Camera Offset"];
+
+	Camera newcamera(owner, fov, ratio, clipnear, clipfar, camoffset, vec0);
+	owner->AddComponent<Camera>(newcamera);
 }

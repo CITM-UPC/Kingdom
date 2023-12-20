@@ -41,18 +41,21 @@ update_status ModuleRenderer::PreUpdate()
 
 update_status ModuleRenderer::Update()
 {
-	App->gEngine->renderer3D->Update();
-	App->gEngine->scene->Update();
-	DoCameraInput();
+  DoCameraInput();
+  
+	if (!App->gEngine->scene->paused)
+	{
+		App->gEngine->renderer3D->Update();
+		App->gEngine->scene->Update();
 
-	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-	{
-		App->gEngine->cameraGO.GetComponent<Transform>()->RotateTo(0, vec3(0, 0, 1));
+		if (App->gEngine->scene->step)
+		{
+			App->gEngine->scene->step = false;
+			App->gEngine->scene->paused = true;
+		}
 	}
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-	{
-		App->gEngine->cameraGO.GetComponent<Transform>()->RotateTo(270, vec3(0, 1, 0));
-	}
+
+	if (App->gEngine->scene->step && App->gEngine->scene->paused)App->gEngine->scene->paused = false;
 
 	return UPDATE_CONTINUE;
 }

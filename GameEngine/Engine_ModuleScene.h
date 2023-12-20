@@ -21,9 +21,14 @@ public:
 	engine_status PostUpdate();
 	bool CleanUp();
 
+	void recursiveObjectUpdate(GameObject* GoToUpdate);
+
 	void recursiveObjectRendering(GameObject* GoToRender);
 
 	Scene currentScene;
+
+	bool paused = false;
+	bool step = false;
 
 	// Create new Scene (erases all current scene variables)
 	void NewScene();
@@ -33,8 +38,6 @@ public:
 	void SaveAsScene(string fileName);
 	// Loads scene from a file
 	void LoadScene(string fileName);
-	// Load GameObject from a file
-	void CreateRootGOs(json rootGOjsValue);
 
 public:
 
@@ -44,6 +47,9 @@ public:
 
 	void addGameObject(Primitive* shape);
 
+	// Load GameObject from a file
+	void CreateRootGOs(json rootGOjsValue);
+
 	// Load GameObject with information from scene loading
 	void LoadRootGameObject(string name, unsigned long UUID, bool active);
 
@@ -52,6 +58,13 @@ public:
 
 	// Load a component from the json root of a parent
 	void LoadComponentfromjson(json parentRoot);
+
+	// Load Mesh Component with the fileName and an owner
+	void LoadComponentMesh(GameObject* owner, string path);
+	// Load Transform Component with the json component root and an owner
+	void LoadComponentTransform(GameObject* owner, json transformjsonRoot);
+	// Load Camera Component with the json component root and an owner
+	void LoadComponentCamera(GameObject* owner, json camerajsonRoot);
 
 	// Only used when gameobject has no parent, removes a parent from the scene
 	void removeGameObject(GameObject* GOtoDelete);

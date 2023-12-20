@@ -17,12 +17,25 @@ Camera::Camera(const Camera& other)
 {
 }
 
+Camera::Camera(GameObject* owner, double ifov, double ratio, double clipnear, double clipfar, double camoffset, glm::dvec3 lookatpos) :
+	Component(owner),
+	fov(ifov),
+	aspectRatio(ratio),
+	clippingPlaneViewNear(clipnear),
+	clippingPlaneViewFar(clipfar),
+	camOffset(camoffset),
+	lookAtPos(lookatpos)
+{
+}
+
 Camera::~Camera() {}
 
 void Camera::Update()
 {
 	//lookAtPos = this->owner->GetComponent<Transform>()->position() + this->owner->GetComponent<Transform>()->forward() * camOffset;
 }
+
+void Camera::Render() {}
 
 json Camera::SaveInfo()
 {
@@ -34,14 +47,6 @@ json Camera::SaveInfo()
 	obj["Aspect Ratio"] = aspectRatio;
 	obj["Clipping Plane View Near"] = clippingPlaneViewNear;
 	obj["Clipping Plane View Far"] = clippingPlaneViewFar;
-
-	json lookatposArray;
-
-	lookatposArray.push_back(lookAtPos.x);
-	lookatposArray.push_back(lookAtPos.y);
-	lookatposArray.push_back(lookAtPos.z);
-
-	obj["Look At Position"] = lookatposArray;
 
 	obj["Camera Offset"] = camOffset;
 

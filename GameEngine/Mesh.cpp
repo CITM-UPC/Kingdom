@@ -260,11 +260,13 @@ const unsigned int Mesh::getNumFaces() {
 	return _numFaces;
 }
 
-AABBox Mesh::getAABB(){
+AABBox Mesh::getAABB() {
 	return _aabb;
 }
 
-void Mesh::Update()
+void Mesh::Update() {}
+
+void Mesh::Render()
 {
 	draw();
 }
@@ -275,7 +277,7 @@ json Mesh::SaveInfo()
 
 	std::string bPath = "Library/Meshes/" + owner->name + ".mesh";
 
-	obj["Owner"] = std::to_string(owner->UUID);
+	obj["Owner"] = owner->UUID;
 	obj["Binary Path"] = bPath;
 	obj["Type"] = static_cast<int>(getType());
 

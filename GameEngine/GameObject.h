@@ -37,7 +37,7 @@ public:
 
 	std::list<std::unique_ptr<Component>>* GetComponents();
 
-	void Move(GameObject* newParent);
+	void Move(GameObject* newParent, std::list<unique_ptr<GameObject>>& listToCheck);
 	void removeChild(GameObject* childToRemove);
 
 	void AddComponent(Component::Type component);
@@ -49,6 +49,8 @@ public:
 	void RemoveComponent(Component::Type component);
 
 	void UpdateComponents();
+
+	void RenderComponents();
 
 	json SaveInfo();
 

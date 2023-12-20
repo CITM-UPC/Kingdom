@@ -13,6 +13,8 @@ public:
 	};
 
 	Transform(GameObject* owner);
+
+	Transform(GameObject* owner, mat4 transmat);
 	~Transform();
 
 	//Moves the object to 'position'.
@@ -28,6 +30,8 @@ public:
 	void Rotate(double angle, vec3 axis, Space referenceFrame = Space::LOCAL);
 
 	void Update() override;
+
+	void Render() override;
 
 	Type getType() const override {
 		return Type::TRANSFORM;

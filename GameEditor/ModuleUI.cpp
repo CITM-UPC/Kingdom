@@ -98,6 +98,7 @@ update_status ModuleUI::PreUpdate()
 	if (demo)       	ImGui::ShowDemoWindow(&demo);
 
 	if (saveasMenu) 	SaveAsMenu();
+	if (loadMenu)		LoadSceneMenu();
 	if (reparentMenu) 	ReparentMenu();
 
 	ImGuiIO& io = ImGui::GetIO();
@@ -176,11 +177,7 @@ update_status ModuleUI::MainMenuBar()
 			}
 			if (ImGui::MenuItem("Save As...", "", &saveasMenu)) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Load Scene"))
-			{
-				App->gEngine->scene->LoadScene("a.mdng");
-				gameObjSelected = nullptr;
-			}
+			if (ImGui::MenuItem("Load Scene", "", &loadMenu)) {}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Exit", "Alt+F4")) { return UPDATE_STOP; }
 			ImGui::EndMenu();
@@ -198,9 +195,18 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::MenuItem("Duplicate", "Not implemented")) {}
 			if (ImGui::MenuItem("Delete", "Not implemented")) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Play", "Not implemented")) {}
-			if (ImGui::MenuItem("Pause", "Not implemented")) {}
-			if (ImGui::MenuItem("Step", "Not implemented")) {}
+			if (ImGui::MenuItem("Play", "Play Scene")) {
+				App->logHistory.push_back("[Editor] 'Play' Scene");
+				App->gEngine->scene->paused = false;
+			}
+			if (ImGui::MenuItem("Pause", "Pause Scene")) {
+				App->logHistory.push_back("[Editor] 'Pause' Scene");
+				App->gEngine->scene->paused = true;
+			}
+			if (ImGui::MenuItem("Step", "Step Scene")) {
+				App->logHistory.push_back("[Editor] 'Step' Scene");
+				App->gEngine->scene->step = true;
+			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Settings", "Display, Controls, Renderer, System")) { options = true; }
 			ImGui::EndMenu();
@@ -271,6 +277,22 @@ void ModuleUI::SaveAsMenu()
 	ImGui::End();
 }
 
+void ModuleUI::LoadSceneMenu()
+{
+	ImGui::Begin("Load", &loadMenu);
+
+	static char nameRecipient[32];
+
+	ImGui::InputText("File Name", nameRecipient, IM_ARRAYSIZE(nameRecipient));
+
+	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && nameRecipient != "")
+	{
+		App->gEngine->scene->LoadScene(nameRecipient);
+		loadMenu = false;
+	}
+	ImGui::End();
+}
+
 void ModuleUI::GameObjectOptions()
 {
 	bool goIsSelected;
@@ -300,11 +322,11 @@ void ModuleUI::ReparentMenu()
 
 	ImGui::MenuItem("Reparent: ", "", false, false);
 
-	toParent == nullptr ? ImGui::Selectable("...", &reparentThis) : ImGui::Selectable(toParent->name.c_str(), &reparentThis);
+	orphan == nullptr ? ImGui::Selectable("...", &reparentThis) : ImGui::Selectable(orphan->name.c_str(), &reparentThis);
 
 	if (reparentThis) {
 		reparentTo = false;
-		toParent = gameObjSelected;
+		orphan = gameObjSelected;
 	}
 
 	ImGui::Separator();
@@ -320,14 +342,28 @@ void ModuleUI::ReparentMenu()
 
 	if (ImGui::MenuItem("Confirm"))
 	{
-		if (adopter != nullptr && toParent != nullptr)
-		{
-			toParent->Move(adopter);
-			App->logHistory.push_back("Moved " + toParent->name + " to " + adopter->name);
+		if (orphan->parent) {
+			if (adopter != nullptr && orphan != nullptr)
+			{
+				orphan->Move(adopter, orphan->parent->childs);
+				App->logHistory.push_back("Moved " + orphan->name + " to " + adopter->name);
+			}
+			else
+			{
+				App->logHistory.push_back("ERROR: Select both GameObjects in order to Reparent");
+			}
 		}
 		else
 		{
-			App->logHistory.push_back("ERROR: Select both GameObjects in order to Reparent");
+			if (adopter != nullptr && orphan != nullptr)
+			{
+				orphan->Move(adopter, App->gEngine->scene->currentScene.gameObjectList);
+				App->logHistory.push_back("Moved " + orphan->name + " to " + adopter->name);
+			}
+			else
+			{
+				App->logHistory.push_back("ERROR: Select both GameObjects in order to Reparent");
+			}
 		}
 	}
 	ImGui::End();

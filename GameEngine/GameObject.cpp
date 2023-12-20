@@ -81,7 +81,6 @@ void GameObject::RemoveComponent(Component::Type component)
 static inline void glVec3(const vec3& v) { glVertex3dv(&v.x); }
 
 static void drawAABBox(const AABBox& aabb) {
-	
 	//glColor3ub(255, 0, 0);
 	glLineWidth(2);
 	glBegin(GL_LINE_STRIP);
@@ -115,9 +114,17 @@ void GameObject::UpdateComponents()
 	{
 		comp->Update();
 	}
-  drawAABBox(computeAABB());
 }
 
+void GameObject::RenderComponents()
+{
+	for (auto& comp : components)
+	{
+		comp->Render();
+	}
+
+	drawAABBox(computeAABB());
+}
 
 AABBox GameObject::computeAABB()
 {
@@ -131,12 +138,12 @@ AABBox GameObject::computeAABB()
 		aabbox = obBox.AABB();
 	}
 	else
-	{
+  {
 		aabbox.min = vec3(0);
 		aabbox.max = vec3(0);
 	}
-
-	for (const auto& child : childs)
+  
+  for (const auto& child : childs)
 	{
 		const auto child_aabb = child->computeAABB();
 		aabbox.min = glm::min(aabbox.min, child_aabb.min);
@@ -146,9 +153,9 @@ AABBox GameObject::computeAABB()
 	return aabbox;
 }
 
-void GameObject::Move(GameObject* newParent)
+void GameObject::Move(GameObject* newParent, std::list<unique_ptr<GameObject>>& listToCheck)
 {
-	auto it = std::find_if(parent->childs.begin(), parent->childs.end(), [this](const std::unique_ptr<GameObject>& child) {
+	std::_List_iterator it = std::find_if(parent->childs.begin(), parent->childs.end(), [this](const std::unique_ptr<GameObject>& child) {
 		return child.get() == this;
 		});
 

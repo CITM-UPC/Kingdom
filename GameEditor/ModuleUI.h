@@ -55,6 +55,7 @@ private:
 	void GameObjectOptions();
 	void ReparentMenu();
 	void SaveAsMenu();
+	void LoadSceneMenu();
 	void GetInfrastructureInfo();
 
 private:
@@ -71,8 +72,8 @@ private:
 	bool demo = false;
 	bool reparentMenu = false;
 	bool saveasMenu = false;
+	bool loadMenu = false;
 	bool fileExplorer = true;
-
 
 	bool autoScrollLog = true;
 
@@ -86,7 +87,7 @@ private:
 	GameObject* gameObjSelected = nullptr;
 
 	// Game Object which parent will be changed
-	GameObject* toParent = nullptr;
+	GameObject* orphan = nullptr;
 
 	// Objective Parent that will adopt the child
 	GameObject* adopter = nullptr;

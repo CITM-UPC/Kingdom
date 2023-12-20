@@ -6,6 +6,17 @@ Transform::Transform(GameObject* owner) : Component(owner)
 	_transformationMatrix = mat4(1.0);
 }
 
+Transform::Transform(GameObject* owner, mat4 transmat) : Component(owner)
+{
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			_transformationMatrix[i][j] = transmat[i][j];
+		}
+	}
+
+	//_transformationMatrix = transmat;
+}
+
 Transform::~Transform() {}
 
 void Transform::MoveTo(vec3 position)
@@ -48,18 +59,16 @@ void Transform::Rotate(double angle, vec3 axis, Space referenceFrame)
 
 void Transform::Update() {}
 
+void Transform::Render() {}
+
 json Transform::SaveInfo()
 {
 	json obj;
 
-	obj["Owner"] = std::to_string(this->owner->UUID);
+	obj["Owner"] = owner->UUID;
 	obj["Type"] = static_cast<int>(getType());
 
 	json transformationMatrixArray;
-	json rightArray;
-	json upArray;
-	json forwardArray;
-	json positionArray;
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -69,27 +78,7 @@ json Transform::SaveInfo()
 		}
 	}
 
-	rightArray.push_back(_right.x);
-	rightArray.push_back(_right.y);
-	rightArray.push_back(_right.z);
-
-	upArray.push_back(_up.x);
-	upArray.push_back(_up.y);
-	upArray.push_back(_up.z);
-
-	forwardArray.push_back(_forward.x);
-	forwardArray.push_back(_forward.y);
-	forwardArray.push_back(_forward.z);
-
-	positionArray.push_back(_position.x);
-	positionArray.push_back(_position.y);
-	positionArray.push_back(_position.z);
-
 	obj["Transformation Matrix"] = transformationMatrixArray;
-	obj["Right"] = rightArray;
-	obj["Up"] = upArray;
-	obj["Forward"] = forwardArray;
-	obj["Position"] = positionArray;
 
 	return obj;
 }
