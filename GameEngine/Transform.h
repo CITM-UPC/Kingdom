@@ -25,9 +25,12 @@ public:
 
 	//Rotates the object for its rotation to be the one given by 'axis'.
 	void RotateTo(double angle, vec3 axis);
+	void RotateTo(vec3 axis);
 
 	//Rotates the object in 'axis' increments.
 	void Rotate(double angle, vec3 axis, Space referenceFrame = Space::LOCAL);
+
+	void Scale(vec3 scaleVector);
 
 	void Update() override;
 
@@ -49,6 +52,9 @@ public:
 			vec3 _position;	double _padding4;
 		};
 	};
+
+	vec3 _rotation;
+	vec3 _scale;
 
 public:
 

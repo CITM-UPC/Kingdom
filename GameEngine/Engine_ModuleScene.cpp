@@ -55,7 +55,14 @@ engine_status Engine_ModuleScene::PostUpdate()
 {
 	for (auto& GO : currentScene.gameObjectList)
 	{
+		glPushMatrix();
+		glMultMatrixd(&GO->GetComponent<Transform>()->_transformationMatrix[0].x);
+
 		recursiveObjectRendering(GO.get());
+
+		glPopMatrix();
+
+		if (bboxDebug) GO->drawAABBox(GO->computeAABB());
 	}
 
 	return ENGINE_UPDATE_CONTINUE;
@@ -66,13 +73,12 @@ bool Engine_ModuleScene::CleanUp() { return true; }
 void Engine_ModuleScene::recursiveObjectUpdate(GameObject* GoToUpdate)
 {
 	GoToUpdate->UpdateComponents();
-	if (bboxDebug) GoToUpdate->drawAABBox(GoToUpdate->computeAABB());
-
+	
 	if (!GoToUpdate->childs.empty())
 	{
 		for (auto& child : GoToUpdate->childs)
 		{
-			recursiveObjectRendering(child.get());
+			recursiveObjectUpdate(child.get());
 		}
 	}
 }
@@ -80,7 +86,6 @@ void Engine_ModuleScene::recursiveObjectUpdate(GameObject* GoToUpdate)
 void Engine_ModuleScene::recursiveObjectRendering(GameObject* GoToRender)
 {
 	GoToRender->RenderComponents();
-	if (bboxDebug) GoToRender->drawAABBox(GoToRender->computeAABB());
 
 	if (!GoToRender->childs.empty())
 	{

@@ -453,31 +453,30 @@ void ModuleUI::InspectorWindow()
 					{
 						if (ImGui::BeginTable("", 4))
 						{
-							//ImGui::DragFloat("", &transform->sc.x, 0.005f, -FLT_MAX, +FLT_MAX, "%.3f");
 							ImGui::TableNextRow();
 							ImGui::TableSetColumnIndex(0);
-							ImGui::Checkbox("Active", &transform->isActive);
+							ImGui::Text("");
 							ImGui::Text("Position");
 							ImGui::Text("Rotation");
 							ImGui::Text("Scale");
 
 							ImGui::TableSetColumnIndex(1);
 							ImGui::Text("X");
-							ImGui::Text(std::to_string(transform->position().x).c_str());
-							//ImGui::Text(std::to_string(transform->rotation.x).c_str());	//PENDING TO IMPLEMENT AFTER TRANSFORM REWORK
-							//ImGui::Text(std::to_string(transform->scale.x).c_str());		//PENDING TO IMPLEMENT AFTER TRANSFORM REWORK
+							ImGui::DragScalar("##posX", ImGuiDataType_Double, &transform->_position.x, 0.005, nullptr, nullptr, "%.3f");
+							if (ImGui::DragScalar("##rotX", ImGuiDataType_Double, &transform->_rotation.x, 0.5, nullptr, nullptr, "%.3f")) transform->RotateTo(transform->_rotation);
+							if (ImGui::DragScalar("##scX", ImGuiDataType_Double, &transform->_scale.x, 0.005, nullptr, nullptr, "%.3f")) transform->Scale(transform->_scale);
 
 							ImGui::TableSetColumnIndex(2);
 							ImGui::Text("Y");
-							ImGui::Text(std::to_string(transform->position().y).c_str());
-							//ImGui::Text(std::to_string(transform->rotation.y).c_str());	//PENDING TO IMPLEMENT AFTER TRANSFORM REWORK
-							//ImGui::Text(std::to_string(transform->scale.y).c_str());		//PENDING TO IMPLEMENT AFTER TRANSFORM REWORK
+							ImGui::DragScalar("##posY", ImGuiDataType_Double, &transform->_position.y, 0.005, nullptr, nullptr, "%.3f");
+							if (ImGui::DragScalar("##rotY", ImGuiDataType_Double, &transform->_rotation.y, 0.5, nullptr, nullptr, "%.3f")) transform->RotateTo(transform->_rotation);
+							if (ImGui::DragScalar("##scY", ImGuiDataType_Double, &transform->_scale.y, 0.005, nullptr, nullptr, "%.3f")) transform->Scale(transform->_scale);
 
 							ImGui::TableSetColumnIndex(3);
 							ImGui::Text("Z");
-							ImGui::Text(std::to_string(transform->position().z).c_str());
-							//ImGui::Text(std::to_string(transform->rotation.z).c_str());	//PENDING TO IMPLEMENT AFTER TRANSFORM REWORK
-							//ImGui::Text(std::to_string(transform->scale.z).c_str());		//PENDING TO IMPLEMENT AFTER TRANSFORM REWORK
+							ImGui::DragScalar("##posZ", ImGuiDataType_Double, &transform->_position.z, 0.005, nullptr, nullptr, "%.3f");
+							if (ImGui::DragScalar("##rotZ", ImGuiDataType_Double, &transform->_rotation.z, 0.5, nullptr, nullptr, "%.3f")) transform->RotateTo(transform->_rotation);
+							if (ImGui::DragScalar("##scZ", ImGuiDataType_Double, &transform->_scale.z, 0.005, nullptr, nullptr, "%.3f")) transform->Scale(transform->_scale);
 
 							ImGui::EndTable();
 						}

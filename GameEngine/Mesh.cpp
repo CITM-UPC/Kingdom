@@ -146,9 +146,7 @@ Mesh::Mesh(const Mesh& cpy) :
 }
 
 void Mesh::draw() {
-	glPushMatrix();
-	glMultMatrixd(&owner->GetComponent<Transform>()->_transformationMatrix[0].x);
-
+	
 	glColor4ub(255, 255, 255, 255);
 
 	glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer_id);
@@ -221,8 +219,6 @@ void Mesh::draw() {
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisable(GL_TEXTURE_2D);
-
-	glPopMatrix();
 }
 
 Mesh::~Mesh() {

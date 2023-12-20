@@ -92,7 +92,10 @@ void GameObject::RenderComponents()
 {
 	for (auto& comp : components)
 	{
+		glPushMatrix();
+		glMultMatrixd(&GetComponent<Transform>()->_transformationMatrix[0].x);
 		comp->Render();
+		glPopMatrix();
 	}
 }
 
@@ -118,6 +121,12 @@ AABBox GameObject::computeAABB()
 		const auto child_aabb = child->computeAABB();
 		aabbox.min = glm::min(aabbox.min, child_aabb.min);
 		aabbox.max = glm::max(aabbox.max, child_aabb.max);
+	}
+
+	if (parent == nullptr)
+	{
+		const auto obBox = GetComponent<Transform>()->_transformationMatrix * aabbox;
+		aabbox = obBox.AABB();
 	}
 
 	return aabbox;
