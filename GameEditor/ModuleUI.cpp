@@ -339,14 +339,28 @@ void ModuleUI::ReparentMenu()
 
 	if (ImGui::MenuItem("Confirm"))
 	{
-		if (adopter != nullptr && orphan != nullptr)
-		{
-			orphan->Move(adopter);
-			App->logHistory.push_back("Moved " + orphan->name + " to " + adopter->name);
+		if (orphan->parent) {
+			if (adopter != nullptr && orphan != nullptr)
+			{
+				orphan->Move(adopter, orphan->parent->childs);
+				App->logHistory.push_back("Moved " + orphan->name + " to " + adopter->name);
+			}
+			else
+			{
+				App->logHistory.push_back("ERROR: Select both GameObjects in order to Reparent");
+			}
 		}
 		else
 		{
-			App->logHistory.push_back("ERROR: Select both GameObjects in order to Reparent");
+			if (adopter != nullptr && orphan != nullptr)
+			{
+				orphan->Move(adopter, App->gEngine->scene->currentScene.gameObjectList);
+				App->logHistory.push_back("Moved " + orphan->name + " to " + adopter->name);
+			}
+			else
+			{
+				App->logHistory.push_back("ERROR: Select both GameObjects in order to Reparent");
+			}
 		}
 	}
 	ImGui::End();

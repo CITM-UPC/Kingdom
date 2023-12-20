@@ -156,9 +156,9 @@ AABBox GameObject::computeAABB()
 	return obBox.AABB();
 }
 
-void GameObject::Move(GameObject* newParent)
+void GameObject::Move(GameObject* newParent, std::list<unique_ptr<GameObject>>& listToCheck)
 {
-	auto it = std::find_if(parent->childs.begin(), parent->childs.end(), [this](const std::unique_ptr<GameObject>& child) {
+	std::_List_iterator it = std::find_if(parent->childs.begin(), parent->childs.end(), [this](const std::unique_ptr<GameObject>& child) {
 		return child.get() == this;
 		});
 
