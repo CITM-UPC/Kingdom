@@ -87,7 +87,7 @@ private:
 	GameObject* gameObjSelected = nullptr;
 
 	// Game Object which parent will be changed
-	GameObject* toParent = nullptr;
+	GameObject* orphan = nullptr;
 
 	// Objective Parent that will adopt the child
 	GameObject* adopter = nullptr;

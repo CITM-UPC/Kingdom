@@ -415,7 +415,7 @@ void Engine_ModuleScene::LoadComponentfromjson(json parentRoot)
 		LoadComponentTransform(owner, parentRoot);
 		break;
 	case 1:
-		// Call mesh constructor with the node
+		// Call mesh constructor with the file path
 		LoadComponentMesh(owner, path);
 		break;
 	case 2:
@@ -423,8 +423,8 @@ void Engine_ModuleScene::LoadComponentfromjson(json parentRoot)
 
 		break;
 	case 3:
-		// Camera constructor??
-
+		// Call mesh constructor with the file path
+		LoadComponentCamera(owner, parentRoot);
 		break;
 	default:
 		gEngine->logHistory.push_back("[Engine] Could not load component: no type provided by save");

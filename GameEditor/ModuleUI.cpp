@@ -319,11 +319,11 @@ void ModuleUI::ReparentMenu()
 
 	ImGui::MenuItem("Reparent: ", "", false, false);
 
-	toParent == nullptr ? ImGui::Selectable("...", &reparentThis) : ImGui::Selectable(toParent->name.c_str(), &reparentThis);
+	orphan == nullptr ? ImGui::Selectable("...", &reparentThis) : ImGui::Selectable(orphan->name.c_str(), &reparentThis);
 
 	if (reparentThis) {
 		reparentTo = false;
-		toParent = gameObjSelected;
+		orphan = gameObjSelected;
 	}
 
 	ImGui::Separator();
@@ -339,10 +339,10 @@ void ModuleUI::ReparentMenu()
 
 	if (ImGui::MenuItem("Confirm"))
 	{
-		if (adopter != nullptr && toParent != nullptr)
+		if (adopter != nullptr && orphan != nullptr)
 		{
-			toParent->Move(adopter);
-			App->logHistory.push_back("Moved " + toParent->name + " to " + adopter->name);
+			orphan->Move(adopter);
+			App->logHistory.push_back("Moved " + orphan->name + " to " + adopter->name);
 		}
 		else
 		{
