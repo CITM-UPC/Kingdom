@@ -68,6 +68,8 @@ public:
 
 	bool color_material;
 
+	bool debugRayCast;
+
 private:
 
 	SDL_Window* targetWindow;

@@ -112,6 +112,8 @@ bool Engine_ModuleRenderer3D::Init()
 		polygon_smooth = false;
 	}
 
+	debugRayCast = false;
+
 	// Projection matrix for
 	OnResize(screen_width, screen_height);
 
@@ -147,51 +149,55 @@ engine_status Engine_ModuleRenderer3D::PreUpdate()
 
 engine_status Engine_ModuleRenderer3D::Update()
 {
-	//Temporary, only debug
-	glLineWidth(3.0);
-	glBegin(GL_LINES);
-
-	double size = 0.05;
-	for (int i = 0; i < origins.size(); i++)
-	{
-		glColor3ub(0, 255, 0);
-		glVertex3d(camPos[i].x, camPos[i].y, camPos[i].z - size);
-		glVertex3d(camPos[i].x, camPos[i].y, camPos[i].z + size);
-		glVertex3d(camPos[i].x, camPos[i].y - size, camPos[i].z);
-		glVertex3d(camPos[i].x, camPos[i].y + size, camPos[i].z);
-		glVertex3d(camPos[i].x - size, camPos[i].y, camPos[i].z);
-		glVertex3d(camPos[i].x + size, camPos[i].y, camPos[i].z);
-
-		glColor3ub(255, 255, 0);
-		glVertex3d(origins[i].x, origins[i].y, origins[i].z);
-		glColor3ub(255, 255, 255);
-		glVertex3d(ends[i].x, ends[i].y, ends[i].z);
-	}
-
-	for (int i = 0; i < nearPlanes.size() / 4; i++)
-	{
-		glColor3ub(50, 150, 255);
-		glVertex3d(nearPlanes[i].x, nearPlanes[i].y, nearPlanes[i].z);
-		glVertex3d(nearPlanes[i + 1].x, nearPlanes[i + 1].y, nearPlanes[i + 1].z);
-
-		glVertex3d(nearPlanes[i + 1].x, nearPlanes[i + 1].y, nearPlanes[i + 1].z);
-		glVertex3d(nearPlanes[i + 2].x, nearPlanes[i + 2].y, nearPlanes[i + 2].z);
-
-		glVertex3d(nearPlanes[i + 2].x, nearPlanes[i + 2].y, nearPlanes[i + 2].z);
-		glVertex3d(nearPlanes[i + 3].x, nearPlanes[i + 3].y, nearPlanes[i + 3].z);
-
-		glVertex3d(nearPlanes[i + 3].x, nearPlanes[i + 3].y, nearPlanes[i + 3].z);
-		glVertex3d(nearPlanes[i].x, nearPlanes[i].y, nearPlanes[i].z);
-	}
-
-	glEnd();
-
 	return ENGINE_UPDATE_CONTINUE;
 }
 
 // PostUpdate present buffer to screen
 engine_status Engine_ModuleRenderer3D::PostUpdate()
 {
+	//Temporary, only debug
+
+	if (debugRayCast)
+	{
+		glLineWidth(1.0);
+		glBegin(GL_LINES);
+
+		double size = 0.05;
+		for (int i = 0; i < origins.size(); i++)
+		{
+			glColor3ub(0, 255, 0);
+			glVertex3d(camPos[i].x, camPos[i].y, camPos[i].z - size);
+			glVertex3d(camPos[i].x, camPos[i].y, camPos[i].z + size);
+			glVertex3d(camPos[i].x, camPos[i].y - size, camPos[i].z);
+			glVertex3d(camPos[i].x, camPos[i].y + size, camPos[i].z);
+			glVertex3d(camPos[i].x - size, camPos[i].y, camPos[i].z);
+			glVertex3d(camPos[i].x + size, camPos[i].y, camPos[i].z);
+
+			glColor3ub(255, 255, 0);
+			glVertex3d(origins[i].x, origins[i].y, origins[i].z);
+			glColor3ub(255, 255, 255);
+			glVertex3d(ends[i].x, ends[i].y, ends[i].z);
+		}
+
+		for (int i = 0; i < nearPlanes.size() / 4; i++)
+		{
+			glColor3ub(50, 150, 255);
+			glVertex3d(nearPlanes[i].x, nearPlanes[i].y, nearPlanes[i].z);
+			glVertex3d(nearPlanes[i + 1].x, nearPlanes[i + 1].y, nearPlanes[i + 1].z);
+
+			glVertex3d(nearPlanes[i + 1].x, nearPlanes[i + 1].y, nearPlanes[i + 1].z);
+			glVertex3d(nearPlanes[i + 2].x, nearPlanes[i + 2].y, nearPlanes[i + 2].z);
+
+			glVertex3d(nearPlanes[i + 2].x, nearPlanes[i + 2].y, nearPlanes[i + 2].z);
+			glVertex3d(nearPlanes[i + 3].x, nearPlanes[i + 3].y, nearPlanes[i + 3].z);
+
+			glVertex3d(nearPlanes[i + 3].x, nearPlanes[i + 3].y, nearPlanes[i + 3].z);
+			glVertex3d(nearPlanes[i].x, nearPlanes[i].y, nearPlanes[i].z);
+		}
+
+		glEnd();
+	}
+
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
 		std::cerr << "OpenGL Error: " << error << std::endl;

@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include <glm/gtc/type_ptr.hpp>
+#include "..\GameEngine\Physics.hpp"
 
 class ModuleRenderer : public Module
 {
@@ -22,6 +23,12 @@ public:
 	void mouseCameraPan();
 	void DoZoom();
 	void FocusCamera();
+
+	GameObject* DoClickRayCast();
+	Ray CalculateRay();
+	void DebugRay(Ray ray);
+	Triangle CalculateTriangle(GameObject* triObject, int iterator);
+	void CheckMeshCollisionRecursive(Ray& ray, GameObject* object, std::map<float, GameObject*>& hitObjects);
 
 public:
 
