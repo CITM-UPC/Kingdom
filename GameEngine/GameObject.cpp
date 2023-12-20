@@ -138,12 +138,12 @@ AABBox GameObject::computeAABB()
 		aabbox = obBox.AABB();
 	}
 	else
-  {
+	{
 		aabbox.min = vec3(0);
 		aabbox.max = vec3(0);
 	}
-  
-  for (const auto& child : childs)
+
+	for (const auto& child : childs)
 	{
 		const auto child_aabb = child->computeAABB();
 		aabbox.min = glm::min(aabbox.min, child_aabb.min);
@@ -155,14 +155,14 @@ AABBox GameObject::computeAABB()
 
 void GameObject::Move(GameObject* newParent, std::list<unique_ptr<GameObject>>& listToCheck)
 {
-	std::_List_iterator it = std::find_if(parent->childs.begin(), parent->childs.end(), [this](const std::unique_ptr<GameObject>& child) {
+	std::_List_iterator it = std::find_if(listToCheck.begin(), listToCheck.end(), [this](const std::unique_ptr<GameObject>& child) {
 		return child.get() == this;
 		});
 
-	if (it != parent->childs.end()) {
+	if (it != listToCheck.end()) {
 		// Move the child to the new list
 		newParent->childs.push_back(std::move(*it));
-		parent->childs.erase(it);
+		listToCheck.erase(it);
 
 		// Update the parent pointer of the moved child
 		parent = newParent;

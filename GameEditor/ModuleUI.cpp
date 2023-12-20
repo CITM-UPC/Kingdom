@@ -298,7 +298,11 @@ void ModuleUI::GameObjectOptions()
 	bool goIsSelected;
 	gameObjSelected != nullptr ? goIsSelected = true : goIsSelected = false;
 	bool a = false;
-	ImGui::MenuItem("Move", "Reparent GameObject", &reparentMenu, goIsSelected);
+	if (ImGui::MenuItem("Move", "Reparent GameObject", &reparentMenu, goIsSelected))
+	{
+		reparentThis = true;
+		reparentTo = false;
+	}
 	if (ImGui::MenuItem("Delete", "Remove GameObject", a, goIsSelected))
 	{
 		if (gameObjSelected->parent == nullptr)
@@ -320,25 +324,29 @@ void ModuleUI::ReparentMenu()
 	static ImGuiWindowFlags menuFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize;
 	ImGui::Begin("Reparent GameObject", &reparentMenu, menuFlags);
 
+#pragma region Reparent This
 	ImGui::MenuItem("Reparent: ", "", false, false);
 
 	orphan == nullptr ? ImGui::Selectable("...", &reparentThis) : ImGui::Selectable(orphan->name.c_str(), &reparentThis);
 
 	if (reparentThis) {
-		reparentTo = false;
+		reparentTo = !reparentThis;
 		orphan = gameObjSelected;
 	}
+#pragma endregion
 
 	ImGui::Separator();
 
+#pragma region Reparent To
 	ImGui::MenuItem("To: ", "", false, false);
 
 	adopter == nullptr ? ImGui::Selectable("...", &reparentTo) : ImGui::Selectable(adopter->name.c_str(), &reparentTo);
 
 	if (reparentTo) {
-		reparentThis = false;
+		reparentThis = !reparentTo;
 		adopter = gameObjSelected;
 	}
+#pragma endregion
 
 	if (ImGui::MenuItem("Confirm"))
 	{
