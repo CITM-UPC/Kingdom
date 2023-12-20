@@ -259,7 +259,7 @@ void Engine_ModuleScene::SaveAsScene(string fileName)
 
 void Engine_ModuleScene::LoadScene(string fileName)
 {
-	std::ifstream file("Assets/" + fileName + ".mdng");
+	std::ifstream file(fileName);
 
 	json sceneToLoad;
 	bool parsed = true;

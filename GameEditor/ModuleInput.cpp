@@ -150,7 +150,12 @@ update_status ModuleInput::PreUpdate()
 				LOG(".dds file detected");
 				App->ui->SetSelectedObjectTexture(filePath);
 			}
-
+			// Check if the dropped file has the .mdng extension
+			if (filePath.substr(filePath.find_last_of(".") + 1) == "mdng") {
+				App->logHistory.push_back("[Editor] .mdng detected with path " + filePath);
+				LOG(".mdng file detected");
+				App->gEngine->scene->LoadScene(filePath);
+			}
 			SDL_free(e.drop.file);  // Free dropped file's memory
 
 			break;

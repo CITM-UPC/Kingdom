@@ -288,7 +288,13 @@ void ModuleUI::LoadSceneMenu()
 
 	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && nameRecipient != "")
 	{
-		App->gEngine->scene->LoadScene(nameRecipient);
+		gameObjSelected = nullptr;
+
+		string path = "Assets/";
+		path += nameRecipient;
+		path += ".mdng";
+
+		App->gEngine->scene->LoadScene(path);
 		loadMenu = false;
 	}
 	ImGui::End();
