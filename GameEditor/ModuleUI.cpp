@@ -789,9 +789,10 @@ void ModuleUI::AboutWindow()
 	ImGui::Bullet(); if (ImGui::Button("GLEW 2.2.0#3")) { OsOpenInShell("https://glew.sourceforge.net/"); }
 	ImGui::Bullet(); if (ImGui::Button("GLM 2023-06-08")) { OsOpenInShell("https://glm.g-truc.net/0.9.5/index.html"); }
 	ImGui::Bullet(); if (ImGui::Button("ImGUI 1.89.9")) { OsOpenInShell("https://imgui-test.readthedocs.io/"); }
-	ImGui::Bullet(); if (ImGui::Button("jsoncpp 1.9.5")) { OsOpenInShell("https://open-source-parsers.github.io/jsoncpp-docs/doxygen/index.html"); }
+	ImGui::Bullet(); if (ImGui::Button("nlohmann-json")) { OsOpenInShell("https://github.com/nlohmann/json"); }
 	ImGui::Bullet(); if (ImGui::Button("OpenGL 2022-12-04#3")) { OsOpenInShell("https://www.opengl.org/"); }
 	ImGui::Bullet(); if (ImGui::Button("SDL2 2.28.3")) { OsOpenInShell("https://wiki.libsdl.org/"); }
+	ImGui::Bullet(); if (ImGui::Button("std:c++20")) { OsOpenInShell("https://en.cppreference.com/w/cpp/20"); }
 	ImGui::Separator();
 	if (ImGui::CollapsingHeader("License")) { ImGui::Text(aboutContent.c_str()); }
 	ImGui::End();
