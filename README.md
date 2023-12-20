@@ -38,6 +38,7 @@ No previous installations are required to use the engine, just download and exec
 | <code>F</code> | When a GameObject is selected, focus the camera on it | 
 | <code>SHIFT</code> | Hold it to duplicate movement speed | 
 | <code>ESC</code> | Exits the Engine | 
+To test the Raycast, in the Menu bar select Debug > Raycast debug and start clicking around!
 
 ## Authors
 
