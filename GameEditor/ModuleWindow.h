@@ -16,6 +16,7 @@ public:
 	virtual ~ModuleWindow();
 
 	bool Init();
+	update_status Update();
 	bool CleanUp();
 
 	void SetTitle(const char* title);

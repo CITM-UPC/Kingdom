@@ -42,13 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -125,7 +125,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\vcpkg\installed\x64-windows\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -140,7 +140,7 @@
     </Lib>
     <PreBuildEvent>
       <Command>call ..\vcpkg\bootstrap-vcpkg.bat
-..\vcpkg\vcpkg.exe install opengl glew glm sdl2 jsoncpp devil[libjpeg,libpng] assimp --recurse --triplet x64-windows
+..\vcpkg\vcpkg.exe install opengl glew glm sdl2 nlohmann-json pcg devil[libjpeg,libpng] assimp --recurse --triplet x64-windows
 copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -155,7 +155,7 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\vcpkg\installed\x64-windows\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -172,7 +172,7 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     </Lib>
     <PreBuildEvent>
       <Command>call ..\vcpkg\bootstrap-vcpkg.bat
-..\vcpkg\vcpkg.exe install opengl glew glm sdl2 jsoncpp devil[libjpeg,libpng] assimp --recurse --triplet x64-windows
+..\vcpkg\vcpkg.exe install opengl glew glm sdl2 nlohmann-json pcg devil[libjpeg,libpng] assimp --recurse --triplet x64-windows
 copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -189,6 +189,7 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoundingBox.hpp" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Cone.h" />
     <ClInclude Include="Cube.h" />
@@ -203,6 +204,7 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshInfo.h" />
     <ClInclude Include="MeshLoader.h" />
+    <ClInclude Include="Physics.hpp" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Pyramid.h" />
     <ClInclude Include="Texture2D.h" />

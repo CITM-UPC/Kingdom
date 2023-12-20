@@ -1,5 +1,6 @@
 #include "GameObject.h"
 #include <memory>
+#include <GL/glew.h>
 
 GameObject::GameObject()
 {
@@ -77,10 +78,142 @@ void GameObject::RemoveComponent(Component::Type component)
 //	return nullptr;
 //}
 
+static inline void glVec3(const vec3& v) { glVertex3dv(&v.x); }
+
+static void drawAABBox(const AABBox& aabb) {
+	//glColor3ub(255, 0, 0);
+	glLineWidth(2);
+	glBegin(GL_LINE_STRIP);
+
+	glVec3(aabb.a());
+	glVec3(aabb.b());
+	glVec3(aabb.c());
+	glVec3(aabb.d());
+	glVec3(aabb.a());
+
+	glVec3(aabb.e());
+	glVec3(aabb.f());
+	glVec3(aabb.g());
+	glVec3(aabb.h());
+	glVec3(aabb.e());
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVec3(aabb.h());
+	glVec3(aabb.d());
+	glVec3(aabb.f());
+	glVec3(aabb.b());
+	glVec3(aabb.g());
+	glVec3(aabb.c());
+	glEnd();
+}
+
 void GameObject::UpdateComponents()
 {
 	for (auto& comp : components)
 	{
 		comp->Update();
 	}
+}
+
+void GameObject::RenderComponents()
+{
+	for (auto& comp : components)
+	{
+		comp->Render();
+	}
+
+	drawAABBox(computeAABB());
+}
+
+AABBox GameObject::computeAABB()
+{
+	AABBox aabbox;
+
+	Mesh* meshComponent = GetComponent<Mesh>();
+
+	if (meshComponent != nullptr) aabbox = meshComponent->getAABB();
+
+	const auto obBox = GetComponent<Transform>()->_transformationMatrix * aabbox;
+
+	//To implement with tree structure
+	/*
+	else if (children().empty())
+	{
+		aabbox.min = vec3(0);
+		aabbox.max = vec3(0);
+	}
+
+	for (const auto& child : children())
+	{
+		const auto child_aabb = (child.transform() * child.aabb()).AABB();
+		aabbox.min = glm::min(aabbox.min, child_aabb.min);
+		aabbox.max = glm::max(aabbox.max, child_aabb.max);
+	}
+	*/
+
+	//return aabbox;
+	return obBox.AABB();
+}
+
+void GameObject::Move(GameObject* newParent, std::list<unique_ptr<GameObject>>& listToCheck)
+{
+	std::_List_iterator it = std::find_if(parent->childs.begin(), parent->childs.end(), [this](const std::unique_ptr<GameObject>& child) {
+		return child.get() == this;
+		});
+
+	if (it != parent->childs.end()) {
+		// Move the child to the new list
+		newParent->childs.push_back(std::move(*it));
+		parent->childs.erase(it);
+
+		// Update the parent pointer of the moved child
+		parent = newParent;
+	}
+}
+
+void GameObject::removeChild(GameObject* child)
+{
+	auto it = std::remove_if(childs.begin(), childs.end(), [child](const std::unique_ptr<GameObject>& ptr) {
+		return ptr.get() == child;
+		});
+
+	// Check if the child was found
+	if (it != childs.end())
+	{
+		// Erase the element at the end, which was moved there by std::remove_if
+		childs.erase(it, childs.end());
+		// The unique_ptr will automatically delete the removed child
+	}
+}
+
+json GameObject::SaveInfo()
+{
+	json obj;
+
+	if (parent) obj["Parent UUID"] = parent->UUID;
+
+	json childArray;
+
+	for (auto& go : childs)
+	{
+		childArray.push_back(go.get()->SaveInfo());
+	}
+
+	obj["Childs"] = childArray;
+
+	json compArray;
+
+	for (auto& comp : components)
+	{
+		compArray.push_back(comp.get()->SaveInfo());
+	}
+
+	obj["Components"] = compArray;
+
+	obj["Active"] = isActive;
+	obj["UUID"] = UUID;
+	obj["Name"] = name;
+
+	return obj;
 }

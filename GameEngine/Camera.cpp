@@ -17,9 +17,38 @@ Camera::Camera(const Camera& other)
 {
 }
 
+Camera::Camera(GameObject* owner, double ifov, double ratio, double clipnear, double clipfar, double camoffset, glm::dvec3 lookatpos) :
+	Component(owner),
+	fov(ifov),
+	aspectRatio(ratio),
+	clippingPlaneViewNear(clipnear),
+	clippingPlaneViewFar(clipfar),
+	camOffset(camoffset),
+	lookAtPos(lookatpos)
+{
+}
+
 Camera::~Camera() {}
 
 void Camera::Update()
 {
 	lookAtPos = this->owner->GetComponent<Transform>()->position() + this->owner->GetComponent<Transform>()->forward() * camOffset;
+}
+
+void Camera::Render() {}
+
+json Camera::SaveInfo()
+{
+	json obj;
+
+	obj["Owner"] = obj["Owner"] = std::to_string(owner->UUID);
+
+	obj["Fov"] = fov;
+	obj["Aspect Ratio"] = aspectRatio;
+	obj["Clipping Plane View Near"] = clippingPlaneViewNear;
+	obj["Clipping Plane View Far"] = clippingPlaneViewFar;
+
+	obj["Camera Offset"] = camOffset;
+
+	return obj;
 }

@@ -6,7 +6,10 @@
 #include <sstream>
 #include <filesystem>
 
+#include <nlohmann/json.hpp>
+
 namespace fs = std::filesystem;
+using json = nlohmann::json;
 
 Engine_ModuleScene::Engine_ModuleScene(GameEngine* gEngine, bool start_enabled) : Engine_Module(gEngine, start_enabled)
 {
@@ -19,7 +22,7 @@ bool Engine_ModuleScene::Init()
 {
 	fs::create_directories("Library/Meshes/");
 	fs::create_directories("Library/Materials/");
-	
+
 	addGameObject("Assets/BakerHouse.fbx");
 
 	return true;
@@ -27,22 +30,64 @@ bool Engine_ModuleScene::Init()
 
 engine_status Engine_ModuleScene::PreUpdate() { return ENGINE_UPDATE_CONTINUE; }
 
-engine_status Engine_ModuleScene::Update() { return ENGINE_UPDATE_CONTINUE; }
+engine_status Engine_ModuleScene::Update()
+{
+	if (!paused)
+	{
+		for (auto& GO : currentScene.gameObjectList)
+		{
+			recursiveObjectUpdate(GO.get());
+		}
+
+		if (step)
+		{
+			step = false;
+			paused = true;
+		}
+	}
+
+	if (step && paused) paused = false;
+
+	return ENGINE_UPDATE_CONTINUE;
+}
 
 engine_status Engine_ModuleScene::PostUpdate()
 {
-	for (auto& vector : gameObjectList)
+	for (auto& GO : currentScene.gameObjectList)
 	{
-		for (auto& childs : vector.get()->childs)
-		{
-			childs->UpdateComponents();
-		}
+		recursiveObjectRendering(GO.get());
 	}
 
 	return ENGINE_UPDATE_CONTINUE;
 }
 
 bool Engine_ModuleScene::CleanUp() { return true; }
+
+void Engine_ModuleScene::recursiveObjectUpdate(GameObject* GoToUpdate)
+{
+	GoToUpdate->UpdateComponents();
+
+	if (!GoToUpdate->childs.empty())
+	{
+		for (auto& child : GoToUpdate->childs)
+		{
+			recursiveObjectRendering(child.get());
+		}
+	}
+}
+
+void Engine_ModuleScene::recursiveObjectRendering(GameObject* GoToRender)
+{
+	GoToRender->RenderComponents();
+
+	if (!GoToRender->childs.empty())
+	{
+		for (auto& child : GoToRender->childs)
+		{
+			recursiveObjectRendering(child.get());
+		}
+	}
+}
 
 void Engine_ModuleScene::addGameObject()
 {
@@ -55,23 +100,23 @@ void Engine_ModuleScene::addGameObject()
 	}
 	gameObjectToAdd->name = meshName;
 
-	gameObjectList.push_back(std::move(gameObjectToAdd));
+	gameObjectToAdd->UUID = gEngine->generateUUID32();
+
+	currentScene.gameObjectList.push_back(std::move(gameObjectToAdd));
 
 	gEngine->logHistory.push_back("[Engine] Add GameObject");
 }
 
-void Engine_ModuleScene::addGameObject(const std::string & filePath)
+void Engine_ModuleScene::addGameObject(const std::string& filePath)
 {
 	gEngine->logHistory.push_back("[Engine] Add GameObject with path " + filePath);
 
 	addGameObject();
 
-	auto& gOparent = gameObjectList.back();
+	auto& gOparent = currentScene.gameObjectList.back();
 
 	auto meshInfo_vector = MeshLoader::loadMeshFromFile(filePath);
 	auto texture_paths_vector = MeshLoader::loadTextureFromFile(filePath);
-
-	/*std::string parentName;*/
 
 	int i = 0;
 	for (auto& meshInfo : meshInfo_vector)
@@ -83,18 +128,19 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 		std::string meshName = fileName;
 		deleteSubstring(meshName, ".fbx");
 
-		/*parentName = meshName;*/
-
 		int currentCopies = checkNameAvailability(meshName, gOparent.get());
 		if (currentCopies > 0) {
 			meshName.append("(" + std::to_string(currentCopies) + ")");
 		}
 		gameObjectToAdd->name = meshName;
+		gameObjectToAdd->UUID = gEngine->generateUUID32();
+
+		gameObjectToAdd->parent = gOparent.get();
 
 		gOparent->childs.push_back(std::move(gameObjectToAdd));
 
 		string folderName = "Library/Meshes/";
-		
+
 		ofstream oFile(folderName + meshName + ".mesh", ios::binary);
 		oFile << meshInfo;
 		oFile.close();
@@ -117,16 +163,9 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 			+ std::to_string(meshInfo._numTexCoords) + " tex coords, and "
 			+ std::to_string(meshInfo._numVerts) + " vertexs.");
 	}
-	/*int parentCopies = checkNameAvailability(parentName);
-	if (parentCopies > 0) {
-		parentName.append("(" + std::to_string(parentCopies) + ")");
-	}
-	gOparent.get()->name = parentName;
-
-	gameObjectList.push_back(std::move(gOparent));*/
 }
 
-void Engine_ModuleScene::addGameObject(Primitive * shape)
+void Engine_ModuleScene::addGameObject(Primitive* shape)
 {
 	std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
@@ -138,13 +177,13 @@ void Engine_ModuleScene::addGameObject(Primitive * shape)
 		goName.append("(" + std::to_string(currentCopies) + ")");
 	}
 	gameObjectToAdd->name = goName;
-	gameObjectList.push_back(std::move(gameObjectToAdd));
+	currentScene.gameObjectList.push_back(std::move(gameObjectToAdd));
 
 	MeshInfo meshInfo(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
-	Mesh meshToPush(gameObjectList.back().get(), meshInfo, Mesh::Formats::F_V3);
+	Mesh meshToPush(currentScene.gameObjectList.back().get(), meshInfo, Mesh::Formats::F_V3);
 
-	gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
-	gameObjectList.back().get()->GetComponent<Mesh>()->setName(meshName);
+	currentScene.gameObjectList.back().get()->AddComponent<Mesh>(meshToPush);
+	currentScene.gameObjectList.back().get()->GetComponent<Mesh>()->setName(meshName);
 
 	gEngine->logHistory.push_back("[Engine] Mesh (" + meshName + ") loaded with " + std::to_string(meshInfo._numFaces) + " faces, "
 		+ std::to_string(meshInfo._numIndexs) + " indexs, "
@@ -153,5 +192,319 @@ void Engine_ModuleScene::addGameObject(Primitive * shape)
 		+ std::to_string(meshInfo._numVerts) + " vertexs.");
 }
 
-void Engine_ModuleScene::SaveScene() {}
-void Engine_ModuleScene::LoadScene() {}
+void Engine_ModuleScene::removeGameObject(GameObject* GOtoDelete)
+{
+	auto it = std::find_if(currentScene.gameObjectList.begin(), currentScene.gameObjectList.end(), [GOtoDelete](const std::unique_ptr<GameObject>& GO) {
+		return GO.get() == GOtoDelete;
+		});
+
+	if (it != currentScene.gameObjectList.end())
+	{
+		currentScene.gameObjectList.erase(it);
+	}
+}
+
+void Engine_ModuleScene::NewScene()
+{
+	currentScene.fileName = "";
+	currentScene.name = "";
+	currentScene.gameObjectList.clear();
+}
+
+void Engine_ModuleScene::SaveScene()
+{
+	json sceneValue;
+
+	json gameobjectArray;
+
+	for (auto& go : currentScene.gameObjectList)
+	{
+		//gameobjectArray.push_back(go.get()->SaveInfo());
+		gameobjectArray.push_back(go.get()->UUID);
+	}
+
+	sceneValue["Game Object List"] = gameobjectArray;
+
+	ofstream("Assets/" + currentScene.fileName) << sceneValue;
+
+	gEngine->logHistory.push_back("[Engine] Scene file with name: " + currentScene.fileName + " saved");
+}
+
+void Engine_ModuleScene::SaveAsScene(string fileName)
+{
+	// Create scene file, save and set as current scene file
+
+	json sceneValue;
+
+	sceneValue["Name"] = fileName.c_str();
+
+	json gameobjectArray;
+
+	for (auto& go : currentScene.gameObjectList)
+	{
+		gameobjectArray.push_back(go.get()->SaveInfo());
+	}
+
+	sceneValue["Game Object List"] = gameobjectArray;
+
+	currentScene.name = fileName;
+	currentScene.fileName = fileName + ".mdng";
+
+	ofstream("Assets/" + currentScene.fileName) << sceneValue;
+
+	gEngine->logHistory.push_back("[Engine] Scene file with name: " + fileName + " created");
+}
+
+void Engine_ModuleScene::LoadScene(string fileName)
+{
+	std::ifstream file("Assets/" + fileName + ".mdng");
+
+	json sceneToLoad;
+	bool parsed = true;
+
+	// Check if parsed correctly
+	try {
+		sceneToLoad = json::parse(file);
+	}
+	catch (json::parse_error e)
+	{
+		//gEngine->logHistory.push_back(e.what());
+		parsed = false;
+	}
+
+	if (parsed)
+	{
+		NewScene();
+
+		currentScene.name = sceneToLoad["Name"];
+		currentScene.fileName = fileName;
+
+		const json gameObjectList = sceneToLoad["Game Object List"];
+
+		for (auto rootGO : gameObjectList)
+		{
+			CreateRootGOs(rootGO);
+		}
+	}
+	else
+		gEngine->logHistory.push_back("[Engine] Could not parse file");
+}
+
+void Engine_ModuleScene::CreateRootGOs(json rootGOjsValue)
+{
+	string name = rootGOjsValue["Name"];
+
+	unsigned long UUID = rootGOjsValue["UUID"];
+
+	bool isActive = rootGOjsValue["Active"];
+
+	LoadRootGameObject(name, UUID, isActive);
+
+	json childArray = rootGOjsValue["Childs"];
+
+	for (auto childroot : childArray)
+	{
+		LoadChildGameObjectfromjson(childroot);
+	}
+
+	json componentArray = rootGOjsValue["Components"];
+
+	for (auto comp : componentArray)
+	{
+		LoadComponentfromjson(comp);
+	}
+}
+
+void Engine_ModuleScene::LoadRootGameObject(string name, unsigned long UUID, bool active)
+{
+	std::unique_ptr<GameObject> newRootGO = std::make_unique<GameObject>();
+
+	currentScene.gameObjectList.push_back(std::move(newRootGO));
+
+	currentScene.gameObjectList.back()->name = name;
+	currentScene.gameObjectList.back()->UUID = UUID;
+	currentScene.gameObjectList.back()->isActive = active;
+}
+
+void Engine_ModuleScene::LoadChildGameObjectfromjson(json parentRoot)
+{
+	string name = parentRoot["Name"];
+	parentRoot["Active"];
+
+	unsigned long UUID = parentRoot["UUID"];
+
+	unsigned long parentUUID = parentRoot["Parent UUID"];
+
+	GameObject* parent = nullptr;
+
+	for (auto& root : currentScene.gameObjectList)
+	{
+		if (root.get()->UUID == parentUUID)
+		{
+			parent = root.get();
+		}
+		else
+		{
+			GameObject* tempParent = findGameObjectfromUUID(root.get(), parentUUID);
+
+			if (tempParent != nullptr)
+			{
+				parent = tempParent;
+				break;
+			}
+		}
+	}
+
+	std::unique_ptr<GameObject> newRootGO = std::make_unique<GameObject>();
+
+	if (parent != nullptr)
+	{
+		parent->childs.push_back(std::move(newRootGO));
+
+		parent->childs.back()->name = name;
+		parent->childs.back()->UUID = UUID;
+		parent->childs.back()->parent = parent;
+	}
+
+	json childArray = parentRoot["Childs"];
+
+	for (auto childroot : childArray)
+	{
+		LoadChildGameObjectfromjson(childroot);
+	}
+
+	json componentArray = parentRoot["Components"];
+	for (auto comp : componentArray)
+	{
+		LoadComponentfromjson(comp);
+	}
+}
+
+void Engine_ModuleScene::LoadComponentfromjson(json parentRoot)
+{
+	int itype = parentRoot["Type"];
+
+	string path = "";
+
+	if (parentRoot.contains("Binary Path"))	path = parentRoot["Binary Path"];
+
+	unsigned long ownerUUID = parentRoot["Owner"];
+	GameObject* owner = nullptr;
+	for (auto& root : currentScene.gameObjectList)
+	{
+		if (root.get()->UUID == ownerUUID)
+		{
+			owner = root.get();
+		}
+		else
+		{
+			GameObject* tempParent = findGameObjectfromUUID(root.get(), ownerUUID);
+
+			if (tempParent != nullptr)
+			{
+				owner = tempParent;
+				break;
+			}
+		}
+	}
+
+	switch (itype)
+	{
+	case 0:
+		// Call transform constructor with the node / modify transform information
+		LoadComponentTransform(owner, parentRoot);
+		break;
+	case 1:
+		// Call mesh constructor with the file path
+		LoadComponentMesh(owner, path);
+		break;
+	case 2:
+		// Call texture constructor with the node
+
+		break;
+	case 3:
+		// Call mesh constructor with the file path
+		LoadComponentCamera(owner, parentRoot);
+		break;
+	default:
+		gEngine->logHistory.push_back("[Engine] Could not load component: no type provided by save");
+
+		break;
+	}
+}
+
+GameObject* Engine_ModuleScene::findGameObjectfromUUID(GameObject* head, unsigned long UUIDtocompare)
+{
+	for (auto& child : head->childs)
+	{
+		if (child.get()->UUID == UUIDtocompare)
+		{
+			return child.get();
+		}
+
+		GameObject* tempParent = findGameObjectfromUUID(child.get(), UUIDtocompare);
+		if (tempParent != nullptr)
+		{
+			return tempParent;
+		}
+	}
+
+	return nullptr;
+}
+
+void Engine_ModuleScene::LoadComponentMesh(GameObject* owner, string path)
+{
+	MeshInfo newinfo = MeshInfo();
+
+	std::ifstream meshfile(path, ios::binary);
+
+	if (meshfile.is_open())
+	{
+		meshfile >> newinfo;
+
+		Mesh newMesh(owner, newinfo, Mesh::Formats::F_V3T2);
+
+		owner->AddComponent<Mesh>(newMesh);
+	}
+	else
+		gEngine->logHistory.push_back("Mesh Binary File could not be open");
+
+	meshfile.close();
+}
+
+void Engine_ModuleScene::LoadComponentTransform(GameObject* owner, json transformjsonRoot)
+{
+	mat4 transmatToLoad = mat4(0);
+
+	json transmatArray = transformjsonRoot["Transformation Matrix"];
+
+	int it = 0;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			transmatToLoad[i][j] = transmatArray[it];
+			it++;
+		}
+	}
+
+	// Remove Transformation component since it is created by default on every object
+	owner->RemoveComponent(Component::Type::TRANSFORM);
+
+	Transform newtransform(owner, transmatToLoad);
+	owner->AddComponent<Transform>(newtransform);
+}
+
+void Engine_ModuleScene::LoadComponentCamera(GameObject* owner, json camerajsonRoot)
+{
+	glm::dvec3 vec0 = glm::dvec3(0);
+
+	double fov, ratio, clipnear, clipfar, camoffset;
+
+	fov = camerajsonRoot["Fov"];
+	ratio = camerajsonRoot["Ratio"];
+	clipnear = camerajsonRoot["Clipping Plane View Near"];
+	clipfar = camerajsonRoot["Clipping Plane View Far"];
+	camoffset = camerajsonRoot["Camera Offset"];
+
+	Camera newcamera(owner, fov, ratio, clipnear, clipfar, camoffset, vec0);
+	owner->AddComponent<Camera>(newcamera);
+}

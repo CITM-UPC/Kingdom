@@ -1,8 +1,20 @@
 #include "Transform.h"
+#include "GameEngine.h"
 
 Transform::Transform(GameObject* owner) : Component(owner)
 {
 	_transformationMatrix = mat4(1.0);
+}
+
+Transform::Transform(GameObject* owner, mat4 transmat) : Component(owner)
+{
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			_transformationMatrix[i][j] = transmat[i][j];
+		}
+	}
+
+	//_transformationMatrix = transmat;
 }
 
 Transform::~Transform() {}
@@ -46,3 +58,27 @@ void Transform::Rotate(double angle, vec3 axis, Space referenceFrame)
 }
 
 void Transform::Update() {}
+
+void Transform::Render() {}
+
+json Transform::SaveInfo()
+{
+	json obj;
+
+	obj["Owner"] = owner->UUID;
+	obj["Type"] = static_cast<int>(getType());
+
+	json transformationMatrixArray;
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			transformationMatrixArray.push_back(_transformationMatrix[i][j]);
+		}
+	}
+
+	obj["Transformation Matrix"] = transformationMatrixArray;
+
+	return obj;
+}

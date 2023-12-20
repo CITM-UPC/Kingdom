@@ -28,11 +28,16 @@ public:
 
 	void Update() override;
 
+	void Render() override;
+
 	Type getType() const override {
 		return Type::TEXTURE2D;
 	}
 
+	json SaveInfo();
+
 	std::string path;
+	std::string fileName;
 	int width, height;
 
 private:

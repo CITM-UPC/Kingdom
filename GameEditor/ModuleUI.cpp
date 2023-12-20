@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
+#include "imgui_stdlib.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -90,11 +91,21 @@ update_status ModuleUI::PreUpdate()
 
 	if (options)		OptionsWindow();
 	if (camDebug)		CamDebugWindow();
-	if (about)			AboutWindow();
+	if (about)      	AboutWindow();
 	if (inspector)		InspectorWindow();
 	if (hierarchy)		HierarchyWindow();
 	if (fileExplorer)	FileExplorerWindow();
-	if (demo)			ImGui::ShowDemoWindow(&demo);
+	if (demo)       	ImGui::ShowDemoWindow(&demo);
+
+	if (saveasMenu) 	SaveAsMenu();
+	if (loadMenu)		LoadSceneMenu();
+	if (reparentMenu) 	ReparentMenu();
+
+	ImGuiIO& io = ImGui::GetIO();
+	if (!io.WantCaptureMouse && App->input->GetMouseButton(SDL_BUTTON_LEFT))
+	{
+		gameObjSelected = nullptr;
+	}
 
 	return MainMenuBar();
 }
@@ -148,15 +159,23 @@ update_status ModuleUI::MainMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("New Scene", "Not implemented")) {}
+			if (ImGui::MenuItem("New Scene", "Not implemented"))
+			{
+				App->gEngine->scene->NewScene();
+			}
 			if (ImGui::MenuItem("Open Scene", "Not implemented")) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Save", "Not implemented")) {}
-			if (ImGui::MenuItem("Save As...", "Not implemented")) {}
+			if (ImGui::MenuItem("Save"))
+			{
+				if (App->gEngine->scene->currentScene.fileName != "")
+				{
+					App->gEngine->scene->SaveScene();
+				}
+				else saveasMenu = true;
+			}
+			if (ImGui::MenuItem("Save As...", "", &saveasMenu)) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("New Project", "Not implemented")) {}
-			if (ImGui::MenuItem("Open Project", "Not implemented")) {}
-			if (ImGui::MenuItem("Save Project", "Not implemented")) {}
+			if (ImGui::MenuItem("Load Scene", "", &loadMenu)) {}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Exit", "Alt+F4")) { return UPDATE_STOP; }
 			ImGui::EndMenu();
@@ -174,9 +193,18 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::MenuItem("Duplicate", "Not implemented")) {}
 			if (ImGui::MenuItem("Delete", "Not implemented")) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Play", "Not implemented")) {}
-			if (ImGui::MenuItem("Pause", "Not implemented")) {}
-			if (ImGui::MenuItem("Step", "Not implemented")) {}
+			if (ImGui::MenuItem("Play", "Play Scene")) {
+				App->logHistory.push_back("[Editor] 'Play' Scene");
+				App->gEngine->scene->paused = false;
+			}
+			if (ImGui::MenuItem("Pause", "Pause Scene")) {
+				App->logHistory.push_back("[Editor] 'Pause' Scene");
+				App->gEngine->scene->paused = true;
+			}
+			if (ImGui::MenuItem("Step", "Step Scene")) {
+				App->logHistory.push_back("[Editor] 'Step' Scene");
+				App->gEngine->scene->step = true;
+			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Settings", "Display, Controls, Renderer, System")) { options = true; }
 			ImGui::EndMenu();
@@ -213,6 +241,7 @@ update_status ModuleUI::MainMenuBar()
 				ImGui::EndMenu();
 			}
 			if (ImGui::MenuItem("Draw Mode")) {}
+			GameObjectOptions();
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Help"))
@@ -226,6 +255,115 @@ update_status ModuleUI::MainMenuBar()
 	}
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleUI::SaveAsMenu()
+{
+	ImGui::Begin("Save As", &saveasMenu);
+
+	static char nameRecipient[32];
+
+	ImGui::InputText("File Name", nameRecipient, IM_ARRAYSIZE(nameRecipient));
+
+	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && nameRecipient != "")
+	{
+		App->gEngine->scene->SaveAsScene(nameRecipient);
+		saveasMenu = false;
+	}
+
+	ImGui::End();
+}
+
+void ModuleUI::LoadSceneMenu()
+{
+	ImGui::Begin("Load", &loadMenu);
+
+	static char nameRecipient[32];
+
+	ImGui::InputText("File Name", nameRecipient, IM_ARRAYSIZE(nameRecipient));
+
+	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && nameRecipient != "")
+	{
+		App->gEngine->scene->LoadScene(nameRecipient);
+		loadMenu = false;
+	}
+	ImGui::End();
+}
+
+void ModuleUI::GameObjectOptions()
+{
+	bool goIsSelected;
+	gameObjSelected != nullptr ? goIsSelected = true : goIsSelected = false;
+	bool a = false;
+	ImGui::MenuItem("Move", "Reparent GameObject", &reparentMenu, goIsSelected);
+	if (ImGui::MenuItem("Delete", "Remove GameObject", a, goIsSelected))
+	{
+		if (gameObjSelected->parent == nullptr)
+		{
+			App->gEngine->scene->removeGameObject(gameObjSelected);
+		}
+		else
+		{
+			auto parent = gameObjSelected->parent;
+			parent->removeChild(gameObjSelected);
+		}
+
+		gameObjSelected = nullptr;
+	}
+}
+
+void ModuleUI::ReparentMenu()
+{
+	static ImGuiWindowFlags menuFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize;
+	ImGui::Begin("Reparent GameObject", &reparentMenu, menuFlags);
+
+	ImGui::MenuItem("Reparent: ", "", false, false);
+
+	orphan == nullptr ? ImGui::Selectable("...", &reparentThis) : ImGui::Selectable(orphan->name.c_str(), &reparentThis);
+
+	if (reparentThis) {
+		reparentTo = false;
+		orphan = gameObjSelected;
+	}
+
+	ImGui::Separator();
+
+	ImGui::MenuItem("To: ", "", false, false);
+
+	adopter == nullptr ? ImGui::Selectable("...", &reparentTo) : ImGui::Selectable(adopter->name.c_str(), &reparentTo);
+
+	if (reparentTo) {
+		reparentThis = false;
+		adopter = gameObjSelected;
+	}
+
+	if (ImGui::MenuItem("Confirm"))
+	{
+		if (orphan->parent) {
+			if (adopter != nullptr && orphan != nullptr)
+			{
+				orphan->Move(adopter, orphan->parent->childs);
+				App->logHistory.push_back("Moved " + orphan->name + " to " + adopter->name);
+			}
+			else
+			{
+				App->logHistory.push_back("ERROR: Select both GameObjects in order to Reparent");
+			}
+		}
+		else
+		{
+			if (adopter != nullptr && orphan != nullptr)
+			{
+				orphan->Move(adopter, App->gEngine->scene->currentScene.gameObjectList);
+				App->logHistory.push_back("Moved " + orphan->name + " to " + adopter->name);
+			}
+			else
+			{
+				App->logHistory.push_back("ERROR: Select both GameObjects in order to Reparent");
+			}
+		}
+	}
+	ImGui::End();
 }
 
 void ModuleUI::FPSGraphWindow()
@@ -268,7 +406,7 @@ void ModuleUI::HierarchyRecursive(GameObject* gO)
 void ModuleUI::HierarchyWindow()
 {
 	ImGui::Begin("Hierarchy", &hierarchy);
-	for (const auto& gOparentPtr : App->gEngine->scene->gameObjectList)
+	for (const auto& gOparentPtr : App->gEngine->scene->currentScene.gameObjectList)
 	{
 		HierarchyRecursive(gOparentPtr.get());
 	}

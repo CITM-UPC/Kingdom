@@ -116,5 +116,11 @@
     <ClInclude Include="Engine_ModuleScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BoundingBox.hpp">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.hpp">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
