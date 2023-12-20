@@ -124,29 +124,26 @@ AABBox GameObject::computeAABB()
 	AABBox aabbox;
 
 	Mesh* meshComponent = GetComponent<Mesh>();
-
-	if (meshComponent != nullptr) aabbox = meshComponent->getAABB();
-	
-	const auto obBox = GetComponent<Transform>()->_transformationMatrix * aabbox;
-
-	//To implement with tree structure
-	/*
-	else if (children().empty())
+	if (meshComponent != nullptr)
+	{
+		aabbox = meshComponent->getAABB();
+		const auto obBox = GetComponent<Transform>()->_transformationMatrix * aabbox;
+		aabbox = obBox.AABB();
+	}
+	else
 	{
 		aabbox.min = vec3(0);
 		aabbox.max = vec3(0);
 	}
 
-	for (const auto& child : children())
+	for (const auto& child : childs)
 	{
-		const auto child_aabb = (child.transform() * child.aabb()).AABB();
+		const auto child_aabb = child->computeAABB();
 		aabbox.min = glm::min(aabbox.min, child_aabb.min);
 		aabbox.max = glm::max(aabbox.max, child_aabb.max);
 	}
-	*/
 
-	//return aabbox;
-	return obBox.AABB();
+	return aabbox;
 }
 
 void GameObject::Move(GameObject* newParent)
