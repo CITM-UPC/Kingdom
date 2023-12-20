@@ -15,7 +15,7 @@ struct Triangle {
     glm::vec3 vertex2;
 };
 
-bool RayTriangleIntersection(const Ray& ray, const Triangle& triangle, float& t) 
+static bool RayTriangleIntersection(const Ray& ray, const Triangle& triangle, float& t) 
 {
     const float EPSILON = 0.000001f;
     const glm::vec3& vertex0 = triangle.vertex0;
@@ -51,7 +51,7 @@ bool RayTriangleIntersection(const Ray& ray, const Triangle& triangle, float& t)
     return t > EPSILON;
 }
 
-bool RayAABBIntersection(const Ray& ray, GameObject* go) {
+static bool RayAABBIntersection(const Ray& ray, GameObject* go) {
 
     AABBox box = go->computeAABB();
 

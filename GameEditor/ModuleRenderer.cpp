@@ -1,7 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRenderer.h"
-#include "..\GameEngine\Physics.hpp"
 
 ModuleRenderer::ModuleRenderer(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -48,152 +47,7 @@ update_status ModuleRenderer::Update()
 
 	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
-		vec2 nearPlaneSize;
-		nearPlaneSize.y = glm::tan(glm::radians(App->gEngine->cameraGO.GetComponent<Camera>()->fov / 2)) * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
-		nearPlaneSize.x = nearPlaneSize.y * App->gEngine->cameraGO.GetComponent<Camera>()->aspectRatio;
-
-		vec2 finalPos; 
-		finalPos.x = (nearPlaneSize.x / App->window->width) * (App->input->GetMouseX() - App->window->width) * 2 + nearPlaneSize.x;
-		finalPos.y = (nearPlaneSize.y / App->window->height) * (App->input->GetMouseY() - App->window->height) * 2 + nearPlaneSize.y;
-
-
-		Ray ray;
-		ray.origin = App->gEngine->cameraGO.GetComponent<Transform>()->position();
-
-		ray.origin += App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
-		ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->up() * finalPos.y;
-		ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->right() * finalPos.x;
-
-		ray.direction = glm::normalize((vec3)ray.origin - App->gEngine->cameraGO.GetComponent<Transform>()->position());
-
-
-		//-----------------------------------------------------------------------------------------
-
-
-		App->gEngine->renderer3D->origins.push_back(ray.origin);	//Debug only
-		App->gEngine->renderer3D->ends.push_back((vec3)ray.origin + (vec3)ray.direction * 20.0);	//Debug only
-		App->gEngine->renderer3D->camPos.push_back(App->gEngine->cameraGO.GetComponent<Transform>()->position());	//Debug only
-
-
-		vec3 frame1 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-					 -App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
-
-		vec3 frame2 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
-
-		vec3 frame3 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-					 -App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
-
-		vec3 frame4 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-					 App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-					 -App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-					 -App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
-
-		App->gEngine->renderer3D->nearPlanes.push_back(frame1);	//Debug only
-		App->gEngine->renderer3D->nearPlanes.push_back(frame2);	//Debug only
-		App->gEngine->renderer3D->nearPlanes.push_back(frame3);	//Debug only
-		App->gEngine->renderer3D->nearPlanes.push_back(frame4);	//Debug only
-
-
-
-		//-----------------------------------------------------------------------------------------
-
-		for (const auto& object : App->gEngine->scene->currentScene.gameObjectList)
-		{
-			//The following functions should be encapsulated and performed recursively, not in this barbaric way.
-
-			if (RayAABBIntersection(ray, object.get()))
-			{
-				LOG("Hit AABB");
-
-				float closestIntersection = std::numeric_limits<float>::infinity();
-
-				//Check for a mesh in the parent
-				if (object->GetComponent<Mesh>() != nullptr)
-				{
-					for (size_t i = 0; i < object->GetComponent<Mesh>()->getNumFaces(); ++i)
-					{
-						vec4 vert0 = { object->GetComponent<Mesh>()->mVertices[i * 3], 1 };
-						vec4 vert1 = { object->GetComponent<Mesh>()->mVertices[i * 3 + 1], 1 };
-						vec4 vert2 = { object->GetComponent<Mesh>()->mVertices[i * 3 + 2], 1 };
-
-						vert0 = vert0 * glm::inverse(object->GetComponent<Transform>()->_transformationMatrix);
-						vert1 = vert1 * glm::inverse(object->GetComponent<Transform>()->_transformationMatrix);
-						vert2 = vert2 * glm::inverse(object->GetComponent<Transform>()->_transformationMatrix);
-
-						auto tri0 = (vec3)vert0 + object->GetComponent<Transform>()->position();
-						auto tri1 = (vec3)vert1 + object->GetComponent<Transform>()->position();
-						auto tri2 = (vec3)vert2 + object->GetComponent<Transform>()->position();
-
-						// Assuming _format is F_V3 (change if necessary)
-						Triangle triangle{ tri0, tri1, tri2 };
-
-						float currentT;
-						if (RayTriangleIntersection(ray, triangle, currentT) && currentT < closestIntersection)
-						{
-							closestIntersection = currentT;
-						}
-					}
-
-					if (closestIntersection != std::numeric_limits<float>::infinity())
-					{
-						LOG("Hit %s", object->name.c_str());
-					}
-					else
-					{
-						LOG("Not hit a mesh");
-					}
-				}
-
-				//Check for a mesh in the first layer children
-				for (const auto& child : object->childs)
-				{
-					float childClosestIntersection = std::numeric_limits<float>::infinity();
-
-					if (child->GetComponent<Mesh>() != nullptr)
-					{
-						for (size_t i = 0; i < child->GetComponent<Mesh>()->getNumFaces(); ++i)
-						{
-							vec4 vert0 = { child->GetComponent<Mesh>()->mVertices[i * 3], 1 };
-							vec4 vert1 = { child->GetComponent<Mesh>()->mVertices[i * 3 + 1], 1 };
-							vec4 vert2 = { child->GetComponent<Mesh>()->mVertices[i * 3 + 2], 1 };
-
-							vert0 = vert0 * glm::inverse(child->GetComponent<Transform>()->_transformationMatrix);
-							vert1 = vert1 * glm::inverse(child->GetComponent<Transform>()->_transformationMatrix);
-							vert2 = vert2 * glm::inverse(child->GetComponent<Transform>()->_transformationMatrix);
-
-							auto tri0 = (vec3)vert0 + child->GetComponent<Transform>()->position();
-							auto tri1 = (vec3)vert1 + child->GetComponent<Transform>()->position();
-							auto tri2 = (vec3)vert2 + child->GetComponent<Transform>()->position();
-
-							// Assuming _format is F_V3 (change if necessary)
-							Triangle triangle{ tri0, tri1, tri2 };
-
-							float currentT;
-							if (RayTriangleIntersection(ray, triangle, currentT) && currentT < childClosestIntersection)
-							{
-								childClosestIntersection = currentT;
-							}
-						}
-
-						if (childClosestIntersection != std::numeric_limits<float>::infinity())
-						{
-							LOG("Hit %s", child->name.c_str());
-						}
-						else
-						{
-							LOG("Not hit a mesh");
-						}
-					}
-				}
-			}
-		}
+		DoRayCast();
 	}
 	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 	{
@@ -360,4 +214,150 @@ void ModuleRenderer::FocusCamera()
 	vec3 targetPos = App->ui->GetSelectedObjectPos() - App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->camOffset;
 
 	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(targetPos);
+}
+
+void ModuleRenderer::DoRayCast()
+{
+	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+	{
+		return;
+	}
+
+	Ray ray = CalculateRay();
+
+	DebugRay(ray);
+
+	std::map<float, GameObject*> hitObjectsMap;
+
+	for (const auto& object : App->gEngine->scene->currentScene.gameObjectList)
+	{
+		if (RayAABBIntersection(ray, object.get()))
+		{
+			CheckMeshCollisionRecursive(ray, object.get(), hitObjectsMap);
+		}
+	}
+
+
+	float closestHitPoint = std::numeric_limits<float>::infinity();
+
+	map<float, GameObject*>::iterator it = hitObjectsMap.begin();
+
+	// Iterate through the map and print the elements
+	while (it != hitObjectsMap.end()) {
+
+		closestHitPoint = glm::min(closestHitPoint, it->first);
+		++it;
+	}
+
+	if (hitObjectsMap.size() > 0) LOG("Closest hit object is %s", hitObjectsMap[closestHitPoint]->name.c_str());
+	else LOG("Hit nothing");
+}
+
+Ray ModuleRenderer::CalculateRay()
+{
+	vec2 nearPlaneSize;
+	nearPlaneSize.y = glm::tan(glm::radians(App->gEngine->cameraGO.GetComponent<Camera>()->fov / 2)) * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
+	nearPlaneSize.x = nearPlaneSize.y * App->gEngine->cameraGO.GetComponent<Camera>()->aspectRatio;
+
+	vec2 finalPos;
+	finalPos.x = (nearPlaneSize.x / App->window->width) * (App->input->GetMouseX() - App->window->width) * 2 + nearPlaneSize.x;
+	finalPos.y = (nearPlaneSize.y / App->window->height) * (App->input->GetMouseY() - App->window->height) * 2 + nearPlaneSize.y;
+
+
+	Ray ray;
+	ray.origin = App->gEngine->cameraGO.GetComponent<Transform>()->position();
+
+	ray.origin += App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
+	ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->up() * finalPos.y;
+	ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->right() * finalPos.x;
+
+	ray.direction = glm::normalize((vec3)ray.origin - App->gEngine->cameraGO.GetComponent<Transform>()->position());
+
+	return ray;
+}
+
+
+void ModuleRenderer::DebugRay(Ray ray)
+{
+	App->gEngine->renderer3D->origins.push_back(ray.origin);	//Debug only
+	App->gEngine->renderer3D->ends.push_back((vec3)ray.origin + (vec3)ray.direction * 20.0);	//Debug only
+	App->gEngine->renderer3D->camPos.push_back(App->gEngine->cameraGO.GetComponent<Transform>()->position());	//Debug only
+
+	/*
+	vec3 frame1 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
+		App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+		-App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+		App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+
+	vec3 frame2 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
+		App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+		App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+		App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+
+	vec3 frame3 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
+		App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+		App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+		-App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+
+	vec3 frame4 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
+		App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+		-App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+		-App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+	
+
+	App->gEngine->renderer3D->nearPlanes.push_back(frame1);	//Debug only
+	App->gEngine->renderer3D->nearPlanes.push_back(frame2);	//Debug only
+	App->gEngine->renderer3D->nearPlanes.push_back(frame3);	//Debug only
+	App->gEngine->renderer3D->nearPlanes.push_back(frame4);	//Debug only
+	*/
+}
+
+Triangle ModuleRenderer::CalculateTriangle(GameObject* triObject, int iterator)
+{
+	vec4 vert0 = { triObject->GetComponent<Mesh>()->mVertices[iterator * 3], 1 };
+	vec4 vert1 = { triObject->GetComponent<Mesh>()->mVertices[iterator * 3 + 1], 1 };
+	vec4 vert2 = { triObject->GetComponent<Mesh>()->mVertices[iterator * 3 + 2], 1 };
+
+	vert0 = vert0 * glm::inverse(triObject->GetComponent<Transform>()->_transformationMatrix);
+	vert1 = vert1 * glm::inverse(triObject->GetComponent<Transform>()->_transformationMatrix);
+	vert2 = vert2 * glm::inverse(triObject->GetComponent<Transform>()->_transformationMatrix);
+
+	auto tri0 = (vec3)vert0 + triObject->GetComponent<Transform>()->position();
+	auto tri1 = (vec3)vert1 + triObject->GetComponent<Transform>()->position();
+	auto tri2 = (vec3)vert2 + triObject->GetComponent<Transform>()->position();
+
+	// Assuming _format is F_V3 (change if necessary)
+	Triangle triangle{ tri0, tri1, tri2 };
+
+	return triangle;
+}
+
+void ModuleRenderer::CheckMeshCollisionRecursive(Ray& ray, GameObject* object, std::map<float, GameObject*>& hitObjects)
+{
+	float closestIntersection = std::numeric_limits<float>::infinity();
+
+	//Check for a mesh in the parent
+	if (object->GetComponent<Mesh>() != nullptr)
+	{
+		for (size_t i = 0; i < object->GetComponent<Mesh>()->getNumFaces(); ++i)
+		{
+			Triangle triangle = CalculateTriangle(object, i);
+
+			float currentT;
+			if (RayTriangleIntersection(ray, triangle, currentT) && currentT < closestIntersection)
+			{
+				closestIntersection = currentT;
+			}
+		}
+
+		if (closestIntersection != std::numeric_limits<float>::infinity())
+		{
+			LOG("Hit %s", object->name.c_str());
+			hitObjects[closestIntersection] = object;  //Adding to the map an entry which has the distance as an accessor and the GO as the object
+		}
+	}
+	for (const auto& child : object->childs)
+	{
+		CheckMeshCollisionRecursive(ray, child.get(), hitObjects);
+	}
 }
