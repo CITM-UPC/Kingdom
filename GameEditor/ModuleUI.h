@@ -55,6 +55,7 @@ private:
 	void GameObjectOptions();
 	void ReparentMenu();
 	void SaveAsMenu();
+	void LoadSceneMenu();
 	void GetInfrastructureInfo();
 
 private:
@@ -71,8 +72,8 @@ private:
 	bool demo = false;
 	bool reparentMenu = false;
 	bool saveasMenu = false;
+	bool loadMenu = false;
 	bool fileExplorer = true;
-
 
 	bool autoScrollLog = true;
 

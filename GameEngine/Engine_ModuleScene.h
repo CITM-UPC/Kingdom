@@ -61,7 +61,10 @@ public:
 
 	// Load Mesh Component with the fileName and an owner
 	void LoadComponentMesh(GameObject* owner, string path);
+	// Load Transform Component with the json component root and an owner
 	void LoadComponentTransform(GameObject* owner, json transformjsonRoot);
+	// Load Camera Component with the json component root and an owner
+	void LoadComponentCamera(GameObject* owner, json camerajsonRoot);
 
 	// Only used when gameobject has no parent, removes a parent from the scene
 	void removeGameObject(GameObject* GOtoDelete);

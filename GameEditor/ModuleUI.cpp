@@ -98,6 +98,7 @@ update_status ModuleUI::PreUpdate()
 	if (demo)       	ImGui::ShowDemoWindow(&demo);
 
 	if (saveasMenu) 	SaveAsMenu();
+	if (loadMenu)		LoadSceneMenu();
 	if (reparentMenu) 	ReparentMenu();
 
 	ImGuiIO& io = ImGui::GetIO();
@@ -174,11 +175,7 @@ update_status ModuleUI::MainMenuBar()
 			}
 			if (ImGui::MenuItem("Save As...", "", &saveasMenu)) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Load Scene"))
-			{
-				App->gEngine->scene->LoadScene("a.mdng");
-				gameObjSelected = nullptr;
-			}
+			if (ImGui::MenuItem("Load Scene", "", &loadMenu)) {}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Exit", "Alt+F4")) { return UPDATE_STOP; }
 			ImGui::EndMenu();
@@ -274,6 +271,22 @@ void ModuleUI::SaveAsMenu()
 		saveasMenu = false;
 	}
 
+	ImGui::End();
+}
+
+void ModuleUI::LoadSceneMenu()
+{
+	ImGui::Begin("Load", &loadMenu);
+
+	static char nameRecipient[32];
+
+	ImGui::InputText("File Name", nameRecipient, IM_ARRAYSIZE(nameRecipient));
+
+	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && nameRecipient != "")
+	{
+		App->gEngine->scene->LoadScene(nameRecipient);
+		loadMenu = false;
+	}
 	ImGui::End();
 }
 

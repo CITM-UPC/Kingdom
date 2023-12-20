@@ -257,7 +257,7 @@ void Engine_ModuleScene::SaveAsScene(string fileName)
 
 void Engine_ModuleScene::LoadScene(string fileName)
 {
-	std::ifstream file("Assets/" + fileName);
+	std::ifstream file("Assets/" + fileName + ".mdng");
 
 	json sceneToLoad;
 	bool parsed = true;
@@ -268,7 +268,7 @@ void Engine_ModuleScene::LoadScene(string fileName)
 	}
 	catch (json::parse_error e)
 	{
-		gEngine->logHistory.push_back(e.what());
+		//gEngine->logHistory.push_back(e.what());
 		parsed = false;
 	}
 
@@ -286,6 +286,8 @@ void Engine_ModuleScene::LoadScene(string fileName)
 			CreateRootGOs(rootGO);
 		}
 	}
+	else
+		gEngine->logHistory.push_back("[Engine] Could not parse file");
 }
 
 void Engine_ModuleScene::CreateRootGOs(json rootGOjsValue)
@@ -484,8 +486,25 @@ void Engine_ModuleScene::LoadComponentTransform(GameObject* owner, json transfor
 		}
 	}
 
+	// Remove Transformation component since it is created by default on every object
 	owner->RemoveComponent(Component::Type::TRANSFORM);
 
 	Transform newtransform(owner, transmatToLoad);
 	owner->AddComponent<Transform>(newtransform);
+}
+
+void Engine_ModuleScene::LoadComponentCamera(GameObject* owner, json camerajsonRoot)
+{
+	glm::dvec3 vec0 = glm::dvec3(0);
+
+	double fov, ratio, clipnear, clipfar, camoffset;
+
+	fov = camerajsonRoot["Fov"];
+	ratio = camerajsonRoot["Ratio"];
+	clipnear = camerajsonRoot["Clipping Plane View Near"];
+	clipfar = camerajsonRoot["Clipping Plane View Far"];
+	camoffset = camerajsonRoot["Camera Offset"];
+
+	Camera newcamera(owner, fov, ratio, clipnear, clipfar, camoffset, vec0);
+	owner->AddComponent<Camera>(newcamera);
 }

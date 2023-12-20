@@ -10,7 +10,7 @@ public:
 	Camera(GameObject* owner);
 	Camera(const Camera& other);
 
-	Camera();
+	Camera(GameObject* owner, double ifov, double ratio, double clipnear, double clipfar, double camoffset, glm::dvec3 lookatpos);
 
 	~Camera();
 
