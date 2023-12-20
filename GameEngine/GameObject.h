@@ -57,6 +57,7 @@ public:
 	//static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);
 
 	AABBox computeAABB();
+	void drawAABBox(const AABBox& aabb);
 };
 
 template<typename T>

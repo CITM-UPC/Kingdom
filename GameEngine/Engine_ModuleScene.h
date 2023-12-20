@@ -30,6 +30,8 @@ public:
 	bool paused = false;
 	bool step = false;
 
+	bool bboxDebug = false;
+
 	// Create new Scene (erases all current scene variables)
 	void NewScene();
 	// Saves current scene inside its file

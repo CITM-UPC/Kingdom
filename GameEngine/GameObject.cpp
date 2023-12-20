@@ -80,34 +80,6 @@ void GameObject::RemoveComponent(Component::Type component)
 
 static inline void glVec3(const vec3& v) { glVertex3dv(&v.x); }
 
-static void drawAABBox(const AABBox& aabb) {
-	//glColor3ub(255, 0, 0);
-	glLineWidth(2);
-	glBegin(GL_LINE_STRIP);
-
-	glVec3(aabb.a());
-	glVec3(aabb.b());
-	glVec3(aabb.c());
-	glVec3(aabb.d());
-	glVec3(aabb.a());
-
-	glVec3(aabb.e());
-	glVec3(aabb.f());
-	glVec3(aabb.g());
-	glVec3(aabb.h());
-	glVec3(aabb.e());
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVec3(aabb.h());
-	glVec3(aabb.d());
-	glVec3(aabb.f());
-	glVec3(aabb.b());
-	glVec3(aabb.g());
-	glVec3(aabb.c());
-	glEnd();
-}
-
 void GameObject::UpdateComponents()
 {
 	for (auto& comp : components)
@@ -122,8 +94,6 @@ void GameObject::RenderComponents()
 	{
 		comp->Render();
 	}
-
-	drawAABBox(computeAABB());
 }
 
 AABBox GameObject::computeAABB()
@@ -151,6 +121,35 @@ AABBox GameObject::computeAABB()
 	}
 
 	return aabbox;
+}
+
+void GameObject::drawAABBox(const AABBox& aabb)
+{
+	glColor3ub(0, 200, 255);
+	glLineWidth(2);
+	glBegin(GL_LINE_STRIP);
+
+	glVec3(aabb.a());
+	glVec3(aabb.b());
+	glVec3(aabb.c());
+	glVec3(aabb.d());
+	glVec3(aabb.a());
+
+	glVec3(aabb.e());
+	glVec3(aabb.f());
+	glVec3(aabb.g());
+	glVec3(aabb.h());
+	glVec3(aabb.e());
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVec3(aabb.h());
+	glVec3(aabb.d());
+	glVec3(aabb.f());
+	glVec3(aabb.b());
+	glVec3(aabb.g());
+	glVec3(aabb.c());
+	glEnd();
 }
 
 void GameObject::Move(GameObject* newParent, std::list<unique_ptr<GameObject>>& listToCheck)

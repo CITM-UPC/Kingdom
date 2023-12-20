@@ -215,6 +215,7 @@ update_status ModuleUI::MainMenuBar()
 		{
 			if (ImGui::MenuItem("Camera Debug")) camDebug = true;
 			if (ImGui::MenuItem("RayCast Debug")) App->gEngine->renderer3D->debugRayCast = !App->gEngine->renderer3D->debugRayCast;
+			if (ImGui::MenuItem("Bounding Boxes Debug")) App->gEngine->scene->bboxDebug = !App->gEngine->scene->bboxDebug;
 			if (ImGui::MenuItem("Demo window")) demo = true;
 			ImGui::EndMenu();
 		}

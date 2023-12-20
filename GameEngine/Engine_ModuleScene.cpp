@@ -66,6 +66,7 @@ bool Engine_ModuleScene::CleanUp() { return true; }
 void Engine_ModuleScene::recursiveObjectUpdate(GameObject* GoToUpdate)
 {
 	GoToUpdate->UpdateComponents();
+	if (bboxDebug) GoToUpdate->drawAABBox(GoToUpdate->computeAABB());
 
 	if (!GoToUpdate->childs.empty())
 	{
@@ -79,6 +80,7 @@ void Engine_ModuleScene::recursiveObjectUpdate(GameObject* GoToUpdate)
 void Engine_ModuleScene::recursiveObjectRendering(GameObject* GoToRender)
 {
 	GoToRender->RenderComponents();
+	if (bboxDebug) GoToRender->drawAABBox(GoToRender->computeAABB());
 
 	if (!GoToRender->childs.empty())
 	{
