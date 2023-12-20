@@ -42,115 +42,126 @@ update_status ModuleRenderer::PreUpdate()
 
 update_status ModuleRenderer::Update()
 {
-	App->gEngine->renderer3D->Update();
-	App->gEngine->scene->Update();
-	DoCameraInput();
-
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
+	if (!App->gEngine->scene->paused)
 	{
-		vec2 nearPlaneSize;
-		nearPlaneSize.y = glm::tan(glm::radians(App->gEngine->cameraGO.GetComponent<Camera>()->fov / 2)) * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
-		nearPlaneSize.x = nearPlaneSize.y * App->gEngine->cameraGO.GetComponent<Camera>()->aspectRatio;
+		App->gEngine->renderer3D->Update();
+		App->gEngine->scene->Update();
+		DoCameraInput();
 
-		vec2 finalPos;
-		finalPos.x = (nearPlaneSize.x / App->window->width) * (App->input->GetMouseX() - App->window->width) * 2 + nearPlaneSize.x;
-		finalPos.y = (nearPlaneSize.y / App->window->height) * (App->input->GetMouseY() - App->window->height) * 2 + nearPlaneSize.y;
-
-		Ray ray;
-		ray.origin = App->gEngine->cameraGO.GetComponent<Transform>()->position();
-
-		ray.origin += App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
-		ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->up() * finalPos.y;
-		ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->right() * finalPos.x;
-
-		ray.direction = glm::normalize((vec3)ray.origin - App->gEngine->cameraGO.GetComponent<Transform>()->position());
-
-		//-----------------------------------------------------------------------------------------
-
-		App->gEngine->renderer3D->origins.push_back(ray.origin);	//Debug only
-		App->gEngine->renderer3D->ends.push_back((vec3)ray.origin + (vec3)ray.direction * 20.0);	//Debug only
-		App->gEngine->renderer3D->camPos.push_back(App->gEngine->cameraGO.GetComponent<Transform>()->position());	//Debug only
-
-		vec3 frame1 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-			App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-			-App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-			App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
-
-		vec3 frame2 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-			App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-			App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-			App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
-
-		vec3 frame3 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-			App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-			App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-			-App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
-
-		vec3 frame4 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-			App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-			-App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-			-App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
-
-		App->gEngine->renderer3D->nearPlanes.push_back(frame1);	//Debug only
-		App->gEngine->renderer3D->nearPlanes.push_back(frame2);	//Debug only
-		App->gEngine->renderer3D->nearPlanes.push_back(frame3);	//Debug only
-		App->gEngine->renderer3D->nearPlanes.push_back(frame4);	//Debug only
-
-		if (RayAABBIntersection(ray, App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->computeAABB()))
+		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
 		{
-			LOG("Hit AABB");
+			vec2 nearPlaneSize;
+			nearPlaneSize.y = glm::tan(glm::radians(App->gEngine->cameraGO.GetComponent<Camera>()->fov / 2)) * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
+			nearPlaneSize.x = nearPlaneSize.y * App->gEngine->cameraGO.GetComponent<Camera>()->aspectRatio;
 
-			float closestIntersection = std::numeric_limits<float>::infinity();
+			vec2 finalPos;
+			finalPos.x = (nearPlaneSize.x / App->window->width) * (App->input->GetMouseX() - App->window->width) * 2 + nearPlaneSize.x;
+			finalPos.y = (nearPlaneSize.y / App->window->height) * (App->input->GetMouseY() - App->window->height) * 2 + nearPlaneSize.y;
 
-			for (size_t i = 0; i < App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->getNumFaces(); ++i)
+			Ray ray;
+			ray.origin = App->gEngine->cameraGO.GetComponent<Transform>()->position();
+
+			ray.origin += App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
+			ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->up() * finalPos.y;
+			ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->right() * finalPos.x;
+
+			ray.direction = glm::normalize((vec3)ray.origin - App->gEngine->cameraGO.GetComponent<Transform>()->position());
+
+			//-----------------------------------------------------------------------------------------
+
+			App->gEngine->renderer3D->origins.push_back(ray.origin);	//Debug only
+			App->gEngine->renderer3D->ends.push_back((vec3)ray.origin + (vec3)ray.direction * 20.0);	//Debug only
+			App->gEngine->renderer3D->camPos.push_back(App->gEngine->cameraGO.GetComponent<Transform>()->position());	//Debug only
+
+			vec3 frame1 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
+				App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+				-App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+				App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+
+			vec3 frame2 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
+				App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+				App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+				App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+
+			vec3 frame3 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
+				App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+				App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+				-App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+
+			vec3 frame4 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
+				App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
+				-App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
+				-App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+
+			App->gEngine->renderer3D->nearPlanes.push_back(frame1);	//Debug only
+			App->gEngine->renderer3D->nearPlanes.push_back(frame2);	//Debug only
+			App->gEngine->renderer3D->nearPlanes.push_back(frame3);	//Debug only
+			App->gEngine->renderer3D->nearPlanes.push_back(frame4);	//Debug only
+
+			if (RayAABBIntersection(ray, App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->computeAABB()))
 			{
-				vec4 vert0 = { App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->mVertices[i * 3], 1 };
-				vec4 vert1 = { App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->mVertices[i * 3 + 1], 1 };
-				vec4 vert2 = { App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->mVertices[i * 3 + 2], 1 };
+				LOG("Hit AABB");
 
-				vert0 = vert0 * glm::inverse(App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->_transformationMatrix);
-				vert1 = vert1 * glm::inverse(App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->_transformationMatrix);
-				vert2 = vert2 * glm::inverse(App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->_transformationMatrix);
+				float closestIntersection = std::numeric_limits<float>::infinity();
 
-				auto tri0 = (vec3)vert0 + App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->position();
-				auto tri1 = (vec3)vert1 + App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->position();
-				auto tri2 = (vec3)vert2 + App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->position();
-
-				// Assuming _format is F_V3 (change if necessary)
-				Triangle triangle{ tri0, tri1, tri2 };
-
-				float currentT;
-				if (RayTriangleIntersection(ray, triangle, currentT) && currentT < closestIntersection)
+				for (size_t i = 0; i < App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->getNumFaces(); ++i)
 				{
-					closestIntersection = currentT;
-				}
-			}
+					vec4 vert0 = { App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->mVertices[i * 3], 1 };
+					vec4 vert1 = { App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->mVertices[i * 3 + 1], 1 };
+					vec4 vert2 = { App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Mesh>()->mVertices[i * 3 + 2], 1 };
 
-			if (closestIntersection != std::numeric_limits<float>::infinity())
-			{
-				LOG("Hit a mesh");
+					vert0 = vert0 * glm::inverse(App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->_transformationMatrix);
+					vert1 = vert1 * glm::inverse(App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->_transformationMatrix);
+					vert2 = vert2 * glm::inverse(App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->_transformationMatrix);
+
+					auto tri0 = (vec3)vert0 + App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->position();
+					auto tri1 = (vec3)vert1 + App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->position();
+					auto tri2 = (vec3)vert2 + App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->position();
+
+					// Assuming _format is F_V3 (change if necessary)
+					Triangle triangle{ tri0, tri1, tri2 };
+
+					float currentT;
+					if (RayTriangleIntersection(ray, triangle, currentT) && currentT < closestIntersection)
+					{
+						closestIntersection = currentT;
+					}
+				}
+
+				if (closestIntersection != std::numeric_limits<float>::infinity())
+				{
+					LOG("Hit a mesh");
+				}
+				else
+				{
+					LOG("Not hit a mesh");
+				}
 			}
 			else
 			{
-				LOG("Not hit a mesh");
+				LOG("Hit nothing");
 			}
 		}
-		else
+		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 		{
-			LOG("Hit nothing");
+			App->gEngine->cameraGO.GetComponent<Transform>()->RotateTo(0, vec3(0, 0, 1));
+		}
+		if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+		{
+			App->gEngine->cameraGO.GetComponent<Transform>()->RotateTo(270, vec3(0, 1, 0));
+		}
+
+		App->gEngine->scene->currentScene.gameObjectList.back()->childs.front()->GetComponent<Transform>()->Rotate(0.2, vec3(1, 0, 0), Transform::Space::GLOBAL);
+		App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->Rotate(0.2, vec3(0, 1, 0), Transform::Space::GLOBAL);
+
+		if (App->gEngine->scene->step)
+		{
+			App->gEngine->scene->step = false;
+			App->gEngine->scene->paused = true;
 		}
 	}
-	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-	{
-		App->gEngine->cameraGO.GetComponent<Transform>()->RotateTo(0, vec3(0, 0, 1));
-	}
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-	{
-		App->gEngine->cameraGO.GetComponent<Transform>()->RotateTo(270, vec3(0, 1, 0));
-	}
 
-	App->gEngine->scene->currentScene.gameObjectList.back()->childs.front()->GetComponent<Transform>()->Rotate(0.2, vec3(1, 0, 0), Transform::Space::GLOBAL);
-	App->gEngine->scene->currentScene.gameObjectList.back()->childs.back()->GetComponent<Transform>()->Rotate(0.2, vec3(0, 1, 0), Transform::Space::GLOBAL);
+	if (App->gEngine->scene->step && App->gEngine->scene->paused)App->gEngine->scene->paused = false;
 
 	return UPDATE_CONTINUE;
 }

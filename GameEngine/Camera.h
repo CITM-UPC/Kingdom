@@ -9,9 +9,15 @@ public:
 
 	Camera(GameObject* owner);
 	Camera(const Camera& other);
+
+	Camera();
+
 	~Camera();
 
 	void Update() override;
+
+	void Render() override;
+
 	Type getType() const override {
 		return Type::CAMERA;
 	}

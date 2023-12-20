@@ -30,7 +30,26 @@ bool Engine_ModuleScene::Init()
 
 engine_status Engine_ModuleScene::PreUpdate() { return ENGINE_UPDATE_CONTINUE; }
 
-engine_status Engine_ModuleScene::Update() { return ENGINE_UPDATE_CONTINUE; }
+engine_status Engine_ModuleScene::Update()
+{
+	if (!paused)
+	{
+		for (auto& GO : currentScene.gameObjectList)
+		{
+			recursiveObjectUpdate(GO.get());
+		}
+
+		if (step)
+		{
+			step = false;
+			paused = true;
+		}
+	}
+
+	if (step && paused) paused = false;
+
+	return ENGINE_UPDATE_CONTINUE;
+}
 
 engine_status Engine_ModuleScene::PostUpdate()
 {
@@ -44,9 +63,22 @@ engine_status Engine_ModuleScene::PostUpdate()
 
 bool Engine_ModuleScene::CleanUp() { return true; }
 
+void Engine_ModuleScene::recursiveObjectUpdate(GameObject* GoToUpdate)
+{
+	GoToUpdate->UpdateComponents();
+
+	if (!GoToUpdate->childs.empty())
+	{
+		for (auto& child : GoToUpdate->childs)
+		{
+			recursiveObjectRendering(child.get());
+		}
+	}
+}
+
 void Engine_ModuleScene::recursiveObjectRendering(GameObject* GoToRender)
 {
-	GoToRender->UpdateComponents();
+	GoToRender->RenderComponents();
 
 	if (!GoToRender->childs.empty())
 	{

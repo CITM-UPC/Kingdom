@@ -50,6 +50,8 @@ public:
 
 	void UpdateComponents();
 
+	void RenderComponents();
+
 	json SaveInfo();
 
 	//static GameObject* Find(std::string name, std::list<GameObject> gameObjectList);

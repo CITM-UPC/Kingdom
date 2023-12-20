@@ -84,6 +84,8 @@ public:
 
 	void Update() override;
 
+	void Render() override;
+
 	Type getType() const override {
 		return Type::MESH;
 	}

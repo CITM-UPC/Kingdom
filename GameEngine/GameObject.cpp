@@ -81,7 +81,6 @@ void GameObject::RemoveComponent(Component::Type component)
 static inline void glVec3(const vec3& v) { glVertex3dv(&v.x); }
 
 static void drawAABBox(const AABBox& aabb) {
-	
 	//glColor3ub(255, 0, 0);
 	glLineWidth(2);
 	glBegin(GL_LINE_STRIP);
@@ -115,9 +114,17 @@ void GameObject::UpdateComponents()
 	{
 		comp->Update();
 	}
-  drawAABBox(computeAABB());
 }
 
+void GameObject::RenderComponents()
+{
+	for (auto& comp : components)
+	{
+		comp->Render();
+	}
+
+	drawAABBox(computeAABB());
+}
 
 AABBox GameObject::computeAABB()
 {
@@ -126,7 +133,7 @@ AABBox GameObject::computeAABB()
 	Mesh* meshComponent = GetComponent<Mesh>();
 
 	if (meshComponent != nullptr) aabbox = meshComponent->getAABB();
-	
+
 	const auto obBox = GetComponent<Transform>()->_transformationMatrix * aabbox;
 
 	//To implement with tree structure

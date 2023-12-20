@@ -260,11 +260,13 @@ const unsigned int Mesh::getNumFaces() {
 	return _numFaces;
 }
 
-AABBox Mesh::getAABB(){
+AABBox Mesh::getAABB() {
 	return _aabb;
 }
 
-void Mesh::Update()
+void Mesh::Update() {}
+
+void Mesh::Render()
 {
 	draw();
 }

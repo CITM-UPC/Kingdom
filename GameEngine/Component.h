@@ -28,7 +28,7 @@ public:
 	virtual ~Component() = default;
 
 	virtual void Update() = 0;
-	//virtual void Render() = 0;
+	virtual void Render() = 0;
 	virtual Type getType() const = 0;
 
 	virtual json SaveInfo() = 0;

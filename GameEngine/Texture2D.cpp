@@ -99,9 +99,9 @@ Texture2D::~Texture2D() {
 	if (_id) glDeleteTextures(1, &_id);
 }
 
-void Texture2D::Update()
-{
-}
+void Texture2D::Update() {}
+
+void Texture2D::Render() {}
 
 void Texture2D::bind() const {
 	glBindTexture(GL_TEXTURE_2D, _id);

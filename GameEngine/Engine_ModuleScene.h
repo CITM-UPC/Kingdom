@@ -21,9 +21,14 @@ public:
 	engine_status PostUpdate();
 	bool CleanUp();
 
+	void recursiveObjectUpdate(GameObject* GoToUpdate);
+
 	void recursiveObjectRendering(GameObject* GoToRender);
 
 	Scene currentScene;
+
+	bool paused = false;
+	bool step = false;
 
 	// Create new Scene (erases all current scene variables)
 	void NewScene();

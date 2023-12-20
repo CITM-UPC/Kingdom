@@ -196,9 +196,18 @@ update_status ModuleUI::MainMenuBar()
 			if (ImGui::MenuItem("Duplicate", "Not implemented")) {}
 			if (ImGui::MenuItem("Delete", "Not implemented")) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Play", "Not implemented")) {}
-			if (ImGui::MenuItem("Pause", "Not implemented")) {}
-			if (ImGui::MenuItem("Step", "Not implemented")) {}
+			if (ImGui::MenuItem("Play", "Play Scene")) {
+				App->logHistory.push_back("[Editor] 'Play' Scene");
+				App->gEngine->scene->paused = false;
+			}
+			if (ImGui::MenuItem("Pause", "Pause Scene")) {
+				App->logHistory.push_back("[Editor] 'Pause' Scene");
+				App->gEngine->scene->paused = true;
+			}
+			if (ImGui::MenuItem("Step", "Step Scene")) {
+				App->logHistory.push_back("[Editor] 'Step' Scene");
+				App->gEngine->scene->step = true;
+			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Settings", "Display, Controls, Renderer, System")) { options = true; }
 			ImGui::EndMenu();

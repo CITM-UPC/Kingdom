@@ -59,6 +59,8 @@ void Transform::Rotate(double angle, vec3 axis, Space referenceFrame)
 
 void Transform::Update() {}
 
+void Transform::Render() {}
+
 json Transform::SaveInfo()
 {
 	json obj;
