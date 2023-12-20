@@ -422,7 +422,7 @@ void Engine_ModuleScene::LoadComponentMesh(GameObject* owner, string path)
 {
 	MeshInfo newinfo = MeshInfo();
 
-	std::ifstream meshfile(path);
+	std::ifstream meshfile(path, ios::binary);
 
 	if (meshfile.is_open())
 	{
@@ -434,4 +434,26 @@ void Engine_ModuleScene::LoadComponentMesh(GameObject* owner, string path)
 	}
 	else
 		gEngine->logHistory.push_back("Mesh Binary File could not be open");
+
+	meshfile.close();
+}
+
+void Engine_ModuleScene::LoadComponentTransform(GameObject* owner, json transformjsonRoot)
+{
+	mat4 transmatToLoad = mat4(0);
+
+	json transmatArray = transformjsonRoot["Transformation Matrix"];
+
+	int it = 0;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			transmatToLoad[i][j] = transmatArray[it];
+			it++;
+		}
+	}
+
+	owner->RemoveComponent(Component::Type::TRANSFORM);
+
+	Transform newtransform(owner, transmatToLoad);
+	owner->AddComponent<Transform>(newtransform);
 }

@@ -13,6 +13,8 @@ public:
 	};
 
 	Transform(GameObject* owner);
+
+	Transform(GameObject* owner, mat4 transmat);
 	~Transform();
 
 	//Moves the object to 'position'.
