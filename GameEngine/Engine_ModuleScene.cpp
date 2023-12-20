@@ -378,7 +378,7 @@ void Engine_ModuleScene::LoadComponentfromjson(json parentRoot)
 	{
 	case 0:
 		// Call transform constructor with the node / modify transform information
-		// -----------------------------------------------------------------------
+		LoadComponentTransform(owner, parentRoot);
 		break;
 	case 1:
 		// Call mesh constructor with the node
