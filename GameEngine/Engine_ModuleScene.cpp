@@ -73,7 +73,7 @@ bool Engine_ModuleScene::CleanUp() { return true; }
 void Engine_ModuleScene::recursiveObjectUpdate(GameObject* GoToUpdate)
 {
 	GoToUpdate->UpdateComponents();
-	
+
 	if (!GoToUpdate->childs.empty())
 	{
 		for (auto& child : GoToUpdate->childs)

@@ -245,6 +245,15 @@ update_status ModuleUI::MainMenuBar()
 				ImGui::EndMenu();
 			}
 			if (ImGui::MenuItem("Draw Mode")) {}
+			/*if (ImGui::MenuItem("Add Component Camera"))
+			{
+				if (gameObjSelected)
+				{
+					Camera newCam(gameObjSelected);
+					gameObjSelected->AddComponent<Camera>(newCam);
+					gameObjSelected->GetComponent<Camera>()->clippingPlaneViewFar = 10;
+				}
+			}*/
 			GameObjectOptions();
 			ImGui::EndMenu();
 		}
@@ -533,6 +542,39 @@ void ModuleUI::InspectorWindow()
 						ImGui::SameLine(); ImGui::TextColored({ 0.920f, 0.845f, 0.0184f, 1.0f }, to_string(texture2D->height).c_str());
 						ImGui::Text("Width: ");
 						ImGui::SameLine(); ImGui::TextColored({ 0.920f, 0.845f, 0.0184f, 1.0f }, to_string(texture2D->width).c_str());
+					}
+				}
+				if (component.get()->getType() == Component::Type::CAMERA) {
+					if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_None))
+					{
+						Camera* cam = dynamic_cast<Camera*>(component.get());
+						if (ImGui::BeginTable("", 4))
+						{
+							ImGui::TableNextRow();
+							ImGui::TableSetColumnIndex(0);
+							ImGui::Text("");
+							ImGui::Text("Look at Position");
+
+							ImGui::TableSetColumnIndex(1);
+							ImGui::Text("X");
+							ImGui::Text(std::to_string(cam->lookAtPos.x).c_str());
+
+							ImGui::TableSetColumnIndex(2);
+							ImGui::Text("Y");
+							ImGui::Text(std::to_string(cam->lookAtPos.y).c_str());
+
+							ImGui::TableSetColumnIndex(3);
+							ImGui::Text("Z");
+							ImGui::Text(std::to_string(cam->lookAtPos.z).c_str());
+
+							ImGui::EndTable();
+						}
+						ImGui::Text("");
+						ImGui::Text("Fov: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->fov).c_str());
+						ImGui::Text("Aspect Ratio: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->aspectRatio).c_str());
+						ImGui::Text("Clipping Plane View Near: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->clippingPlaneViewNear).c_str());
+						ImGui::Text("Clipping Plane View Far: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->clippingPlaneViewFar).c_str());
+						ImGui::Text("Camera Offset: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->camOffset).c_str());
 					}
 				}
 			}
