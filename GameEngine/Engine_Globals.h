@@ -33,6 +33,7 @@ typedef glm::dmat4 mat4;
 typedef glm::vec2 vec2f;
 typedef glm::vec3 vec3f;
 typedef glm::vec4 vec4f;
+typedef glm::mat4 mat4f;
 
 enum engine_status
 {

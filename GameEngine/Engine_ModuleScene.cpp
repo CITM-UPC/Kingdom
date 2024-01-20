@@ -23,7 +23,7 @@ bool Engine_ModuleScene::Init()
 	fs::create_directories("Library/Meshes/");
 	fs::create_directories("Library/Materials/");
 
-	addGameObject("Assets/BakerHouse.fbx");
+	addGameObject("Assets/Street/StreetEnvironment.fbx");
 
 	return true;
 }
@@ -146,6 +146,8 @@ void Engine_ModuleScene::addGameObject(const std::string& filePath)
 		oFile.close();
 
 		gEngine->logHistory.push_back("[Engine] Mesh file created as " + meshName + ".mesh in " + folderName);
+
+		gOparent->childs.back().get()->GetComponent<Transform>()->_transformationMatrix = meshInfo._transformationMatrix;
 
 		Texture2D textureToPush(gOparent->childs.back().get(), texture_paths_vector.at(i));
 		gOparent->childs.back().get()->AddComponent<Texture2D>(textureToPush);
