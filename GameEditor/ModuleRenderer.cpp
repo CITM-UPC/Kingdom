@@ -41,8 +41,8 @@ update_status ModuleRenderer::PreUpdate()
 
 update_status ModuleRenderer::Update()
 {
-  DoCameraInput();
-  
+	DoCameraInput();
+
 	if (!App->gEngine->scene->paused)
 	{
 		App->gEngine->renderer3D->Update();
@@ -228,14 +228,12 @@ GameObject* ModuleRenderer::DoClickRayCast()
 		}
 	}
 
-
 	float closestHitPoint = std::numeric_limits<float>::infinity();
 
 	map<float, GameObject*>::iterator it = hitObjectsMap.begin();
 
 	// Iterate through the map and print the elements
 	while (it != hitObjectsMap.end()) {
-
 		closestHitPoint = glm::min(closestHitPoint, it->first);
 		++it;
 	}
@@ -245,7 +243,7 @@ GameObject* ModuleRenderer::DoClickRayCast()
 		LOG("Closest hit object is %s", hitObjectsMap[closestHitPoint]->name.c_str());
 		return hitObjectsMap[closestHitPoint];
 	}
-	
+
 	LOG("Hit nothing");
 	return nullptr;
 }
@@ -260,7 +258,6 @@ Ray ModuleRenderer::CalculateRay()
 	finalPos.x = (nearPlaneSize.x / App->window->width) * (App->input->GetMouseX() - App->window->width) * 2 + nearPlaneSize.x;
 	finalPos.y = (nearPlaneSize.y / App->window->height) * (App->input->GetMouseY() - App->window->height) * 2 + nearPlaneSize.y;
 
-
 	Ray ray;
 	ray.origin = App->gEngine->cameraGO.GetComponent<Transform>()->position();
 
@@ -272,7 +269,6 @@ Ray ModuleRenderer::CalculateRay()
 
 	return ray;
 }
-
 
 void ModuleRenderer::DebugRay(Ray ray)
 {
@@ -300,7 +296,6 @@ void ModuleRenderer::DebugRay(Ray ray)
 		App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
 		-App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
 		-App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
-	
 
 	App->gEngine->renderer3D->nearPlanes.push_back(frame1);	//Debug only
 	App->gEngine->renderer3D->nearPlanes.push_back(frame2);	//Debug only

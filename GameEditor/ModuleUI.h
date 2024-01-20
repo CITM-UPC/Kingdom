@@ -5,6 +5,9 @@
 #include <cstring>
 #include "..\GameEngine\GameObject.h"
 #include "..\GameEngine\Component.h"
+#include "TextEditor.h"
+
+namespace fs = std::filesystem;
 
 struct InfrastructureInfo {
 	std::string sdl_version_compiled;
@@ -57,6 +60,8 @@ private:
 	void SaveAsMenu();
 	void LoadSceneMenu();
 	void GetInfrastructureInfo();
+	void ShowFolderContents(const fs::path& folderPath);
+	void EditScript();
 
 private:
 
@@ -74,6 +79,7 @@ private:
 	bool saveasMenu = false;
 	bool loadMenu = false;
 	bool fileExplorer = true;
+	bool editScript = false;
 
 	bool autoScrollLog = true;
 
@@ -81,6 +87,8 @@ private:
 	bool reparentTo = false;
 
 	std::string aboutContent;
+	std::string filePath;
+	std::string fileContent;
 
 	// Hardware information
 	InfrastructureInfo info;
@@ -91,4 +99,6 @@ private:
 
 	// Objective Parent that will adopt the child
 	GameObject* adopter = nullptr;
+
+	TextEditor editor;
 };

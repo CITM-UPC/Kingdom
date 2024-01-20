@@ -176,6 +176,7 @@ copy ".\imgui.ini" "..\x64\Publish\"</Command>
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceTexture.cpp" />
+    <ClCompile Include="TextEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -188,6 +189,7 @@ copy ".\imgui.ini" "..\x64\Publish\"</Command>
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceTexture.h" />
+    <ClInclude Include="TextEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameEngine\GameEngine.vcxproj">

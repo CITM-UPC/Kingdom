@@ -22,6 +22,7 @@ bool Engine_ModuleScene::Init()
 {
 	fs::create_directories("Library/Meshes/");
 	fs::create_directories("Library/Materials/");
+	fs::create_directories("Library/Scripts/");
 
 	addGameObject("Assets/BakerHouse.fbx");
 
@@ -70,7 +71,7 @@ engine_status Engine_ModuleScene::PostUpdate()
 
 bool Engine_ModuleScene::CleanUp() { return true; }
 
-void Engine_ModuleScene::recursiveObjectUpdate(GameObject* GoToUpdate)
+void Engine_ModuleScene::recursiveObjectUpdate(GameObject * GoToUpdate)
 {
 	GoToUpdate->UpdateComponents();
 
@@ -83,7 +84,7 @@ void Engine_ModuleScene::recursiveObjectUpdate(GameObject* GoToUpdate)
 	}
 }
 
-void Engine_ModuleScene::recursiveObjectRendering(GameObject* GoToRender)
+void Engine_ModuleScene::recursiveObjectRendering(GameObject * GoToRender)
 {
 	GoToRender->RenderComponents();
 
@@ -114,7 +115,7 @@ void Engine_ModuleScene::addGameObject()
 	gEngine->logHistory.push_back("[Engine] Add GameObject");
 }
 
-void Engine_ModuleScene::addGameObject(const std::string& filePath)
+void Engine_ModuleScene::addGameObject(const std::string & filePath)
 {
 	gEngine->logHistory.push_back("[Engine] Add GameObject with path " + filePath);
 
@@ -172,7 +173,7 @@ void Engine_ModuleScene::addGameObject(const std::string& filePath)
 	}
 }
 
-void Engine_ModuleScene::addGameObject(Primitive* shape)
+void Engine_ModuleScene::addGameObject(Primitive * shape)
 {
 	std::unique_ptr<GameObject> gameObjectToAdd = std::make_unique<GameObject>();
 
@@ -199,7 +200,7 @@ void Engine_ModuleScene::addGameObject(Primitive* shape)
 		+ std::to_string(meshInfo._numVerts) + " vertexs.");
 }
 
-void Engine_ModuleScene::removeGameObject(GameObject* GOtoDelete)
+void Engine_ModuleScene::removeGameObject(GameObject * GOtoDelete)
 {
 	auto it = std::find_if(currentScene.gameObjectList.begin(), currentScene.gameObjectList.end(), [GOtoDelete](const std::unique_ptr<GameObject>& GO) {
 		return GO.get() == GOtoDelete;
@@ -443,7 +444,7 @@ void Engine_ModuleScene::LoadComponentfromjson(json parentRoot)
 	}
 }
 
-GameObject* Engine_ModuleScene::findGameObjectfromUUID(GameObject* head, unsigned long UUIDtocompare)
+GameObject* Engine_ModuleScene::findGameObjectfromUUID(GameObject * head, unsigned long UUIDtocompare)
 {
 	for (auto& child : head->childs)
 	{
@@ -462,7 +463,7 @@ GameObject* Engine_ModuleScene::findGameObjectfromUUID(GameObject* head, unsigne
 	return nullptr;
 }
 
-void Engine_ModuleScene::LoadComponentMesh(GameObject* owner, string path)
+void Engine_ModuleScene::LoadComponentMesh(GameObject * owner, string path)
 {
 	MeshInfo newinfo = MeshInfo();
 
@@ -482,7 +483,7 @@ void Engine_ModuleScene::LoadComponentMesh(GameObject* owner, string path)
 	meshfile.close();
 }
 
-void Engine_ModuleScene::LoadComponentTexture(GameObject* owner, string path)
+void Engine_ModuleScene::LoadComponentTexture(GameObject * owner, string path)
 {
 	size_t lastOf = path.find_last_of('/');
 	std::string fileName = path.substr(lastOf + 1);
@@ -490,7 +491,7 @@ void Engine_ModuleScene::LoadComponentTexture(GameObject* owner, string path)
 	owner->AddComponent<Texture2D>(textureToPush);
 }
 
-void Engine_ModuleScene::LoadComponentTransform(GameObject* owner, json transformjsonRoot)
+void Engine_ModuleScene::LoadComponentTransform(GameObject * owner, json transformjsonRoot)
 {
 	mat4 transmatToLoad = mat4(0);
 
@@ -511,7 +512,7 @@ void Engine_ModuleScene::LoadComponentTransform(GameObject* owner, json transfor
 	owner->AddComponent<Transform>(newtransform);
 }
 
-void Engine_ModuleScene::LoadComponentCamera(GameObject* owner, json camerajsonRoot)
+void Engine_ModuleScene::LoadComponentCamera(GameObject * owner, json camerajsonRoot)
 {
 	glm::dvec3 vec0 = glm::dvec3(0);
 

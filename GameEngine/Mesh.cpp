@@ -146,7 +146,6 @@ Mesh::Mesh(const Mesh& cpy) :
 }
 
 void Mesh::draw() {
-	
 	glColor4ub(255, 255, 255, 255);
 
 	glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer_id);

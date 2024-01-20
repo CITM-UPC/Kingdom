@@ -96,6 +96,7 @@ update_status ModuleUI::PreUpdate()
 	if (hierarchy)		HierarchyWindow();
 	if (fileExplorer)	FileExplorerWindow();
 	if (demo)       	ImGui::ShowDemoWindow(&demo);
+	if (editScript)		EditScript();
 
 	if (saveasMenu) 	SaveAsMenu();
 	if (loadMenu)		LoadSceneMenu();
@@ -798,7 +799,25 @@ void ModuleUI::AboutWindow()
 	ImGui::End();
 }
 
-void ShowFolderContents(const fs::path& folderPath) {
+std::string loadTextFile(const std::string& filePath) {
+	std::ifstream file(filePath);
+	if (file.is_open()) {
+		std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+		file.close();
+		return content;
+	}
+	return "";
+}
+
+void saveTextFile(const std::string& filePath, const std::string& content) {
+	std::ofstream file(filePath);
+	if (file.is_open()) {
+		file << content;
+		file.close();
+	}
+}
+
+void ModuleUI::ShowFolderContents(const fs::path& folderPath) {
 	if (ImGui::CollapsingHeader(folderPath.filename().string().c_str())) {
 		for (const auto& entry : fs::directory_iterator(folderPath)) {
 			if (fs::is_directory(entry.path())) {
@@ -807,12 +826,48 @@ void ShowFolderContents(const fs::path& folderPath) {
 			else if (fs::is_regular_file(entry.path())) {
 				ImGui::Text("%s", entry.path().filename().string().c_str());
 				ImGui::SameLine();
-				if (ImGui::Button(("Delete##" + entry.path().string()).c_str())) {
-					// Add code to delete the file here
-					fs::remove(entry.path());
+				if (entry.path().filename().string().substr(entry.path().filename().string().find_last_of(".") + 1) == "cs") {
+					if (ImGui::Button("Edit")) {
+						editScript = true;
+						filePath = "Library/"+folderPath.filename().string() + "/" + entry.path().filename().string();
+						fileContent = loadTextFile(entry.path().string());
+						editor.SetText(fileContent);
+					}
+					ImGui::SameLine();
 				}
+
+				if (ImGui::Button(("Delete##" + entry.path().string()).c_str())) fs::remove(entry.path());
+				
 			}
 		}
+	}
+}
+
+void ModuleUI::EditScript()
+{
+	ImGui::OpenPopup("Edit Script");
+	if (ImGui::BeginPopupModal("Edit Script", NULL, ImGuiWindowFlags_MenuBar))
+	{
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Save"))
+			{
+				fileContent = editor.GetText();
+				saveTextFile(filePath, fileContent);
+				ImGui::CloseCurrentPopup();
+				editScript = false;
+				App->logHistory.push_back("[Editor] File edited and saved: " + filePath);
+			}
+			if (ImGui::BeginMenu("Close"))
+			{
+				ImGui::CloseCurrentPopup();
+				editScript = false;
+			}
+			ImGui::EndMenuBar();
+		}
+		
+		editor.Render("CodeEditor");
+		ImGui::EndPopup();
 	}
 }
 
@@ -823,6 +878,7 @@ void ModuleUI::FileExplorerWindow()
 	const fs::path assetsPath = "Assets";
 	ShowFolderContents(assetsPath);
 	ImGui::Separator();
+
 	const fs::path libraryPath = "Library";
 	ShowFolderContents(libraryPath);
 	ImGui::Separator();

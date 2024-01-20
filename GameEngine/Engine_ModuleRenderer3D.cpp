@@ -223,7 +223,6 @@ void Engine_ModuleRenderer3D::OnResize(int width, int height)
 {
 	glViewport(0, 0, width, height);
 
-	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gEngine->cameraGO.GetComponent<Camera>()->aspectRatio = (double)width / (double)height;
