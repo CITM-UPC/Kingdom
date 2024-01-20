@@ -23,8 +23,8 @@ bool ModuleRenderer::Init()
 
 	vsync = VSYNC;
 
-	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(-30, vec3(0, 1, 0), Transform::Space::GLOBAL);
-	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(25, vec3(1, 0, 0));
+	App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Rotate(-30, vec3(0, 1, 0), Transform::Space::GLOBAL);
+	App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Rotate(25, vec3(1, 0, 0));
 	FocusCamera();
 
 	return ret;
@@ -120,27 +120,27 @@ void ModuleRenderer::keysInputFPS()
 
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 	{
-		App->gEngine->cameraGO.GetComponent<Transform>()->Move(glm::dvec3(0, 0, camSpeed));
+		App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Move(glm::dvec3(0, 0, camSpeed));
 	}
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 	{
-		App->gEngine->cameraGO.GetComponent<Transform>()->Move(glm::dvec3(0, 0, -camSpeed));
+		App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Move(glm::dvec3(0, 0, -camSpeed));
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
-		App->gEngine->cameraGO.GetComponent<Transform>()->Move(glm::dvec3(camSpeed, 0, 0));
+		App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Move(glm::dvec3(camSpeed, 0, 0));
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
-		App->gEngine->cameraGO.GetComponent<Transform>()->Move(glm::dvec3(-camSpeed, 0, 0));
+		App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Move(glm::dvec3(-camSpeed, 0, 0));
 	}
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
 	{
-		App->gEngine->cameraGO.GetComponent<Transform>()->Move(glm::dvec3(0, camSpeed, 0), Transform::Space::GLOBAL);
+		App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Move(glm::dvec3(0, camSpeed, 0), Transform::Space::GLOBAL);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT)
 	{
-		App->gEngine->cameraGO.GetComponent<Transform>()->Move(glm::dvec3(0, -camSpeed, 0), Transform::Space::GLOBAL);
+		App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Move(glm::dvec3(0, -camSpeed, 0), Transform::Space::GLOBAL);
 	}
 }
 void ModuleRenderer::mouseInputFPS()
@@ -150,8 +150,8 @@ void ModuleRenderer::mouseInputFPS()
 	int dx = -App->input->GetMouseXMotion();
 	int dy = App->input->GetMouseYMotion();
 
-	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(dx * sensitivity, glm::vec3(0, 1, 0), Transform::Space::GLOBAL);
-	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(dy * sensitivity, glm::vec3(1, 0, 0));
+	App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Rotate(dx * sensitivity, glm::vec3(0, 1, 0), Transform::Space::GLOBAL);
+	App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Rotate(dy * sensitivity, glm::vec3(1, 0, 0));
 }
 
 void ModuleRenderer::mouseCamOrbit()
@@ -161,13 +161,13 @@ void ModuleRenderer::mouseCamOrbit()
 	int dx = -App->input->GetMouseXMotion();
 	int dy = App->input->GetMouseYMotion();
 
-	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(App->gEngine->cameraGO.GetComponent<Camera>()->lookAtPos);
+	App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->MoveTo(App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->lookAtPos);
 
-	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(dx * sensitivity, vec3(0, 1, 0), Transform::Space::GLOBAL);
-	App->gEngine->cameraGO.GetComponent<Transform>()->Rotate(dy * sensitivity, vec3(1, 0, 0));
+	App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Rotate(dx * sensitivity, vec3(0, 1, 0), Transform::Space::GLOBAL);
+	App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Rotate(dy * sensitivity, vec3(1, 0, 0));
 
-	vec3 finalPos = App->gEngine->cameraGO.GetComponent<Transform>()->position() - (App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->camOffset);
-	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(finalPos);
+	vec3 finalPos = App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->position() - (App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->forward() * App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->camOffset);
+	App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->MoveTo(finalPos);
 }
 void ModuleRenderer::mouseCameraPan()
 {
@@ -176,8 +176,8 @@ void ModuleRenderer::mouseCameraPan()
 
 	float panSpeed = 0.01f;
 
-	App->gEngine->cameraGO.GetComponent<Transform>()->Move(vec3(dx * panSpeed, 0, 0));
-	App->gEngine->cameraGO.GetComponent<Transform>()->Move(vec3(0, dy * panSpeed, 0));
+	App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Move(vec3(dx * panSpeed, 0, 0));
+	App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Move(vec3(0, dy * panSpeed, 0));
 }
 
 void ModuleRenderer::DoZoom()
@@ -188,28 +188,28 @@ void ModuleRenderer::DoZoom()
 	{
 		float zoomSensitivity = 0.3f;
 
-		App->gEngine->cameraGO.GetComponent<Camera>()->camOffset -= scrollWheel * zoomSensitivity;
+		App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->camOffset -= scrollWheel * zoomSensitivity;
 
-		if (App->gEngine->cameraGO.GetComponent<Camera>()->camOffset <= 0.1f)
+		if (App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->camOffset <= 0.1f)
 		{
-			App->gEngine->cameraGO.GetComponent<Camera>()->camOffset = 0.1f;
+			App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->camOffset = 0.1f;
 			return;
 		}
-		else if (App->gEngine->cameraGO.GetComponent<Camera>()->camOffset >= 50.0f)
+		else if (App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->camOffset >= 50.0f)
 		{
-			App->gEngine->cameraGO.GetComponent<Camera>()->camOffset = 50.0f;
+			App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->camOffset = 50.0f;
 			return;
 		}
 
-		App->gEngine->cameraGO.GetComponent<Transform>()->Move(vec3(0, 0, scrollWheel * zoomSensitivity));
+		App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->Move(vec3(0, 0, scrollWheel * zoomSensitivity));
 	}
 }
 
 void ModuleRenderer::FocusCamera()
 {
-	vec3 targetPos = App->ui->GetSelectedObjectPos() - App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->camOffset;
+	vec3 targetPos = App->ui->GetSelectedObjectPos() - App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->forward() * App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->camOffset;
 
-	App->gEngine->cameraGO.GetComponent<Transform>()->MoveTo(targetPos);
+	App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->MoveTo(targetPos);
 }
 
 GameObject* ModuleRenderer::DoClickRayCast()
@@ -253,8 +253,8 @@ GameObject* ModuleRenderer::DoClickRayCast()
 Ray ModuleRenderer::CalculateRay()
 {
 	vec2 nearPlaneSize;
-	nearPlaneSize.y = glm::tan(glm::radians(App->gEngine->cameraGO.GetComponent<Camera>()->fov / 2)) * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
-	nearPlaneSize.x = nearPlaneSize.y * App->gEngine->cameraGO.GetComponent<Camera>()->aspectRatio;
+	nearPlaneSize.y = glm::tan(glm::radians(App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->fov / 2)) * App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->clippingPlaneViewNear;
+	nearPlaneSize.x = nearPlaneSize.y * App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->aspectRatio;
 
 	vec2 finalPos;
 	finalPos.x = (nearPlaneSize.x / App->window->width) * (App->input->GetMouseX() - App->window->width) * 2 + nearPlaneSize.x;
@@ -262,13 +262,13 @@ Ray ModuleRenderer::CalculateRay()
 
 
 	Ray ray;
-	ray.origin = App->gEngine->cameraGO.GetComponent<Transform>()->position();
+	ray.origin = App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->position();
 
-	ray.origin += App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear;
-	ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->up() * finalPos.y;
-	ray.origin += -App->gEngine->cameraGO.GetComponent<Transform>()->right() * finalPos.x;
+	ray.origin += App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->forward() * App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->clippingPlaneViewNear;
+	ray.origin += -App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->up() * finalPos.y;
+	ray.origin += -App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->right() * finalPos.x;
 
-	ray.direction = glm::normalize((vec3)ray.origin - App->gEngine->cameraGO.GetComponent<Transform>()->position());
+	ray.direction = glm::normalize((vec3)ray.origin - App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->position());
 
 	return ray;
 }
@@ -278,28 +278,28 @@ void ModuleRenderer::DebugRay(Ray ray)
 {
 	App->gEngine->renderer3D->origins.push_back(ray.origin);	//Debug only
 	App->gEngine->renderer3D->ends.push_back((vec3)ray.origin + (vec3)ray.direction * 100.0);	//Debug only
-	App->gEngine->renderer3D->camPos.push_back(App->gEngine->cameraGO.GetComponent<Transform>()->position());	//Debug only
+	App->gEngine->renderer3D->camPos.push_back(App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->position());	//Debug only
 
 	/*
-	vec3 frame1 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-		App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-		-App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-		App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+	vec3 frame1 = App->gEngine->editorCamera.GetComponent<Transform>()->position() +
+		App->gEngine->editorCamera.GetComponent<Transform>()->forward() * App->gEngine->editorCamera.GetComponent<Camera>()->clippingPlaneViewNear +
+		-App->gEngine->editorCamera.GetComponent<Transform>()->right() * nearPlaneSize.x +
+		App->gEngine->editorCamera.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
 
-	vec3 frame2 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-		App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-		App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-		App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+	vec3 frame2 = App->gEngine->editorCamera.GetComponent<Transform>()->position() +
+		App->gEngine->editorCamera.GetComponent<Transform>()->forward() * App->gEngine->editorCamera.GetComponent<Camera>()->clippingPlaneViewNear +
+		App->gEngine->editorCamera.GetComponent<Transform>()->right() * nearPlaneSize.x +
+		App->gEngine->editorCamera.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
 
-	vec3 frame3 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-		App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-		App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-		-App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+	vec3 frame3 = App->gEngine->editorCamera.GetComponent<Transform>()->position() +
+		App->gEngine->editorCamera.GetComponent<Transform>()->forward() * App->gEngine->editorCamera.GetComponent<Camera>()->clippingPlaneViewNear +
+		App->gEngine->editorCamera.GetComponent<Transform>()->right() * nearPlaneSize.x +
+		-App->gEngine->editorCamera.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
 
-	vec3 frame4 = App->gEngine->cameraGO.GetComponent<Transform>()->position() +
-		App->gEngine->cameraGO.GetComponent<Transform>()->forward() * App->gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear +
-		-App->gEngine->cameraGO.GetComponent<Transform>()->right() * nearPlaneSize.x +
-		-App->gEngine->cameraGO.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
+	vec3 frame4 = App->gEngine->editorCamera.GetComponent<Transform>()->position() +
+		App->gEngine->editorCamera.GetComponent<Transform>()->forward() * App->gEngine->editorCamera.GetComponent<Camera>()->clippingPlaneViewNear +
+		-App->gEngine->editorCamera.GetComponent<Transform>()->right() * nearPlaneSize.x +
+		-App->gEngine->editorCamera.GetComponent<Transform>()->up() * nearPlaneSize.y;	//Debug only
 	
 
 	App->gEngine->renderer3D->nearPlanes.push_back(frame1);	//Debug only

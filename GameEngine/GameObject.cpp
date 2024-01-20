@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Engine_ModuleRenderer3D.h"
 #include <memory>
 #include <GL/glew.h>
 
@@ -47,6 +48,7 @@ void GameObject::AddComponent(Component::Type component)
 		break;
 	case Component::Type::CAMERA:
 		components.emplace_back(std::make_unique<Camera>(this));
+		//Engine_ModuleRenderer3D::AddCameraToList(this);
 		break;
 	default:
 		ENGINE_LOG("Can't add component in GameObject");

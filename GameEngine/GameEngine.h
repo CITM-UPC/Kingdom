@@ -24,8 +24,6 @@ public:
 	Engine_ModuleScene* scene;
 	//ModuleAudio* audio;
 
-	GameObject cameraGO;
-
 	std::list<std::string> logHistory;
 
 private:

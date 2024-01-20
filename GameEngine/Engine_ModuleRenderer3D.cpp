@@ -11,6 +11,8 @@ Engine_ModuleRenderer3D::Engine_ModuleRenderer3D(GameEngine* gEngine, bool start
 	vsync = false;
 	screen_width = 1024;
 	screen_height = 768;
+
+	editorCamera.AddComponent(Component::Type::CAMERA);
 }
 
 // Destructor
@@ -113,6 +115,7 @@ bool Engine_ModuleRenderer3D::Init()
 	}
 
 	debugRayCast = false;
+	camManager.activeCameraGO = &editorCamera;
 
 	// Projection matrix for
 	OnResize(screen_width, screen_height);
@@ -123,26 +126,26 @@ bool Engine_ModuleRenderer3D::Init()
 // PreUpdate: clear buffer
 engine_status Engine_ModuleRenderer3D::PreUpdate()
 {
-	gEngine->cameraGO.UpdateComponents();
+	editorCamera.UpdateComponents();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(gEngine->cameraGO.GetComponent<Camera>()->fov,
-		gEngine->cameraGO.GetComponent<Camera>()->aspectRatio,
-		gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewNear,
-		gEngine->cameraGO.GetComponent<Camera>()->clippingPlaneViewFar);
+	gluPerspective(camManager.activeCameraGO->GetComponent<Camera>()->fov,
+					camManager.activeCameraGO->GetComponent<Camera>()->aspectRatio,
+					camManager.activeCameraGO->GetComponent<Camera>()->clippingPlaneViewNear,
+					camManager.activeCameraGO->GetComponent<Camera>()->clippingPlaneViewFar);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	gEngine->cameraGO.GetComponent<Camera>()->lookAtPos = gEngine->cameraGO.GetComponent<Transform>()->position() + gEngine->cameraGO.GetComponent<Transform>()->forward() * gEngine->cameraGO.GetComponent<Camera>()->camOffset;
+	camManager.activeCameraGO->GetComponent<Camera>()->lookAtPos = camManager.activeCameraGO->GetComponent<Transform>()->position() + camManager.activeCameraGO->GetComponent<Transform>()->forward() * camManager.activeCameraGO->GetComponent<Camera>()->camOffset;
 
-	gluLookAt(gEngine->cameraGO.GetComponent<Transform>()->position().x, gEngine->cameraGO.GetComponent<Transform>()->position().y, gEngine->cameraGO.GetComponent<Transform>()->position().z,
-		gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.x, gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.y, gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.z,
-		gEngine->cameraGO.GetComponent<Transform>()->up().x, gEngine->cameraGO.GetComponent<Transform>()->up().y, gEngine->cameraGO.GetComponent<Transform>()->up().z);
+	gluLookAt(camManager.activeCameraGO->GetComponent<Transform>()->position().x, camManager.activeCameraGO->GetComponent<Transform>()->position().y, camManager.activeCameraGO->GetComponent<Transform>()->position().z,
+		camManager.activeCameraGO->GetComponent<Camera>()->lookAtPos.x, camManager.activeCameraGO->GetComponent<Camera>()->lookAtPos.y, camManager.activeCameraGO->GetComponent<Camera>()->lookAtPos.z,
+		camManager.activeCameraGO->GetComponent<Transform>()->up().x, camManager.activeCameraGO->GetComponent<Transform>()->up().y, camManager.activeCameraGO->GetComponent<Transform>()->up().z);
 
 	return ENGINE_UPDATE_CONTINUE;
 }
@@ -226,7 +229,7 @@ void Engine_ModuleRenderer3D::OnResize(int width, int height)
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gEngine->cameraGO.GetComponent<Camera>()->aspectRatio = (double)width / (double)height;
+	camManager.activeCameraGO->GetComponent<Camera>()->aspectRatio = (double)width / (double)height;
 	ProjectionMatrix = glm::perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
 	glLoadMatrixf(glm::value_ptr(ProjectionMatrix));
 

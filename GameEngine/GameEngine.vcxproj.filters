@@ -122,5 +122,8 @@
     <ClInclude Include="Physics.hpp">
       <Filter>Tools</Filter>
     </ClInclude>
+    <ClInclude Include="CameraManager.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

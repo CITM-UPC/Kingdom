@@ -575,6 +575,7 @@ void ModuleUI::InspectorWindow()
 						ImGui::Text("Clipping Plane View Near: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->clippingPlaneViewNear).c_str());
 						ImGui::Text("Clipping Plane View Far: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->clippingPlaneViewFar).c_str());
 						ImGui::Text("Camera Offset: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->camOffset).c_str());
+						if (ImGui::Button("SetActiveCamera")) { App->gEngine->renderer3D->camManager.SetActiveCamera(gameObjSelected); }
 					}
 				}
 			}
@@ -758,22 +759,22 @@ void ModuleUI::OptionsWindow()
 void ModuleUI::CamDebugWindow()
 {
 	ImGui::Begin("Cam Debug", &camDebug);
-	ImGui::Text("Camera Position x: %f", App->gEngine->cameraGO.GetComponent<Transform>()->position().x);
-	ImGui::Text("Camera Position y: %f", App->gEngine->cameraGO.GetComponent<Transform>()->position().y);
-	ImGui::Text("Camera Position z: %f", App->gEngine->cameraGO.GetComponent<Transform>()->position().z);
+	ImGui::Text("Camera Position x: %f", App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->position().x);
+	ImGui::Text("Camera Position y: %f", App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->position().y);
+	ImGui::Text("Camera Position z: %f", App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->position().z);
 	ImGui::Separator();
-	ImGui::Text("LookAt Pos x: %f", App->gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.x);
-	ImGui::Text("LookAt Pos y: %f", App->gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.y);
-	ImGui::Text("LookAt Pos z: %f", App->gEngine->cameraGO.GetComponent<Camera>()->lookAtPos.z);
+	ImGui::Text("LookAt Pos x: %f", App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->lookAtPos.x);
+	ImGui::Text("LookAt Pos y: %f", App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->lookAtPos.y);
+	ImGui::Text("LookAt Pos z: %f", App->gEngine->renderer3D->editorCamera.GetComponent<Camera>()->lookAtPos.z);
 	ImGui::Separator();
-	ImGui::Text("Forward: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->forward().x, App->gEngine->cameraGO.GetComponent<Transform>()->forward().y, App->gEngine->cameraGO.GetComponent<Transform>()->forward().z);
-	ImGui::Text("Right: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->right().x, App->gEngine->cameraGO.GetComponent<Transform>()->right().y, App->gEngine->cameraGO.GetComponent<Transform>()->right().z);
-	ImGui::Text("Up: %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->up().x, App->gEngine->cameraGO.GetComponent<Transform>()->up().y, App->gEngine->cameraGO.GetComponent<Transform>()->up().z);
+	ImGui::Text("Forward: %f, %f, %f", App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->forward().x, App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->forward().y, App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->forward().z);
+	ImGui::Text("Right: %f, %f, %f", App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->right().x, App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->right().y, App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->right().z);
+	ImGui::Text("Up: %f, %f, %f", App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->up().x, App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->up().y, App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->up().z);
 	ImGui::Separator();
-	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[0][0], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[0][1], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[0][2], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[0][3]);
-	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[1][0], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[1][1], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[1][2], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[1][3]);
-	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[2][0], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[2][1], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[2][2], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[2][3]);
-	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[3][0], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[3][1], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[3][2], App->gEngine->cameraGO.GetComponent<Transform>()->_transformationMatrix[3][3]);
+	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[0][0], App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[0][1], App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[0][2], App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[0][3]);
+	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[1][0], App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[1][1], App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[1][2], App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[1][3]);
+	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[2][0], App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[2][1], App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[2][2], App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[2][3]);
+	ImGui::Text("RotMat: %f, %f, %f, %f", App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[3][0], App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[3][1], App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[3][2], App->gEngine->renderer3D->editorCamera.GetComponent<Transform>()->_transformationMatrix[3][3]);
 	ImGui::End();
 }
 

@@ -10,6 +10,7 @@
 #include "Mesh.h"
 #include "MeshLoader.h"
 #include "GameObject.h"
+#include "CameraManager.h"
 
 #include "Primitive.h"
 #include "Cube.h"
@@ -53,6 +54,9 @@ public:
 public:
 
 	std::vector<vec3> origins, ends, camPos, nearPlanes; //temporary, only debug
+
+	GameObject editorCamera;
+	CameraManager camManager;
 
 	SDL_GLContext context;
 	glm::mat3x3 NormalMatrix;

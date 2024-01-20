@@ -24,6 +24,10 @@ bool Engine_ModuleScene::Init()
 	fs::create_directories("Library/Materials/");
 
 	addGameObject("Assets/BakerHouse.fbx");
+	addGameObject();
+	currentScene.gameObjectList.back().get()->AddComponent(Component::Type::CAMERA);
+	addGameObject();
+	currentScene.gameObjectList.back().get()->AddComponent(Component::Type::CAMERA);
 
 	return true;
 }
