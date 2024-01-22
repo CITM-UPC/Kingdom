@@ -70,6 +70,8 @@ public:
 		os.write((char*)mFaceNormals.data(), _numFaces * sizeof(vec3f));
 		os.write((char*)mFaceCenters.data(), _numFaces * sizeof(vec3f));
 
+		os.write((char*)&_transformationMatrix, sizeof(mat4));
+
 		return os;
 	}
 
@@ -105,6 +107,8 @@ public:
 		mFaceCenters.resize(_numFaces);
 		is.read((char*)mFaceNormals.data(), _numFaces * sizeof(vec3f));
 		is.read((char*)mFaceCenters.data(), _numFaces * sizeof(vec3f));
+
+		is.read((char*)&_transformationMatrix, sizeof(mat4));
 
 		return is;
 	}
