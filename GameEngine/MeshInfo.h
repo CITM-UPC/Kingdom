@@ -15,14 +15,16 @@ public:
 
 	MeshInfo(const void* vertex_data, unsigned int numVerts,
 		const unsigned int* index_data = nullptr, unsigned int numIndexs = 0,
-		const unsigned int numTexCoords = 0, unsigned int numNormals = 0, unsigned int numFaces = 0) :
+		const unsigned int numTexCoords = 0, unsigned int numNormals = 0, unsigned int numFaces = 0,
+		mat4 transformationMatrix = mat4(1.0)) :
 		_vertex_data(vertex_data),
 		_numVerts(numVerts),
 		_index_data(index_data),
 		_numIndexs(numIndexs),
 		_numTexCoords(numTexCoords),
 		_numNormals(numNormals),
-		_numFaces(numFaces)
+		_numFaces(numFaces),
+		_transformationMatrix(transformationMatrix)
 	{
 	}
 
@@ -32,7 +34,8 @@ public:
 		_numIndexs(0),
 		_numTexCoords(0),
 		_numNormals(0),
-		_numFaces(0)
+		_numFaces(0),
+		_transformationMatrix(mat4(1.0))
 	{
 	}
 
@@ -41,6 +44,8 @@ public:
 
 	const unsigned int _numVerts, _numIndexs, _numTexCoords,
 		_numNormals, _numFaces;
+
+	mat4 _transformationMatrix;
 
 	std::vector<vec3f> mVertices;
 	std::vector<vec3f> mNormals;
@@ -64,6 +69,8 @@ public:
 		os.write((char*)&_numFaces, sizeof(_numFaces));
 		os.write((char*)mFaceNormals.data(), _numFaces * sizeof(vec3f));
 		os.write((char*)mFaceCenters.data(), _numFaces * sizeof(vec3f));
+
+		os.write((char*)&_transformationMatrix, sizeof(mat4));
 
 		return os;
 	}
@@ -100,6 +107,8 @@ public:
 		mFaceCenters.resize(_numFaces);
 		is.read((char*)mFaceNormals.data(), _numFaces * sizeof(vec3f));
 		is.read((char*)mFaceCenters.data(), _numFaces * sizeof(vec3f));
+
+		is.read((char*)&_transformationMatrix, sizeof(mat4));
 
 		return is;
 	}
