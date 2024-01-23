@@ -1,5 +1,7 @@
 #include "Application.h"
 #include "Globals.h"
+#include "..\mono\include\mono\jit\jit.h"
+#include "..\mono\include\mono\metadata\assembly.h"
 
 enum main_states
 {
@@ -10,6 +12,29 @@ enum main_states
 	MAIN_EXIT
 };
 
+void InitMono(MonoDomain* s_RootDomain)
+{
+	LOG("-------------- Init Mono --------------");
+
+
+	mono_set_assemblies_path("../mono/lib/4.5");
+
+	MonoDomain* rootDomain = mono_jit_init("MyScriptRuntime");
+
+	if (rootDomain == nullptr)
+	{
+		// Maybe log some error here
+		LOG("MonoDomain has not been initialised correctly.");
+		return;
+	}
+
+	// Store the root domain pointer
+	s_RootDomain = rootDomain;
+
+
+	LOG("-------------- Finished Init Mono --------------");
+}
+
 int main(int argc, char** argv)
 {
 	LOG("Starting game '%s'...", TITLE);
@@ -17,6 +42,9 @@ int main(int argc, char** argv)
 	int main_return = EXIT_FAILURE;
 	main_states state = MAIN_CREATION;
 	Application* App = NULL;
+
+	MonoDomain* monoRootDomain = NULL;
+	InitMono(monoRootDomain);
 
 	while (state != MAIN_EXIT)
 	{
@@ -76,6 +104,7 @@ int main(int argc, char** argv)
 		}
 	}
 
+	delete monoRootDomain;
 	delete App;
 	LOG("Exiting game '%s'...\n", TITLE);
 	return main_return;

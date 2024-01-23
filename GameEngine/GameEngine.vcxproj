@@ -124,7 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\vcpkg\installed\x64-windows\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\vcpkg\installed\x64-windows\include\;..\mono\include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -133,10 +133,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;glu32.lib;opengl32.lib;sdl2.lib;sdl2main.lib;DevIL.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glu32.lib;opengl32.lib;sdl2.lib;sdl2main.lib;DevIL.lib;assimp-vc142-mt.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>..\vcpkg\installed\x64-windows\lib\;..\vcpkg\installed\x64-windows\lib\manual-link;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\vcpkg\installed\x64-windows\lib\;..\vcpkg\installed\x64-windows\lib\manual-link;..\mono\lib\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PreBuildEvent>
       <Command>call ..\vcpkg\bootstrap-vcpkg.bat
@@ -154,7 +154,7 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\vcpkg\installed\x64-windows\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\vcpkg\installed\x64-windows\include\;..\mono\include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -165,10 +165,10 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;glu32.lib;opengl32.lib;sdl2.lib;sdl2main.lib;DevIL.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glu32.lib;opengl32.lib;sdl2.lib;sdl2main.lib;DevIL.lib;assimp-vc142-mt.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>..\vcpkg\installed\x64-windows\lib\;..\vcpkg\installed\x64-windows\lib\manual-link;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\vcpkg\installed\x64-windows\lib\;..\vcpkg\installed\x64-windows\lib\manual-link;..\mono\lib\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PreBuildEvent>
       <Command>call ..\vcpkg\bootstrap-vcpkg.bat
