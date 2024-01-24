@@ -103,8 +103,46 @@ public:
             const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
             const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
 
-            printf("%s.%s\n", nameSpace, name);
+            std::cout << "NameSpace: " << nameSpace << ". Name: " << name << std::endl;
         }
     }
 
+    MonoClass* GetClassInAssembly(MonoAssembly* assembly, const char* namespaceName, const char* className)
+    {
+        MonoImage* image = mono_assembly_get_image(assembly);
+        MonoClass* cSharpClass = mono_class_from_name(image, namespaceName, className);
+
+        if (cSharpClass == nullptr)
+        {
+            // Log error here
+            std::cout << "Could not find C# class " << className << std::endl;
+            return nullptr;
+        }
+
+        return cSharpClass;
+    }
+
+    void LetsTestSomeThings()
+    {
+        MonoAssembly* assembly = LoadCSharpAssembly("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll");
+
+        PrintAssemblyTypes(assembly);
+
+        // Get a reference to the class we want to instantiate
+        MonoClass* testingClass = GetClassInAssembly(assembly, "", "CSharpTesting");
+
+        // Allocate an instance of our class
+        MonoObject* classInstance = mono_object_new(monoAppDomain, testingClass);
+
+        if (classInstance == nullptr)
+        {
+            // Log error here and abort
+            std::cout << "Could not create instance of C# class " << testingClass << std::endl;
+            return;
+        }
+
+        // Call the parameterless (default) constructor
+        mono_runtime_object_init(classInstance);
+        std::cout << "Instance of " << classInstance << "created and initialized." << std::endl;
+    }
 };

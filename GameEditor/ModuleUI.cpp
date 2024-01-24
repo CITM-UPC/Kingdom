@@ -857,7 +857,7 @@ void ModuleUI::EditScript()
 				ImGui::CloseCurrentPopup();
 				editScript = false;
 				App->logHistory.push_back("[Editor] File edited and saved: " + filePath);
-				App->gEngine->sEngine->PrintAssemblyTypes(App->gEngine->sEngine->LoadCSharpAssembly("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll"));
+				App->gEngine->sEngine->LetsTestSomeThings();
 			}
 			if (ImGui::BeginMenu("Close"))
 			{
