@@ -35,6 +35,8 @@ bool Application::Init()
 	targetFPS = 360;
 	frameDurationTime = 1.0s / targetFPS;
 
+	gEngine->Init();
+
 	// Call Init() in all modules
 	logHistory.push_back("[Editor] Initializing Editor modules --------------");
 	for (auto const& item : list_modules)

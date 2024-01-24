@@ -4,6 +4,7 @@
 #include "Engine_Globals.h"
 #include "Engine_Module.h"
 
+#include "ScriptingEngine.hpp"
 //#include "ModuleInput.h"
 #include "Engine_ModuleRenderer3D.h"
 #include "Engine_ModuleScene.h"
@@ -19,6 +20,9 @@ using UUID32 = uint32_t;
 class GameEngine
 {
 public:
+
+	ScriptingEngine* sEngine;
+
 	//ModuleInput* input;
 	Engine_ModuleRenderer3D* renderer3D;
 	Engine_ModuleScene* scene;

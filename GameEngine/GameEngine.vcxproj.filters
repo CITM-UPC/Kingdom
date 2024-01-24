@@ -122,5 +122,8 @@
     <ClInclude Include="Physics.hpp">
       <Filter>Tools</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptingEngine.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
