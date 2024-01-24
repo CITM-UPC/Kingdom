@@ -14,12 +14,11 @@
 *.userprefs
 
 # Mono auto generated files
-mono_crash.*
 
 # Build results
-#[Dd]ebug/
+[Dd]ebug/
 [Dd]ebugPublic/
-#[Rr]elease/
+[Rr]elease/
 [Rr]eleases/
 x64/
 x86/
@@ -364,3 +363,8 @@ FodyWeavers.xsd
 
 # GameEditor/Library
 Library/
+
+# Allowed files
+!mono/bin/
+!mono/lib/Debug/
+!mono/lib/Release/

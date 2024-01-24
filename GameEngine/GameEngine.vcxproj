@@ -143,6 +143,9 @@
 ..\vcpkg\vcpkg.exe install opengl glew glm sdl2 nlohmann-json pcg devil[libjpeg,libpng] assimp --recurse --triplet x64-windows
 copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy "..\mono\bin\*.*" "..\x64\Debug\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -175,6 +178,9 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
 ..\vcpkg\vcpkg.exe install opengl glew glm sdl2 nlohmann-json pcg devil[libjpeg,libpng] assimp --recurse --triplet x64-windows
 copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy "..\mono\bin\*.*" "..\x64\Release\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Engine_ModuleScene.cpp" />
