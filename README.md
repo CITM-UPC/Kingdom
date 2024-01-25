@@ -1,6 +1,7 @@
 # Kingdom
-University project made by [CITM](https://www.citm.upc.edu/ing/), Centre de la Imatge i la Tecnologia Multimedia students of the TTC (Talent Tech Center) in Barcelona, in which we made a 3D Game Engine in C & C++ during our 3rd year of Game Development Bachelor's Degree.
-This is our Kingdom, and we reign over it.
+The project was developed by students from [CITM](https://www.citm.upc.edu/ing/), Centre de la Imatge i la Tecnologia Multimedia, at the TTC (Talent Tech Center) in Barcelona. This initiative emerged during our 3rd year in the Game Development Bachelor's Degree program, specifically within the Game Engine subject. Our endeavor led to the creation of a sophisticated 3D Game Engine using C and C++.
+
+This is our Kingdom, and you can be the new owner who can shape it.
 
 ## Authors
 * [Jonathan Cacay Llanes](https://github.com/xGauss05)
