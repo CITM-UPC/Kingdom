@@ -22,6 +22,22 @@ public:
 	MonoDomain* monoRootDomain = NULL;
 	MonoDomain* monoAppDomain = NULL;
 
+    bool CheckMonoError(MonoError& error)
+    {
+        bool hasError = !mono_error_ok(&error);
+        if (hasError)
+        {
+            unsigned short errorCode = mono_error_get_error_code(&error);
+            const char* errorMessage = mono_error_get_message(&error);
+            std::cout << "Mono Error!" << std::endl;
+            std::cout << "Error Code: " << errorCode << std::endl;
+            std::cout << "Error Message: " << errorMessage << std::endl;
+            mono_error_cleanup(&error);
+        }
+        return hasError;
+    }
+
+
 	void InitMono()
 	{
 		mono_set_assemblies_path("../mono/lib/4.5");
@@ -334,6 +350,20 @@ public:
         return accessibility;
     }
 
+    std::string MonoStringToUTF8(MonoString* monoString)
+    {
+        if (monoString == nullptr || mono_string_length(monoString) == 0)
+            return "";
+
+        MonoError error;
+        char* utf8 = mono_string_to_utf8_checked(monoString, &error);
+        if (CheckMonoError(error))
+            return "";
+        std::string result(utf8);
+        mono_free(utf8);
+        return result;
+    }
+
     void LetsTestSomeThings()
     {
         MonoObject* testInstance = InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", "CSharpTesting");
@@ -350,20 +380,30 @@ public:
         
         // Get the MonoClass pointer from the instance
         MonoClass* instanceClass = mono_object_get_class(testInstance);
+
+
         // Get a reference to the public field called "MyPublicFloatVar"
         MonoClassField* floatField = mono_class_get_field_from_name(instanceClass, "MyPublicFloatVar");
         uint8_t floatFieldAccessibility = GetFieldAccessibility(floatField);
-
         if (floatFieldAccessibility & (uint8_t)Accessibility::Public)
         {
             // We can safely write a value to this
             std::cout << "Reading or writing public field directly " << floatField << std::endl;
+
+            float monoval;
+            mono_field_get_value(testInstance, floatField, &monoval);
+            std::cout << "Value of the field accessed directly before change: " << monoval << std::endl;
+
+            float newVal = 13.14f;
+            mono_field_set_value(testInstance, floatField, &newVal);
+
+            mono_field_get_value(testInstance, floatField, &monoval);
+            std::cout << "Value of the field accessed directly after change: " << monoval << std::endl;
         }
 
         // Get a reference to the private field called "m_Name"
         MonoClassField* nameField = mono_class_get_field_from_name(instanceClass, "m_Name");
         uint8_t nameFieldAccessibility = GetFieldAccessibility(nameField);
-
         if (nameFieldAccessibility & (uint8_t)Accessibility::Private)
         {
             // We shouldn't write to this field
@@ -373,11 +413,24 @@ public:
         // Get a reference to the public property called "Name"
         MonoProperty* nameProperty = mono_class_get_property_from_name(instanceClass, "Name");
         uint8_t namePropertyAccessibility = GetPropertyAccessibility(nameProperty);
-
         if (namePropertyAccessibility & (uint8_t)Accessibility::Public)
         {
             // We can safely write a value to the field using this property
             std::cout << "Reading or writing public property directly " << nameProperty << std::endl;
+
+            // Get the value of Name by invoking the getter method
+            MonoString* nameValue = (MonoString*)mono_property_get_value(nameProperty, testInstance, nullptr, nullptr);
+            std::string nameStr = MonoStringToUTF8(nameValue);
+            std::cout << "Value of the Name string: " << nameStr << std::endl;
+
+            // Modify and assign the value back to the property by invoking the setter method
+            nameStr += ", World!";
+            nameValue = mono_string_new(monoAppDomain, nameStr.c_str());
+            mono_property_set_value(nameProperty, testInstance, (void**)&nameValue, nullptr);
+
+            MonoString* nameValue2 = (MonoString*)mono_property_get_value(nameProperty, testInstance, nullptr, nullptr);
+            std::string nameStr2 = MonoStringToUTF8(nameValue2);
+            std::cout << "New value of the Name string: " << nameStr2 << std::endl;
         }
 
         // Do something
