@@ -4,10 +4,20 @@
 #include "Engine_Globals.h"
 #include "..\mono\include\mono\jit\jit.h"
 #include "..\mono\include\mono\metadata\assembly.h"
+#include "..\mono\include\mono\metadata\attrdefs.h"
 
 
 class ScriptingEngine
 {
+    enum class Accessibility : uint8_t
+    {
+        None = 0,
+        Private = (1 << 0),
+        Internal = (1 << 1),
+        Protected = (1 << 2),
+        Public = (1 << 3)
+    };
+
 public:
 	MonoDomain* monoRootDomain = NULL;
 	MonoDomain* monoAppDomain = NULL;
@@ -213,6 +223,117 @@ public:
         }
     }
 
+    // Gets the accessibility level of the given field
+    uint8_t GetFieldAccessibility(MonoClassField* field)
+    {
+        uint8_t accessibility = (uint8_t)Accessibility::None;
+        uint32_t accessFlag = mono_field_get_flags(field) & MONO_FIELD_ATTR_FIELD_ACCESS_MASK;
+
+        switch (accessFlag)
+        {
+        case MONO_FIELD_ATTR_PRIVATE:
+        {
+            accessibility = (uint8_t)Accessibility::Private;
+            break;
+        }
+        case MONO_FIELD_ATTR_FAM_AND_ASSEM:
+        {
+            accessibility |= (uint8_t)Accessibility::Protected;
+            accessibility |= (uint8_t)Accessibility::Internal;
+            break;
+        }
+        case MONO_FIELD_ATTR_ASSEMBLY:
+        {
+            accessibility = (uint8_t)Accessibility::Internal;
+            break;
+        }
+        case MONO_FIELD_ATTR_FAMILY:
+        {
+            accessibility = (uint8_t)Accessibility::Protected;
+            break;
+        }
+        case MONO_FIELD_ATTR_FAM_OR_ASSEM:
+        {
+            accessibility |= (uint8_t)Accessibility::Private;
+            accessibility |= (uint8_t)Accessibility::Protected;
+            break;
+        }
+        case MONO_FIELD_ATTR_PUBLIC:
+        {
+            accessibility = (uint8_t)Accessibility::Public;
+            break;
+        }
+        }
+
+        return accessibility;
+    }
+
+    // Gets the accessibility level of the given property
+    uint8_t GetPropertyAccessibility(MonoProperty* property)
+    {
+        uint8_t accessibility = (uint8_t)Accessibility::None;
+
+        // Get a reference to the property's getter method
+        MonoMethod* propertyGetter = mono_property_get_get_method(property);
+        if (propertyGetter != nullptr)
+        {
+            // Extract the access flags from the getters flags
+            uint32_t accessFlag = mono_method_get_flags(propertyGetter, nullptr) & MONO_METHOD_ATTR_ACCESS_MASK;
+
+            switch (accessFlag)
+            {
+            case MONO_FIELD_ATTR_PRIVATE:
+            {
+                accessibility = (uint8_t)Accessibility::Private;
+                break;
+            }
+            case MONO_FIELD_ATTR_FAM_AND_ASSEM:
+            {
+                accessibility |= (uint8_t)Accessibility::Protected;
+                accessibility |= (uint8_t)Accessibility::Internal;
+                break;
+            }
+            case MONO_FIELD_ATTR_ASSEMBLY:
+            {
+                accessibility = (uint8_t)Accessibility::Internal;
+                break;
+            }
+            case MONO_FIELD_ATTR_FAMILY:
+            {
+                accessibility = (uint8_t)Accessibility::Protected;
+                break;
+            }
+            case MONO_FIELD_ATTR_FAM_OR_ASSEM:
+            {
+                accessibility |= (uint8_t)Accessibility::Private;
+                accessibility |= (uint8_t)Accessibility::Protected;
+                break;
+            }
+            case MONO_FIELD_ATTR_PUBLIC:
+            {
+                accessibility = (uint8_t)Accessibility::Public;
+                break;
+            }
+            }
+        }
+
+        // Get a reference to the property's setter method
+        MonoMethod* propertySetter = mono_property_get_set_method(property);
+        if (propertySetter != nullptr)
+        {
+            // Extract the access flags from the setters flags
+            uint32_t accessFlag = mono_method_get_flags(propertySetter, nullptr) & MONO_METHOD_ATTR_ACCESS_MASK;
+            if (accessFlag != MONO_FIELD_ATTR_PUBLIC)
+                accessibility = (uint8_t)Accessibility::Private;
+        }
+        else
+        {
+            accessibility = (uint8_t)Accessibility::Private;
+        }
+
+        return accessibility;
+    }
+
     void LetsTestSomeThings()
     {
         MonoObject* testInstance = InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", "CSharpTesting");
@@ -223,5 +344,42 @@ public:
         CallPrintFloatVarMethod(testInstance);
         CallIncrementFloatVarMethod(testInstance, 7.0f);
         CallPrintFloatVarMethod(testInstance);
+
+
+        //Testing get fields
+        
+        // Get the MonoClass pointer from the instance
+        MonoClass* instanceClass = mono_object_get_class(testInstance);
+        // Get a reference to the public field called "MyPublicFloatVar"
+        MonoClassField* floatField = mono_class_get_field_from_name(instanceClass, "MyPublicFloatVar");
+        uint8_t floatFieldAccessibility = GetFieldAccessibility(floatField);
+
+        if (floatFieldAccessibility & (uint8_t)Accessibility::Public)
+        {
+            // We can safely write a value to this
+            std::cout << "Reading or writing public field directly " << floatField << std::endl;
+        }
+
+        // Get a reference to the private field called "m_Name"
+        MonoClassField* nameField = mono_class_get_field_from_name(instanceClass, "m_Name");
+        uint8_t nameFieldAccessibility = GetFieldAccessibility(nameField);
+
+        if (nameFieldAccessibility & (uint8_t)Accessibility::Private)
+        {
+            // We shouldn't write to this field
+            std::cout << "Should not write to private field " << nameField << std::endl;
+        }
+
+        // Get a reference to the public property called "Name"
+        MonoProperty* nameProperty = mono_class_get_property_from_name(instanceClass, "Name");
+        uint8_t namePropertyAccessibility = GetPropertyAccessibility(nameProperty);
+
+        if (namePropertyAccessibility & (uint8_t)Accessibility::Public)
+        {
+            // We can safely write a value to the field using this property
+            std::cout << "Reading or writing public property directly " << nameProperty << std::endl;
+        }
+
+        // Do something
     }
 };
