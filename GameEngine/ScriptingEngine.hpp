@@ -122,14 +122,12 @@ public:
         return cSharpClass;
     }
 
-    void LetsTestSomeThings()
+    MonoObject* InstantiateClass(const std::string& assemblyPath, const char* namespaceName, const char* className)
     {
-        MonoAssembly* assembly = LoadCSharpAssembly("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll");
-
-        PrintAssemblyTypes(assembly);
+        MonoAssembly* assembly = LoadCSharpAssembly(assemblyPath);
 
         // Get a reference to the class we want to instantiate
-        MonoClass* testingClass = GetClassInAssembly(assembly, "", "CSharpTesting");
+        MonoClass* testingClass = GetClassInAssembly(assembly, namespaceName, className);
 
         // Allocate an instance of our class
         MonoObject* classInstance = mono_object_new(monoAppDomain, testingClass);
@@ -137,12 +135,93 @@ public:
         if (classInstance == nullptr)
         {
             // Log error here and abort
-            std::cout << "Could not create instance of C# class " << testingClass << std::endl;
-            return;
+            std::cout << "Could not create instance of C# class " << className << std::endl;
+            return nullptr;
         }
 
         // Call the parameterless (default) constructor
         mono_runtime_object_init(classInstance);
-        std::cout << "Instance of " << classInstance << "created and initialized." << std::endl;
+        std::cout << "Instance of " << className << "created and initialized." << std::endl;
+
+        PrintAssemblyTypes(assembly);
+
+        return classInstance;
+    }
+
+    void CallPrintFloatVarMethod(MonoObject* objectInstance)
+    {
+        // Get the MonoClass pointer from the instance
+        MonoClass* instanceClass = mono_object_get_class(objectInstance);
+
+        // Get a reference to the method in the class
+        MonoMethod* method = mono_class_get_method_from_name(instanceClass, "PrintFloatVar", 0);
+
+        if (method == nullptr)
+        {
+            // No method called "PrintFloatVar" with 0 parameters in the class, log error or something
+            std::cout << "Could not find method PrintFloatVar" << std::endl;
+            return;
+        }
+
+        // Call the C# method on the objectInstance instance, and get any potential exceptions
+        MonoObject* exception = nullptr;
+        mono_runtime_invoke(method, objectInstance, nullptr, &exception);
+
+        //Handle the exception
+        if (exception != nullptr)
+        {
+            std::cout << "Exception occurred" << std::endl;
+            return;
+        }
+    }
+
+    void CallIncrementFloatVarMethod(MonoObject* objectInstance, float value)
+    {
+        // Get the MonoClass pointer from the instance
+        MonoClass* instanceClass = mono_object_get_class(objectInstance);
+
+        // Get a reference to the method in the class
+        MonoMethod* method = mono_class_get_method_from_name(instanceClass, "IncrementFloatVar", 1);
+
+        if (method == nullptr)
+        {
+            // No method called "IncrementFloatVar" with 1 parameter in the class, log error or something
+            std::cout << "Could not find method IncrementFloatVar" << std::endl;
+            return;
+        }
+
+        // Call the C# method on the objectInstance instance, and get any potential exceptions
+        //MonoObject* exception = nullptr;
+        //void* param = &value;
+        //mono_runtime_invoke(method, objectInstance, &param, &exception);
+
+        // OR
+
+        MonoObject* exception = nullptr;
+        void* params[] =
+        {
+            &value
+        };
+
+        mono_runtime_invoke(method, objectInstance, params, &exception);
+
+        // TODO: Handle the exception
+        if (exception != nullptr)
+        {
+            std::cout << "Exception occurred" << std::endl;
+            return;
+        }
+    }
+
+    void LetsTestSomeThings()
+    {
+        MonoObject* testInstance = InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", "CSharpTesting");
+        CallPrintFloatVarMethod(testInstance);
+        CallIncrementFloatVarMethod(testInstance, 1.0f);
+        CallPrintFloatVarMethod(testInstance);
+        CallIncrementFloatVarMethod(testInstance, 2.0f);
+        CallPrintFloatVarMethod(testInstance);
+        CallIncrementFloatVarMethod(testInstance, 7.0f);
+        CallPrintFloatVarMethod(testInstance);
     }
 };
