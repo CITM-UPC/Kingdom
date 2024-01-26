@@ -857,12 +857,13 @@ void ModuleUI::EditScript()
 				ImGui::CloseCurrentPopup();
 				editScript = false;
 				App->logHistory.push_back("[Editor] File edited and saved: " + filePath);
-				App->gEngine->sEngine->LetsTestSomeThings();
+				App->gEngine->sEngine->AddTestInternalCall();
 			}
 			if (ImGui::BeginMenu("Close"))
 			{
 				ImGui::CloseCurrentPopup();
 				editScript = false;
+				App->gEngine->sEngine->LetsTestSomeThings();
 			}
 			ImGui::EndMenuBar();
 		}

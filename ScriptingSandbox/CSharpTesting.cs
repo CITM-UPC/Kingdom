@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 public class CSharpTesting
 {
@@ -27,4 +28,15 @@ public class CSharpTesting
         MyPublicFloatVar += value;
     }
 
+    public void accessEngine()
+    {
+        string textFromCplusplus = InternalCalls.GettingCplusplus();
+        Console.WriteLine("Text from C++ is: " + textFromCplusplus);
+    }
+}
+
+public static class InternalCalls
+{
+    [MethodImplAttribute(MethodImplOptions.InternalCall)]
+    internal extern static string GettingCplusplus();
 }

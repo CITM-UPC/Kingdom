@@ -364,8 +364,43 @@ public:
         return result;
     }
 
+
+
+    //This section reads from the C# function so that it can be called from ModuleUI
+    void CallCsharp(MonoObject* objectInstance)
+    {
+        // Get the MonoClass pointer from the instance
+        MonoClass* instanceClass = mono_object_get_class(objectInstance);
+
+        // Get a reference to the method in the class
+        MonoMethod* method = mono_class_get_method_from_name(instanceClass, "accessEngine", 0);
+
+        if (method == nullptr)
+        {
+            // No method called "PrintFloatVar" with 0 parameters in the class, log error or something
+            std::cout << "Could not find method AccessEngine" << std::endl;
+            return;
+        }
+
+        // Call the C# method on the objectInstance instance, and get any potential exceptions
+        MonoObject* exception = nullptr;
+        mono_runtime_invoke(method, objectInstance, nullptr, &exception);
+
+        //Handle the exception
+        if (exception != nullptr)
+        {
+            std::cout << "Exception occurred" << std::endl;
+            return;
+        }
+    }
+    
     void LetsTestSomeThings()
     {
+        MonoObject* testInstance = InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", "CSharpTesting");
+        CallCsharp(testInstance);
+
+        //This only contains access examples to C#
+        /*
         MonoObject* testInstance = InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", "CSharpTesting");
         CallPrintFloatVarMethod(testInstance);
         CallIncrementFloatVarMethod(testInstance, 1.0f);
@@ -433,6 +468,25 @@ public:
             std::cout << "New value of the Name string: " << nameStr2 << std::endl;
         }
 
-        // Do something
+        */
     }
+
+
+    
+
+
+
+
+    //This section sends the function to C#
+    static MonoString* FunctionToSend()
+    {
+        return mono_string_new(mono_domain_get(), "I am so done with this");
+    }
+    void AddTestInternalCall()
+    {
+        mono_add_internal_call("InternalCalls::GettingCplusplus", FunctionToSend);
+
+        std::cout << "Added InternalCall" << std::endl;
+    }
+
 };
