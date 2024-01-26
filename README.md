@@ -8,6 +8,8 @@ This is our Kingdom, and you can be the new owner who can shape it.
 * [Ethan Martín Parra](https://github.com/Ethanm-0371)
 * [Pau Fusco Zamora](https://github.com/PauFusco)
 
+![cutrada](https://github.com/CITM-UPC/Kingdom/assets/57706173/a5671b6a-50e1-4220-ac03-ce6a29991994)
+
 ## Features
 * Functional UI, Window, Renderer, Input and System settings
 * Creates empty GameObjects, Cube, Cone, Pyramid...
@@ -35,8 +37,9 @@ In our Kingdom, the Game Engine offers a Scripting System with the help of mono.
 * [std:c++20](https://en.cppreference.com/w/cpp/20)
 * [mono](https://www.mono-project.com/)
 
-## Video
-*todo*
+## GIFs
+![ezgif-5-5b79dadd6f](https://github.com/CITM-UPC/Kingdom/assets/57706173/bb5d7cab-fab7-44f6-b876-a4ba7cd57b8e)
+![ezgif-5-fdb93f01e1](https://github.com/CITM-UPC/Kingdom/assets/57706173/76ea1208-3951-40e2-86a0-b07bf6453cd2)
 
 ## Links to our Kingdom
 No previous installations are required to use the engine, just download and execute the .exe file *Kingdom* from releases.
