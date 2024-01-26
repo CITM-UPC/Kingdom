@@ -44,7 +44,7 @@
     <Compile Include="ActualScriptTest2.cs" />
     <Compile Include="CSharpTesting.cs" />
     <Compile Include="InternalCalls.cs" />
-    <Compile Include="ActualScriptTest.cs" />
+    <Compile Include="Scripts\ActualScriptTest.cs" />
     <Compile Include="IGameObject.cs" />
     <Compile Include="Mondongo.cs" />
     <Compile Include="MonoBehaviour.cs" />

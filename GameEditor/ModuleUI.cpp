@@ -608,11 +608,9 @@ void ModuleUI::InspectorWindow()
 			{
 				if (ImGui::Button("Mesh"))
 				{
-
 				}
 				if (ImGui::Button("Texture"))
 				{
-
 				}
 				if (ImGui::Button("Camera"))
 				{
@@ -875,7 +873,7 @@ void ModuleUI::ShowFolderContents(const fs::path& folderPath) {
 				if (entry.path().filename().string().substr(entry.path().filename().string().find_last_of(".") + 1) == "cs") {
 					if (ImGui::Button("Edit")) {
 						editScript = true;
-						filePath = "Library/"+folderPath.filename().string() + "/" + entry.path().filename().string();
+						filePath = "Library/" + folderPath.filename().string() + "/" + entry.path().filename().string();
 						fileContent = loadTextFile(entry.path().string());
 						editor.SetText(fileContent);
 					}
@@ -883,7 +881,6 @@ void ModuleUI::ShowFolderContents(const fs::path& folderPath) {
 				}
 
 				if (ImGui::Button(("Delete##" + entry.path().string()).c_str())) fs::remove(entry.path());
-				
 			}
 		}
 	}
@@ -903,21 +900,37 @@ void ModuleUI::EditScript()
 				ImGui::CloseCurrentPopup();
 				editScript = false;
 				App->logHistory.push_back("[Editor] File edited and saved: " + filePath);
-				App->gEngine->sEngine->AddTestInternalCall();
 			}
 			if (ImGui::BeginMenu("Close"))
 			{
 				ImGui::CloseCurrentPopup();
 				editScript = false;
-				App->gEngine->sEngine->LetsTestSomeThings();
 			}
 			ImGui::EndMenuBar();
 		}
-		
+
 		editor.Render("CodeEditor");
 		ImGui::EndPopup();
 	}
 }
+
+void ModuleUI::ShowScriptFolder()
+{
+	const fs::path scriptingPath = "../ScriptingSandbox/Scripts";
+	if (ImGui::CollapsingHeader(scriptingPath.filename().string().c_str())) {
+		for (const auto& entry : fs::directory_iterator(scriptingPath)) {
+			if (fs::is_regular_file(entry.path())) {
+				ImGui::Text("%s", entry.path().filename().string().c_str());
+				ImGui::SameLine();
+				if (entry.path().filename().string().substr(entry.path().filename().string().find_last_of(".") + 1) == "cs") {
+					if (ImGui::Button("Edit")) {
+						editScript = true;
+						filePath = scriptingPath.filename().string() + "/" + entry.path().filename().string();
+						fileContent = loadTextFile(entry.path().string());
+						editor.SetText(fileContent);
+					}
+					ImGui::SameLine();
+				}
 
 void ModuleUI::ChooseScriptNameWindow()
 {
@@ -946,6 +959,12 @@ void ModuleUI::ChooseScriptNameWindow()
 	ImGui::End();
 }
 
+				if (ImGui::Button(("Delete##" + entry.path().string()).c_str())) fs::remove(entry.path());
+			}
+		}
+	}
+}
+
 void ModuleUI::FileExplorerWindow()
 {
 	ImGui::Begin("File Explorer", &fileExplorer);
@@ -956,6 +975,9 @@ void ModuleUI::FileExplorerWindow()
 
 	const fs::path libraryPath = "Library";
 	ShowFolderContents(libraryPath);
+	ImGui::Separator();
+
+	ShowScriptFolder();
 	ImGui::Separator();
 
 	ImGui::End();
