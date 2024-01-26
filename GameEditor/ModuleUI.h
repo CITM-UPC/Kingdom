@@ -62,6 +62,7 @@ private:
 	void GetInfrastructureInfo();
 	void ShowFolderContents(const fs::path& folderPath);
 	void EditScript();
+	void ShowScriptFolder();
 
 private:
 

@@ -133,7 +133,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;glu32.lib;opengl32.lib;sdl2.lib;sdl2main.lib;DevIL.lib;assimp-vc142-mt.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glu32.lib;opengl32.lib;sdl2.lib;sdl2main.lib;DevIL.lib;assimp-vc143-mt.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>..\vcpkg\installed\x64-windows\lib\;..\vcpkg\installed\x64-windows\lib\manual-link;..\mono\lib\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -168,7 +168,7 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;glu32.lib;opengl32.lib;sdl2.lib;sdl2main.lib;DevIL.lib;assimp-vc142-mt.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glu32.lib;opengl32.lib;sdl2.lib;sdl2main.lib;DevIL.lib;assimp-vc143-mt.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>..\vcpkg\installed\x64-windows\lib\;..\vcpkg\installed\x64-windows\lib\manual-link;..\mono\lib\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -219,6 +219,11 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     <ClInclude Include="ScriptingEngine.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Transform.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ScriptingSandbox\ScriptingSandbox.csproj">
+      <Project>{ed084274-859d-433b-a155-7b922af37314}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
