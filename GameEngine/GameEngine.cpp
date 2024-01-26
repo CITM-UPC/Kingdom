@@ -81,6 +81,7 @@ engine_status GameEngine::Update()
 	}
 
 	FinishUpdate();*/
+
 	return ret;
 }
 
@@ -106,6 +107,8 @@ bool GameEngine::CleanUp()
 		ret = item->CleanUp();
 		if (ret != true) return ret;
 	}
+
+	sEngine->ShutDownMono();
 
 	delete sEngine;
 

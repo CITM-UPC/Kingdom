@@ -12,7 +12,7 @@ GameObject::GameObject()
 GameObject::~GameObject()
 {
 	components.clear();
-};
+}
 
 //std::shared_ptr<Component> GameObject::GetComponent(Component::Type componentType)
 //{

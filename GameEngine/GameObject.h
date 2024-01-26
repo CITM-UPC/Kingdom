@@ -13,6 +13,8 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
+#include "..\mono\include\mono\jit\jit.h"
+
 class GameObject
 {
 public:
@@ -26,6 +28,7 @@ public:
 	GameObject* parent;
 
 	unsigned long UUID;
+	MonoObject* monoBehaviourInstance;
 
 public:
 

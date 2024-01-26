@@ -213,7 +213,8 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     <ClInclude Include="Physics.hpp" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Pyramid.h" />
-    <ClInclude Include="ScriptingEngine.hpp" />
+    <ClCompile Include="ScriptingEngine.cpp" />
+    <ClInclude Include="ScriptingEngine.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>

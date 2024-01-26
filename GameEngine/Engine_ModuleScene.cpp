@@ -24,7 +24,9 @@ bool Engine_ModuleScene::Init()
 	fs::create_directories("Library/Materials/");
 	fs::create_directories("Library/Scripts/");
 
-	addGameObject("Assets/Street/StreetEnvironment.fbx");
+	//addGameObject("Assets/Street/StreetEnvironment.fbx");
+
+	ScriptingEngine::SetSceneModuleContext(this);
 
 	return true;
 }
@@ -48,6 +50,11 @@ engine_status Engine_ModuleScene::Update()
 	}
 
 	if (step && paused) paused = false;
+
+	if (!currentScene.gameObjectList.empty())
+	{
+		gEngine->sEngine->UpdateScripts(currentScene.gameObjectList.back().get()->monoBehaviourInstance);
+	}
 
 	return ENGINE_UPDATE_CONTINUE;
 }
@@ -113,6 +120,12 @@ void Engine_ModuleScene::addGameObject()
 	currentScene.gameObjectList.push_back(std::move(gameObjectToAdd));
 
 	gEngine->logHistory.push_back("[Engine] Add GameObject");
+
+	//Mono thingies
+	ScriptingEngine::SetCurrentUUID(currentScene.gameObjectList.back().get()->UUID);
+	std::string classname = "ActualScriptTest";
+	currentScene.gameObjectList.back().get()->monoBehaviourInstance = ScriptingEngine::InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", classname.c_str());
+	ScriptingEngine::CleanCurrentUUID();
 }
 
 void Engine_ModuleScene::addGameObject(const std::string & filePath)
@@ -172,6 +185,13 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 			+ std::to_string(meshInfo._numNormals) + " normals, "
 			+ std::to_string(meshInfo._numTexCoords) + " tex coords, and "
 			+ std::to_string(meshInfo._numVerts) + " vertexs.");
+
+
+		//Mono thingies
+		ScriptingEngine::SetCurrentUUID(gOparent->childs.back().get()->UUID);
+		std::string classname = "ActualScriptTest";
+		gOparent->childs.back().get()->monoBehaviourInstance = ScriptingEngine::InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", classname.c_str());
+		ScriptingEngine::CleanCurrentUUID();
 	}
 }
 
@@ -187,6 +207,8 @@ void Engine_ModuleScene::addGameObject(Primitive * shape)
 		goName.append("(" + std::to_string(currentCopies) + ")");
 	}
 	gameObjectToAdd->name = goName;
+	gameObjectToAdd->UUID = gEngine->generateUUID32();
+
 	currentScene.gameObjectList.push_back(std::move(gameObjectToAdd));
 
 	MeshInfo meshInfo(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());
@@ -200,6 +222,12 @@ void Engine_ModuleScene::addGameObject(Primitive * shape)
 		+ std::to_string(meshInfo._numNormals) + " normals, "
 		+ std::to_string(meshInfo._numTexCoords) + " tex coords, and "
 		+ std::to_string(meshInfo._numVerts) + " vertexs.");
+
+	//Mono thingies
+	ScriptingEngine::SetCurrentUUID(currentScene.gameObjectList.back().get()->UUID);
+	std::string classname = "ActualScriptTest";
+	currentScene.gameObjectList.back().get()->monoBehaviourInstance = ScriptingEngine::InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", classname.c_str());
+	ScriptingEngine::CleanCurrentUUID();
 }
 
 void Engine_ModuleScene::removeGameObject(GameObject * GOtoDelete)

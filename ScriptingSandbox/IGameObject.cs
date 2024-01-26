@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-class IGameObject
+public class IGameObject
 {
-    IGameObject()
+    public IGameObject(ulong uuid)
     {
-        transform = new ITransform(uuid);
+        _uuid = uuid;
+        transform = new ITransform(_uuid);
     }
+
+    private ulong _uuid;
 
     public string name;
     public bool isActive;
     public ITransform transform;
-
-
-    private ulong uuid;
 
 
     enum ComponentType

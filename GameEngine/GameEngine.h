@@ -4,7 +4,7 @@
 #include "Engine_Globals.h"
 #include "Engine_Module.h"
 
-#include "ScriptingEngine.hpp"
+#include "ScriptingEngine.h"
 //#include "ModuleInput.h"
 #include "Engine_ModuleRenderer3D.h"
 #include "Engine_ModuleScene.h"
