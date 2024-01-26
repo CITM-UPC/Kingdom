@@ -511,23 +511,33 @@ static void GetTransform(unsigned long uuid, double* posX)
 		}
 		else
 		{
-			*posX = SE_Data->sceneContext->findGameObjectfromUUID(parent.get(), uuid)->GetComponent<Transform>()->position().x;
+			GameObject* child = SE_Data->sceneContext->findGameObjectfromUUID(parent.get(), uuid);
+			if (child != nullptr)
+			{
+				*posX = child->GetComponent<Transform>()->position().x;
+				break;
+			}
+			
 		}
 	}
 }
 static void SetTransform(unsigned long uuid, double* posX)
 {
-	//std::cout << "SetTransform in C++ side is being called" << std::endl;
-
 	for (auto& const parent : SE_Data->sceneContext->currentScene.gameObjectList)
 	{
 		if (parent->UUID == uuid)
 		{
 			parent->GetComponent<Transform>()->Move(vec3(*posX, 0, 0));
+			break;
 		}
 		else
 		{
-			SE_Data->sceneContext->findGameObjectfromUUID(parent.get(), uuid)->GetComponent<Transform>()->Move(vec3(*posX, 0, 0));
+			GameObject* child = SE_Data->sceneContext->findGameObjectfromUUID(parent.get(), uuid);
+			if (child != nullptr)
+			{
+				child->GetComponent<Transform>()->Move(vec3(*posX, 0, 0));
+				break;
+			}
 		}
 	}
 }
@@ -562,7 +572,7 @@ void ScriptingEngine::AddTestInternalCall()
 	std::cout << "Added InternalCall" << std::endl;
 }
 
-void ScriptingEngine::UpdateScripts(MonoObject* monoBehaviourInstance)
+void ScriptingEngine::UpdateScriptInstance(MonoObject* monoBehaviourInstance)
 {
 	// Get the MonoClass pointer from the instance
 	MonoClass* instanceClass = mono_object_get_class(monoBehaviourInstance);

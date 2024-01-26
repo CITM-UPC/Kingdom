@@ -39,12 +39,6 @@
     <ClCompile Include="Engine_log.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>Object Components\Source Files</Filter>
     </ClCompile>
@@ -62,6 +56,15 @@
     </ClCompile>
     <ClCompile Include="ScriptingEngine.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptComponent.cpp">
+      <Filter>Object Components\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.h">
+      <Filter>Object Components\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Object Components\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="ScriptingEngine.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptComponent.h">
+      <Filter>Object Components\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

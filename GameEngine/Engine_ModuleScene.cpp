@@ -51,11 +51,6 @@ engine_status Engine_ModuleScene::Update()
 
 	if (step && paused) paused = false;
 
-	if (!currentScene.gameObjectList.empty())
-	{
-		gEngine->sEngine->UpdateScripts(currentScene.gameObjectList.back().get()->monoBehaviourInstance);
-	}
-
 	return ENGINE_UPDATE_CONTINUE;
 }
 
@@ -120,12 +115,6 @@ void Engine_ModuleScene::addGameObject()
 	currentScene.gameObjectList.push_back(std::move(gameObjectToAdd));
 
 	gEngine->logHistory.push_back("[Engine] Add GameObject");
-
-	//Mono thingies
-	ScriptingEngine::SetCurrentUUID(currentScene.gameObjectList.back().get()->UUID);
-	std::string classname = "ActualScriptTest";
-	currentScene.gameObjectList.back().get()->monoBehaviourInstance = ScriptingEngine::InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", classname.c_str());
-	ScriptingEngine::CleanCurrentUUID();
 }
 
 void Engine_ModuleScene::addGameObject(const std::string & filePath)
@@ -185,13 +174,6 @@ void Engine_ModuleScene::addGameObject(const std::string & filePath)
 			+ std::to_string(meshInfo._numNormals) + " normals, "
 			+ std::to_string(meshInfo._numTexCoords) + " tex coords, and "
 			+ std::to_string(meshInfo._numVerts) + " vertexs.");
-
-
-		//Mono thingies
-		ScriptingEngine::SetCurrentUUID(gOparent->childs.back().get()->UUID);
-		std::string classname = "ActualScriptTest";
-		gOparent->childs.back().get()->monoBehaviourInstance = ScriptingEngine::InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", classname.c_str());
-		ScriptingEngine::CleanCurrentUUID();
 	}
 }
 
@@ -222,12 +204,6 @@ void Engine_ModuleScene::addGameObject(Primitive * shape)
 		+ std::to_string(meshInfo._numNormals) + " normals, "
 		+ std::to_string(meshInfo._numTexCoords) + " tex coords, and "
 		+ std::to_string(meshInfo._numVerts) + " vertexs.");
-
-	//Mono thingies
-	ScriptingEngine::SetCurrentUUID(currentScene.gameObjectList.back().get()->UUID);
-	std::string classname = "ActualScriptTest";
-	currentScene.gameObjectList.back().get()->monoBehaviourInstance = ScriptingEngine::InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", classname.c_str());
-	ScriptingEngine::CleanCurrentUUID();
 }
 
 void Engine_ModuleScene::removeGameObject(GameObject * GOtoDelete)

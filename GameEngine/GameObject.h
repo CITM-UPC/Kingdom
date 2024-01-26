@@ -9,11 +9,10 @@
 #include "Mesh.h"
 #include "Texture2D.h"
 #include "Camera.h"
+#include "ScriptComponent.h"
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
-
-#include "..\mono\include\mono\jit\jit.h"
 
 class GameObject
 {
@@ -28,7 +27,6 @@ public:
 	GameObject* parent;
 
 	unsigned long UUID;
-	MonoObject* monoBehaviourInstance;
 
 public:
 
@@ -50,6 +48,7 @@ public:
 	void AddComponent(T& component);
 
 	void RemoveComponent(Component::Type component);
+	void RemoveComponent(Component* component);
 
 	void UpdateComponents();
 

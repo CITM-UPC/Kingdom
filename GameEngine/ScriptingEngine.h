@@ -45,7 +45,7 @@ public:
     static void SetCurrentUUID(const unsigned long& uuid);
     static void CleanCurrentUUID();
 
-    void UpdateScripts(MonoObject* monoBehaviourInstance);
+    static void UpdateScriptInstance(MonoObject* monoBehaviourInstance);
 
 private:
 

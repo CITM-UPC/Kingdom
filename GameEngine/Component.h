@@ -14,7 +14,8 @@ public:
 		TRANSFORM,
 		MESH,
 		TEXTURE2D,
-		CAMERA
+		CAMERA,
+		SCRIPT
 	};
 
 	bool isActive = true;

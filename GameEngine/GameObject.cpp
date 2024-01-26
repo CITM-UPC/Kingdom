@@ -48,6 +48,9 @@ void GameObject::AddComponent(Component::Type component)
 	case Component::Type::CAMERA:
 		components.emplace_back(std::make_unique<Camera>(this));
 		break;
+	case Component::Type::SCRIPT:
+		components.emplace_back(std::make_unique<ScriptComponent>(this));
+		break;
 	default:
 		ENGINE_LOG("Can't add component in GameObject");
 		break;
@@ -59,6 +62,17 @@ void GameObject::RemoveComponent(Component::Type component)
 	for (auto& comp : components)
 	{
 		if (comp->getType() == component)
+		{
+			components.erase(std::remove(components.begin(), components.end(), comp));
+			break;
+		}
+	}
+}
+void GameObject::RemoveComponent(Component* component)
+{
+	for (auto& comp : components)
+	{
+		if (comp.get() == component)
 		{
 			components.erase(std::remove(components.begin(), components.end(), comp));
 			break;

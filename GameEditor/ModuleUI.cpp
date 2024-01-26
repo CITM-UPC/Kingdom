@@ -576,8 +576,54 @@ void ModuleUI::InspectorWindow()
 						ImGui::Text("Clipping Plane View Near: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->clippingPlaneViewNear).c_str());
 						ImGui::Text("Clipping Plane View Far: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->clippingPlaneViewFar).c_str());
 						ImGui::Text("Camera Offset: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->camOffset).c_str());
+						ImGui::Separator();
+						if (ImGui::Button("Remove Component"))
+						{
+							gameObjSelected->RemoveComponent(cam);
+							break;
+						}
 					}
 				}
+				if (component.get()->getType() == Component::Type::SCRIPT) {
+					if (ImGui::CollapsingHeader("Script", ImGuiTreeNodeFlags_None))
+					{
+						ScriptComponent* script = dynamic_cast<ScriptComponent*>(component.get());
+						ImGui::Text("This is a script");
+						ImGui::Separator();
+						if (ImGui::Button("Remove Component"))
+						{
+							gameObjSelected->RemoveComponent(script);
+							break;
+						}
+					}
+				}
+			}
+
+			if (ImGui::Button("AddComponent"))
+			{
+				ImGui::OpenPopup("Add Component");
+			}
+			if (ImGui::BeginPopup("Add Component"))
+			{
+				if (ImGui::Button("Mesh"))
+				{
+
+				}
+				if (ImGui::Button("Texture"))
+				{
+
+				}
+				if (ImGui::Button("Camera"))
+				{
+					gameObjSelected->AddComponent(Component::Type::CAMERA);
+					ImGui::CloseCurrentPopup();
+				}
+				if (ImGui::Button("Script"))
+				{
+					gameObjSelected->AddComponent(Component::Type::SCRIPT);
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
 			}
 		}
 		ImGui::EndMenu();
