@@ -931,6 +931,11 @@ void ModuleUI::ShowScriptFolder()
 					}
 					ImGui::SameLine();
 				}
+				if (ImGui::Button(("Delete##" + entry.path().string()).c_str())) fs::remove(entry.path());
+			}
+		}
+	}
+}
 
 void ModuleUI::ChooseScriptNameWindow()
 {
@@ -957,12 +962,6 @@ void ModuleUI::ChooseScriptNameWindow()
 	}
 
 	ImGui::End();
-}
-
-				if (ImGui::Button(("Delete##" + entry.path().string()).c_str())) fs::remove(entry.path());
-			}
-		}
-	}
 }
 
 void ModuleUI::FileExplorerWindow()
