@@ -48,13 +48,15 @@ void GameObject::AddComponent(Component::Type component)
 	case Component::Type::CAMERA:
 		components.emplace_back(std::make_unique<Camera>(this));
 		break;
-	case Component::Type::SCRIPT:
-		components.emplace_back(std::make_unique<ScriptComponent>(this));
-		break;
 	default:
 		ENGINE_LOG("Can't add component in GameObject");
 		break;
 	}
+}
+
+void GameObject::AddScript(std::string name)
+{
+	components.emplace_back(std::make_unique<ScriptComponent>(this, name));
 }
 
 void GameObject::RemoveComponent(Component::Type component)

@@ -101,6 +101,7 @@ update_status ModuleUI::PreUpdate()
 	if (saveasMenu) 	SaveAsMenu();
 	if (loadMenu)		LoadSceneMenu();
 	if (reparentMenu) 	ReparentMenu();
+	if (chooseScriptNameWindow) ChooseScriptNameWindow();
 
 	ImGuiIO& io = ImGui::GetIO();
 	if (!io.WantCaptureMouse && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
@@ -620,8 +621,7 @@ void ModuleUI::InspectorWindow()
 				}
 				if (ImGui::Button("Script"))
 				{
-					gameObjSelected->AddComponent(Component::Type::SCRIPT);
-					ImGui::CloseCurrentPopup();
+					chooseScriptNameWindow = true;
 				}
 				ImGui::EndPopup();
 			}
@@ -917,6 +917,33 @@ void ModuleUI::EditScript()
 		editor.Render("CodeEditor");
 		ImGui::EndPopup();
 	}
+}
+
+void ModuleUI::ChooseScriptNameWindow()
+{
+	ImGui::Begin("Script name", &chooseScriptNameWindow);
+
+	static char nameRecipient[32];
+
+	ImGui::InputText("File Name", nameRecipient, IM_ARRAYSIZE(nameRecipient));
+
+	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && nameRecipient != "")
+	{
+		//std::string className = "ActualScriptTest2";
+		if (ScriptingEngine::GetClassInAssembly(ScriptingEngine::LoadCSharpAssembly("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll"), "", nameRecipient) != nullptr)
+		{
+			gameObjSelected->AddScript(nameRecipient);
+			ImGui::CloseCurrentPopup();
+		}
+		else
+		{
+			App->logHistory.push_back("[Editor] Could not find introduced class");
+		}
+
+		chooseScriptNameWindow = false;
+	}
+
+	ImGui::End();
 }
 
 void ModuleUI::FileExplorerWindow()

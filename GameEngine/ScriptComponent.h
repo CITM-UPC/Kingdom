@@ -6,7 +6,7 @@ class ScriptComponent : public Component
 {
 public:
 
-	ScriptComponent(GameObject* owner);
+	ScriptComponent(GameObject* owner, std::string name);
 	ScriptComponent(const ScriptComponent& other);
 
 	~ScriptComponent();

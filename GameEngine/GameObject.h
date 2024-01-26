@@ -46,6 +46,7 @@ public:
 
 	template <typename T>
 	void AddComponent(T& component);
+	void AddScript(std::string name);
 
 	void RemoveComponent(Component::Type component);
 	void RemoveComponent(Component* component);

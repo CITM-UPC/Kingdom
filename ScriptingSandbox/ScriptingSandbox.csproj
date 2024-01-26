@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActualScriptTest2.cs" />
     <Compile Include="CSharpTesting.cs" />
     <Compile Include="InternalCalls.cs" />
     <Compile Include="ActualScriptTest.cs" />

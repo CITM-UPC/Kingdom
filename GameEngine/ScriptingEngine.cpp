@@ -171,6 +171,13 @@ MonoObject* ScriptingEngine::InstantiateClass(const std::string& assemblyPath, c
 	// Get a reference to the class we want to instantiate
 	MonoClass* testingClass = GetClassInAssembly(assembly, namespaceName, className);
 
+	if (testingClass == nullptr)
+	{
+		// Log error here and abort
+		std::cout << "Could not find a class named " << className << std::endl;
+		return nullptr;
+	}
+
 	// Allocate an instance of our class
 	MonoObject* classInstance = mono_object_new(SE_Data->monoAppDomain, testingClass);
 

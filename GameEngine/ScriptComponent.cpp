@@ -3,12 +3,11 @@
 #include "GameObject.h"
 
 
-ScriptComponent::ScriptComponent(GameObject* owner) : Component(owner)
+ScriptComponent::ScriptComponent(GameObject* owner, std::string name) : Component(owner)
 {
 	//Mono thingies
 	ScriptingEngine::SetCurrentUUID(owner->UUID);
-	std::string classname = "ActualScriptTest";
-	monoBehaviourInstance = ScriptingEngine::InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", classname.c_str());
+	monoBehaviourInstance = ScriptingEngine::InstantiateClass("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll", "", name.c_str());
 	ScriptingEngine::CleanCurrentUUID();
 }
 
