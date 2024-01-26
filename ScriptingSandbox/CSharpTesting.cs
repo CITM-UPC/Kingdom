@@ -30,12 +30,12 @@ public class CSharpTesting
 
     public void accessEngine()
     {
-        string textFromCplusplus = InternalCalls.GettingCplusplus();
+        string textFromCplusplus = InternalTestingCalls.GettingCplusplus();
         Console.WriteLine("Text from C++ is: " + textFromCplusplus);
     }
 }
 
-public static class InternalCalls
+public static class InternalTestingCalls
 {
     [MethodImplAttribute(MethodImplOptions.InternalCall)]
     internal extern static string GettingCplusplus();
