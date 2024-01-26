@@ -23,7 +23,7 @@ bool Engine_ModuleScene::Init()
 	fs::create_directories("Library/Meshes/");
 	fs::create_directories("Library/Materials/");
 
-	//addGameObject("Assets/Street/StreetEnvironment.fbx");
+	addGameObject("Assets/Street/StreetEnvironment.fbx");
 
 	ScriptingEngine::SetSceneModuleContext(this);
 
