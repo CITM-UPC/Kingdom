@@ -9,6 +9,7 @@
 #include "Mesh.h"
 #include "Texture2D.h"
 #include "Camera.h"
+#include "ScriptComponent.h"
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -45,8 +46,10 @@ public:
 
 	template <typename T>
 	void AddComponent(T& component);
+	void AddScript(std::string name);
 
 	void RemoveComponent(Component::Type component);
+	void RemoveComponent(Component* component);
 
 	void UpdateComponents();
 

@@ -12,7 +12,7 @@ GameObject::GameObject()
 GameObject::~GameObject()
 {
 	components.clear();
-};
+}
 
 //std::shared_ptr<Component> GameObject::GetComponent(Component::Type componentType)
 //{
@@ -54,11 +54,27 @@ void GameObject::AddComponent(Component::Type component)
 	}
 }
 
+void GameObject::AddScript(std::string name)
+{
+	components.emplace_back(std::make_unique<ScriptComponent>(this, name));
+}
+
 void GameObject::RemoveComponent(Component::Type component)
 {
 	for (auto& comp : components)
 	{
 		if (comp->getType() == component)
+		{
+			components.erase(std::remove(components.begin(), components.end(), comp));
+			break;
+		}
+	}
+}
+void GameObject::RemoveComponent(Component* component)
+{
+	for (auto& comp : components)
+	{
+		if (comp.get() == component)
 		{
 			components.erase(std::remove(components.begin(), components.end(), comp));
 			break;

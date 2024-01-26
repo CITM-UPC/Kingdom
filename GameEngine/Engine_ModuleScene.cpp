@@ -22,9 +22,10 @@ bool Engine_ModuleScene::Init()
 {
 	fs::create_directories("Library/Meshes/");
 	fs::create_directories("Library/Materials/");
-	fs::create_directories("Library/Scripts/");
 
-	addGameObject("Assets/Street/StreetEnvironment.fbx");
+	//addGameObject("Assets/Street/StreetEnvironment.fbx");
+
+	ScriptingEngine::SetSceneModuleContext(this);
 
 	return true;
 }
@@ -187,6 +188,8 @@ void Engine_ModuleScene::addGameObject(Primitive * shape)
 		goName.append("(" + std::to_string(currentCopies) + ")");
 	}
 	gameObjectToAdd->name = goName;
+	gameObjectToAdd->UUID = gEngine->generateUUID32();
+
 	currentScene.gameObjectList.push_back(std::move(gameObjectToAdd));
 
 	MeshInfo meshInfo(shape->getVertexData()->data(), shape->getVertexData()->size(), shape->getIndexData()->data(), shape->getIndexData()->size(), shape->GetNumTexCoords(), shape->GetNumNormals(), shape->GetNumFaces());

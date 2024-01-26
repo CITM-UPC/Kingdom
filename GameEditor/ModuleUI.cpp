@@ -101,6 +101,7 @@ update_status ModuleUI::PreUpdate()
 	if (saveasMenu) 	SaveAsMenu();
 	if (loadMenu)		LoadSceneMenu();
 	if (reparentMenu) 	ReparentMenu();
+	if (chooseScriptNameWindow) ChooseScriptNameWindow();
 
 	ImGuiIO& io = ImGui::GetIO();
 	if (!io.WantCaptureMouse && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
@@ -576,8 +577,51 @@ void ModuleUI::InspectorWindow()
 						ImGui::Text("Clipping Plane View Near: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->clippingPlaneViewNear).c_str());
 						ImGui::Text("Clipping Plane View Far: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->clippingPlaneViewFar).c_str());
 						ImGui::Text("Camera Offset: "); ImGui::SameLine(); ImGui::Text(std::to_string(cam->camOffset).c_str());
+						ImGui::Separator();
+						if (ImGui::Button("Remove Component"))
+						{
+							gameObjSelected->RemoveComponent(cam);
+							break;
+						}
 					}
 				}
+				if (component.get()->getType() == Component::Type::SCRIPT) {
+					if (ImGui::CollapsingHeader("Script", ImGuiTreeNodeFlags_None))
+					{
+						ScriptComponent* script = dynamic_cast<ScriptComponent*>(component.get());
+						ImGui::Text("This is a script");
+						ImGui::Separator();
+						if (ImGui::Button("Remove Component"))
+						{
+							gameObjSelected->RemoveComponent(script);
+							break;
+						}
+					}
+				}
+			}
+
+			if (ImGui::Button("AddComponent"))
+			{
+				ImGui::OpenPopup("Add Component");
+			}
+			if (ImGui::BeginPopup("Add Component"))
+			{
+				if (ImGui::Button("Mesh"))
+				{
+				}
+				if (ImGui::Button("Texture"))
+				{
+				}
+				if (ImGui::Button("Camera"))
+				{
+					gameObjSelected->AddComponent(Component::Type::CAMERA);
+					ImGui::CloseCurrentPopup();
+				}
+				if (ImGui::Button("Script"))
+				{
+					chooseScriptNameWindow = true;
+				}
+				ImGui::EndPopup();
 			}
 		}
 		ImGui::EndMenu();
@@ -829,7 +873,7 @@ void ModuleUI::ShowFolderContents(const fs::path& folderPath) {
 				if (entry.path().filename().string().substr(entry.path().filename().string().find_last_of(".") + 1) == "cs") {
 					if (ImGui::Button("Edit")) {
 						editScript = true;
-						filePath = "Library/"+folderPath.filename().string() + "/" + entry.path().filename().string();
+						filePath = "Library/" + folderPath.filename().string() + "/" + entry.path().filename().string();
 						fileContent = loadTextFile(entry.path().string());
 						editor.SetText(fileContent);
 					}
@@ -837,7 +881,6 @@ void ModuleUI::ShowFolderContents(const fs::path& folderPath) {
 				}
 
 				if (ImGui::Button(("Delete##" + entry.path().string()).c_str())) fs::remove(entry.path());
-				
 			}
 		}
 	}
@@ -865,9 +908,60 @@ void ModuleUI::EditScript()
 			}
 			ImGui::EndMenuBar();
 		}
-		
+
 		editor.Render("CodeEditor");
 		ImGui::EndPopup();
+	}
+}
+
+void ModuleUI::ShowScriptFolder()
+{
+	const fs::path scriptingPath = "../ScriptingSandbox/Scripts";
+	if (ImGui::CollapsingHeader(scriptingPath.filename().string().c_str())) {
+		for (const auto& entry : fs::directory_iterator(scriptingPath)) {
+			if (fs::is_regular_file(entry.path())) {
+				ImGui::Text("%s", entry.path().filename().string().c_str());
+				ImGui::SameLine();
+				if (entry.path().filename().string().substr(entry.path().filename().string().find_last_of(".") + 1) == "cs") {
+					if (ImGui::Button("Edit")) {
+						editScript = true;
+						filePath = scriptingPath.filename().string() + "/" + entry.path().filename().string();
+						fileContent = loadTextFile(entry.path().string());
+						editor.SetText(fileContent);
+					}
+					ImGui::SameLine();
+				}
+
+void ModuleUI::ChooseScriptNameWindow()
+{
+	ImGui::Begin("Script name", &chooseScriptNameWindow);
+
+	static char nameRecipient[32];
+
+	ImGui::InputText("File Name", nameRecipient, IM_ARRAYSIZE(nameRecipient));
+
+	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && nameRecipient != "")
+	{
+		//std::string className = "ActualScriptTest2";
+		if (ScriptingEngine::GetClassInAssembly(ScriptingEngine::LoadCSharpAssembly("../ScriptingSandbox/bin/Debug/ScriptingSandbox.dll"), "", nameRecipient) != nullptr)
+		{
+			gameObjSelected->AddScript(nameRecipient);
+			ImGui::CloseCurrentPopup();
+		}
+		else
+		{
+			App->logHistory.push_back("[Editor] Could not find introduced class");
+		}
+
+		chooseScriptNameWindow = false;
+	}
+
+	ImGui::End();
+}
+
+				if (ImGui::Button(("Delete##" + entry.path().string()).c_str())) fs::remove(entry.path());
+			}
+		}
 	}
 }
 
@@ -881,6 +975,9 @@ void ModuleUI::FileExplorerWindow()
 
 	const fs::path libraryPath = "Library";
 	ShowFolderContents(libraryPath);
+	ImGui::Separator();
+
+	ShowScriptFolder();
 	ImGui::Separator();
 
 	ImGui::End();

@@ -124,7 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\vcpkg\installed\x64-windows\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\vcpkg\installed\x64-windows\include\;..\mono\include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -133,16 +133,19 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;glu32.lib;opengl32.lib;sdl2.lib;sdl2main.lib;DevIL.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glu32.lib;opengl32.lib;sdl2.lib;sdl2main.lib;DevIL.lib;assimp-vc143-mt.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>..\vcpkg\installed\x64-windows\lib\;..\vcpkg\installed\x64-windows\lib\manual-link;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\vcpkg\installed\x64-windows\lib\;..\vcpkg\installed\x64-windows\lib\manual-link;..\mono\lib\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PreBuildEvent>
       <Command>call ..\vcpkg\bootstrap-vcpkg.bat
 ..\vcpkg\vcpkg.exe install opengl glew glm sdl2 nlohmann-json pcg devil[libjpeg,libpng] assimp --recurse --triplet x64-windows
 copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy "..\mono\bin\*.*" "..\x64\Debug\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -154,7 +157,7 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\vcpkg\installed\x64-windows\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\vcpkg\installed\x64-windows\include\;..\mono\include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -165,16 +168,19 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32.lib;glu32.lib;opengl32.lib;sdl2.lib;sdl2main.lib;DevIL.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glu32.lib;opengl32.lib;sdl2.lib;sdl2main.lib;DevIL.lib;assimp-vc143-mt.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>..\vcpkg\installed\x64-windows\lib\;..\vcpkg\installed\x64-windows\lib\manual-link;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\vcpkg\installed\x64-windows\lib\;..\vcpkg\installed\x64-windows\lib\manual-link;..\mono\lib\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PreBuildEvent>
       <Command>call ..\vcpkg\bootstrap-vcpkg.bat
 ..\vcpkg\vcpkg.exe install opengl glew glm sdl2 nlohmann-json pcg devil[libjpeg,libpng] assimp --recurse --triplet x64-windows
 copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy "..\mono\bin\*.*" "..\x64\Release\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Engine_ModuleScene.cpp" />
@@ -185,6 +191,7 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     <ClCompile Include="Camera.h" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="ScriptComponent.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
@@ -207,8 +214,16 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     <ClInclude Include="Physics.hpp" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Pyramid.h" />
+    <ClCompile Include="ScriptingEngine.cpp" />
+    <ClInclude Include="ScriptComponent.h" />
+    <ClInclude Include="ScriptingEngine.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Transform.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ScriptingSandbox\ScriptingSandbox.csproj">
+      <Project>{ed084274-859d-433b-a155-7b922af37314}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,6 +2,8 @@
 
 GameEngine::GameEngine()
 {
+	sEngine = new ScriptingEngine();
+
 	//input = new ModuleInput(this);
 	renderer3D = new Engine_ModuleRenderer3D(this);
 	scene = new Engine_ModuleScene(this);
@@ -26,6 +28,8 @@ bool GameEngine::Init()
 	{
 		ret = item->Init();
 	}*/
+
+	sEngine->InitMono();
 
 	return ret;
 }
@@ -77,6 +81,7 @@ engine_status GameEngine::Update()
 	}
 
 	FinishUpdate();*/
+
 	return ret;
 }
 
@@ -102,6 +107,10 @@ bool GameEngine::CleanUp()
 		ret = item->CleanUp();
 		if (ret != true) return ret;
 	}
+
+	sEngine->ShutDownMono();
+
+	delete sEngine;
 
 	return ret;
 }
