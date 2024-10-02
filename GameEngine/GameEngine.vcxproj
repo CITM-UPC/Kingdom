@@ -139,9 +139,10 @@
       <AdditionalLibraryDirectories>..\vcpkg\installed\x64-windows\lib\;..\vcpkg\installed\x64-windows\lib\manual-link;..\mono\lib\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PreBuildEvent>
-      <Command>call ..\vcpkg\bootstrap-vcpkg.bat
-..\vcpkg\vcpkg.exe install opengl glew glm sdl2 nlohmann-json pcg devil[libjpeg,libpng] assimp --recurse --triplet x64-windows
-copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
+      <Command>git submodule update --remote
+call $(SolutionDir)vcpkg\bootstrap-vcpkg.bat
+$(SolutionDir)vcpkg\vcpkg.exe install opengl glew glm sdl2 nlohmann-json pcg devil[libjpeg,libpng] assimp --recurse --triplet x64-windows
+copy "$(SolutionDir)vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>copy "..\mono\bin\*.*" "..\x64\Debug\"</Command>
@@ -174,9 +175,10 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
       <AdditionalLibraryDirectories>..\vcpkg\installed\x64-windows\lib\;..\vcpkg\installed\x64-windows\lib\manual-link;..\mono\lib\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PreBuildEvent>
-      <Command>call ..\vcpkg\bootstrap-vcpkg.bat
-..\vcpkg\vcpkg.exe install opengl glew glm sdl2 nlohmann-json pcg devil[libjpeg,libpng] assimp --recurse --triplet x64-windows
-copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
+      <Command>git submodule update --remote
+call $(SolutionDir)vcpkg\bootstrap-vcpkg.bat
+$(SolutionDir)vcpkg\vcpkg.exe install opengl glew glm sdl2 nlohmann-json pcg devil[libjpeg,libpng] assimp --recurse --triplet x64-windows
+copy "$(SolutionDir)vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>copy "..\mono\bin\*.*" "..\x64\Release\"</Command>

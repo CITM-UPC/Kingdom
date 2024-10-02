@@ -126,9 +126,9 @@
       <AdditionalDependencies>sdl2.lib;sdl2main.lib;imgui.lib;jsoncpp.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>call ..\vcpkg\bootstrap-vcpkg.bat
-..\vcpkg\vcpkg.exe install sdl2 imgui[opengl3-binding,sdl2-binding,docking-experimental] jsoncpp --recurse --triplet x64-windows
-copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
+      <Command>call $(SolutionDir)vcpkg\bootstrap-vcpkg.bat 
+$(SolutionDir)vcpkg\vcpkg.exe install sdl2 imgui[opengl3-binding,sdl2-binding,docking-experimental] jsoncpp --recurse --triplet x64-windows
+copy "$(SolutionDir)vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,9 +151,9 @@ copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
       <AdditionalDependencies>sdl2.lib;sdl2main.lib;imgui.lib;jsoncpp.lib;mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>call ..\vcpkg\bootstrap-vcpkg.bat
-..\vcpkg\vcpkg.exe install sdl2 imgui[opengl3-binding,sdl2-binding,docking-experimental] jsoncpp --recurse --triplet x64-windows
-copy "..\vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
+      <Command>call $(SolutionDir)vcpkg\bootstrap-vcpkg.bat 
+$(SolutionDir)vcpkg\vcpkg.exe install sdl2 imgui[opengl3-binding,sdl2-binding,docking-experimental] jsoncpp --recurse --triplet x64-windows
+copy "$(SolutionDir)vcpkg\installed\x64-windows\bin\*.*" "$(OutDir)"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>mkdir ..\x64\Publish
