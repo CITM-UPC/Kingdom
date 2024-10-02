@@ -83,7 +83,7 @@ update_status ModuleUI::PreUpdate()
 	{
 		ImGuiDockNodeFlags dock_flags = 0;
 		dock_flags |= ImGuiDockNodeFlags_PassthruCentralNode;
-		ImGui::DockSpaceOverViewport(0, dock_flags);
+		ImGui::DockSpaceOverViewport(0, 0, dock_flags);
 	}
 
 	if (FPSgraph)		FPSGraphWindow();
